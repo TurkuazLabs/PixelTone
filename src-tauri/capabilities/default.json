@@ -1,0 +1,6 @@
+{
+  "description": "# Dosya Yolu: pixeltone/src-tauri/capabilities/default.json | Amac: Tauri default window yetkilerini tanimlamak | Modul - JSON | Version: 0.1.0 | Bagimli Oldugu Katman: Config",
+  "identifier": "default",
+  "windows": ["main"],
+  "permissions": ["core:default"]
+}
