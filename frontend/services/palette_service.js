@@ -1,14 +1,15 @@
 // # 📄 Dosya Yolu: pixeltone/frontend/services/palette_service.js
-// # 📌 Amac: Frontend palet ve renk is kurallarini yonetmek
+// # 📌 Amac: Frontend palet, renk ve capture is kurallarini yonetmek
 // # 📌 Service - JavaScript
-// # Version: 0.1.0
-// # Aciklama: Tauri komutlarini cagirir ve local fallback donusumleri yapar
+// # Version: 0.2.0
+// # Aciklama: Tauri komutlarini cagirir, capture akisini yonetir ve local fallback saglar
 //
 // Bagimli Oldugu Katman: Service
 
 import { APP_CONFIG } from "../config/app_config.js";
 import { localRepository } from "../repositories/local_repository.js";
 import { tauriBridge } from "../tools/tauri_bridge.js";
+import { windowTool } from "../tools/window_tool.js";
 
 function normalizeHex(hexValue) {
   const value = String(hexValue || "").trim();
@@ -36,6 +37,10 @@ function fallbackConvert(hexValue) {
   };
 }
 
+function delay(milliseconds) {
+  return new Promise((resolve) => window.setTimeout(resolve, milliseconds));
+}
+
 export const paletteService = Object.freeze({
   async convertHex(hexValue) {
     const normalizedHex = normalizeHex(hexValue);
@@ -60,7 +65,22 @@ export const paletteService = Object.freeze({
   },
 
   async captureScreenColor() {
-    return tauriBridge.invokeCommand(APP_CONFIG.commands.captureScreenColor);
+    let minimized = false;
+
+    try {
+      await windowTool.minimize();
+      minimized = true;
+      await delay(APP_CONFIG.capture.delayMs);
+      return await tauriBridge.invokeCommand(APP_CONFIG.commands.captureScreenColor);
+    } finally {
+      if (minimized) {
+        try {
+          await windowTool.restore();
+        } catch (_error) {
+          // Restore hatasi capture sonucunu gecersiz kilmamalidir.
+        }
+      }
+    }
   },
 
   async savePalette(name, colors) {
