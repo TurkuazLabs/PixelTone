@@ -1,16 +1,14 @@
 # 📄 Dosya Yolu: pixeltone/README.md
-# 📌 Amac: PixelTone baslangic paketinin genel aciklamasi
+# 📌 Amac: PixelTone projesinin genel aciklamasini ve calisma durumunu tanimlamak
 # 📌 Docs - Markdown
-# Version: 0.1.0
+# Version: 0.2.0
 # Aciklama: Tauri + Rust + HTML UI tabanli platform bagimsiz renk secici uygulama girisi
 
 Bagimli Oldugu Katman: View
 
-# PixelTone v0.1.0 Starter
+# PixelTone v0.2.0
 
-PixelTone, ColorPic alternatifi olarak tasarlanan platform bagimsiz renk secici ve palet yonetim uygulamasidir.
-
-Bu paket bir baslangic iskeletidir. Amac, mimariyi temiz kurmak ve ilk calisir UI + Rust komut koprusunu hazirlamaktir.
+PixelTone, ColorPic alternatifi olarak gelistirilen platform bagimsiz renk secici ve palet yonetim uygulamasidir.
 
 ## Hedef Platformlar
 
@@ -23,16 +21,34 @@ Bu paket bir baslangic iskeletidir. Amac, mimariyi temiz kurmak ve ilk calisir U
 - Tauri v2
 - Rust core
 - HTML/CSS/JavaScript UI
+- xcap ekran yakalama adaptoru
 - Local JSON palette storage
 
-## Ilk Ozellikler
+## v0.2.0 Ozellikleri
 
-- HEX renk girisi
-- RGB, HSL, HSV, CMYK donusumu
-- Palet kaydi icin Rust komut iskeleti
-- Lokal browser gecmisi
-- Platform capture adapter icin hazir Tool katmani
-- Acik tema odakli arayuz
+- Cursor konumundaki ekran rengini yakalama
+- Coklu monitor konumunu dikkate alma
+- Windows ekran yakalama
+- Linux X11 ekran yakalama
+- Linux Wayland oturumunu ayirt etme
+- macOS ekran yakalama altyapisi
+- 9x9 piksel buyutec paneli
+- HEX, RGB, HSL, HSV ve CMYK donusumu
+- Renk gecmisi
+- Local palet kaydi
+- Controller -> Service -> Tool capture akisi
+
+## Capture Akisi
+
+`Ekrandan Renk Al` butonuna basildiginda PixelTone gecici olarak kuculur. Kisa gecikme sirasinda cursor hedef renge tasinir. Rust capture service cursorun bulundugu monitoru yakalar, merkez pikseli okur ve 9x9 buyutec verisini UI tarafina dondurur.
+
+## Platform Notlari
+
+Windows ana test platformudur.
+
+Linux X11 global cursor konumu ve ekran yakalama icin desteklenir. Wayland ortaminda compositor guvenlik modeli global cursor konumunu veya ekran goruntusunu sinirlayabilir; bu nedenle bazi Wayland compositorlerinde ek portal/overlay adaptoru gerekecektir.
+
+macOS tarafinda ekran yakalama icin kullanicinin Screen Recording izni vermesi gerekebilir.
 
 ## Kurulum
 
@@ -47,6 +63,4 @@ npm run tauri dev
 npm run tauri build
 ```
 
-## Not
-
-Ekrandan anlik piksel yakalama islevi v0.1.0 paketinde adaptor olarak hazirlandi, fakat OS bazli tam implementasyon henuz eklenmedi. Bu ozellik v0.2.0 icin planlandi.
+Detaylar `docs/BUILD.md` ve `docs/INSTALL.md` dosyalarindadir.
