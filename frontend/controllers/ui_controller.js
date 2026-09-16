@@ -1,151 +1,90 @@
 // # 📄 Dosya Yolu: pixeltone/frontend/controllers/ui_controller.js
 // # 📌 Amac: PixelTone arayuz olaylarini almak ve servisleri cagirmak
 // # 📌 Controller - JavaScript
-// # Version: 0.1.0
-// # Aciklama: DOM eventlerini yakalar, is mantigini palette_service uzerinden calistirir
+// # Version: 0.2.0
+// # Aciklama: DOM detaylarini View katmanina birakir ve yalnizca servis akislarini tetikler
 //
 // Bagimli Oldugu Katman: Controller
 
+import { TR_LABELS } from "../language/tr.js";
 import { paletteService } from "../services/palette_service.js";
-
-const dom = Object.freeze({
-  hexInput: document.getElementById("hex-input"),
-  nativeColorInput: document.getElementById("native-color-input"),
-  convertButton: document.getElementById("convert-button"),
-  captureButton: document.getElementById("capture-button"),
-  savePaletteButton: document.getElementById("save-palette-button"),
-  paletteNameInput: document.getElementById("palette-name-input"),
-  statusText: document.getElementById("status-text"),
-  colorPreview: document.getElementById("color-preview"),
-  colorOutput: document.getElementById("color-output"),
-  historyList: document.getElementById("history-list"),
-  paletteList: document.getElementById("palette-list"),
-});
+import { uiView } from "../views/ui_view.js";
 
 let currentColor = null;
 
-function setStatus(message) {
-  dom.statusText.textContent = message;
-}
-
-function formatPercent(value) {
-  return `${Number(value).toFixed(2)}%`;
-}
-
-function renderColorOutput(colorInfo) {
-  dom.colorPreview.style.background = colorInfo.hex;
-  dom.colorOutput.innerHTML = "";
-
-  const rows = [
-    ["HEX", colorInfo.hex],
-    ["RGB", `${colorInfo.rgb.red}, ${colorInfo.rgb.green}, ${colorInfo.rgb.blue}`],
-    ["HSL", `${Number(colorInfo.hsl.hue).toFixed(2)}, ${formatPercent(colorInfo.hsl.saturation)}, ${formatPercent(colorInfo.hsl.lightness)}`],
-    ["HSV", `${Number(colorInfo.hsv.hue).toFixed(2)}, ${formatPercent(colorInfo.hsv.saturation)}, ${formatPercent(colorInfo.hsv.value)}`],
-    ["CMYK", `${formatPercent(colorInfo.cmyk.cyan)}, ${formatPercent(colorInfo.cmyk.magenta)}, ${formatPercent(colorInfo.cmyk.yellow)}, ${formatPercent(colorInfo.cmyk.black)}`],
-  ];
-
-  rows.forEach(([label, value]) => {
-    const row = document.createElement("div");
-    row.className = "pt-output-item";
-    row.innerHTML = `<strong>${label}</strong><span>${value}</span>`;
-    dom.colorOutput.appendChild(row);
-  });
-}
-
-function renderHistory(historyItems) {
-  dom.historyList.innerHTML = "";
-
-  if (historyItems.length === 0) {
-    dom.historyList.innerHTML = `<p class="pt-status">Henuz renk gecmisi yok.</p>`;
-    return;
+function errorMessage(error, fallback) {
+  if (typeof error === "string" && error.trim()) {
+    return error;
   }
 
-  historyItems.forEach((item) => {
-    const row = document.createElement("button");
-    row.className = "pt-history-item";
-    row.type = "button";
-    row.innerHTML = `<span class="pt-swatch" style="background:${item.hex}"></span><strong>${item.hex}</strong>`;
-    row.addEventListener("click", () => {
-      dom.hexInput.value = item.hex;
-      dom.nativeColorInput.value = item.hex.toLowerCase();
-      convertCurrentHex();
-    });
-    dom.historyList.appendChild(row);
-  });
-}
-
-function renderPalettes(palettes) {
-  dom.paletteList.innerHTML = "";
-
-  if (!Array.isArray(palettes) || palettes.length === 0) {
-    dom.paletteList.innerHTML = `<p class="pt-status">Kayitli palet yok.</p>`;
-    return;
-  }
-
-  palettes.forEach((palette) => {
-    const row = document.createElement("div");
-    row.className = "pt-palette-item";
-    row.innerHTML = `<strong>${palette.name}</strong><span>${palette.color_count} renk</span>`;
-    dom.paletteList.appendChild(row);
-  });
+  return error?.message || fallback;
 }
 
 async function convertCurrentHex() {
   try {
-    const colorInfo = await paletteService.convertHex(dom.hexInput.value);
+    const colorInfo = await paletteService.convertHex(uiView.getHexValue());
     currentColor = colorInfo;
-    dom.hexInput.value = colorInfo.hex;
-    dom.nativeColorInput.value = colorInfo.hex.toLowerCase();
-    renderColorOutput(colorInfo);
-    renderHistory(paletteService.addToHistory(colorInfo));
-    setStatus("Renk donusturuldu.");
+    uiView.setHexValue(colorInfo.hex);
+    uiView.renderColorOutput(colorInfo);
+    uiView.renderHistory(paletteService.addToHistory(colorInfo), selectHistoryColor);
+    uiView.setStatus(TR_LABELS.status.converted);
   } catch (error) {
-    setStatus(error.message || "Renk donusturulemedi.");
+    uiView.setStatus(errorMessage(error, TR_LABELS.status.convertFailed));
   }
 }
 
 async function captureColor() {
+  uiView.setStatus(TR_LABELS.status.capturePreparing);
+
   try {
     const captureResult = await paletteService.captureScreenColor();
-    dom.hexInput.value = captureResult.hex;
+    uiView.renderMagnifier(captureResult);
+    uiView.setHexValue(captureResult.hex);
     await convertCurrentHex();
+    uiView.setStatus(TR_LABELS.status.captureCompleted);
   } catch (error) {
-    setStatus(error.message || "Ekran yakalama henuz hazir degil.");
+    uiView.setStatus(errorMessage(error, TR_LABELS.status.captureFailed));
   }
 }
 
 async function savePalette() {
   if (!currentColor) {
-    setStatus("Once bir renk donusturun.");
+    uiView.setStatus(TR_LABELS.status.paletteNeedsColor);
     return;
   }
 
   try {
-    await paletteService.savePalette(dom.paletteNameInput.value, paletteService.getHistory());
-    const palettes = await paletteService.listPalettes();
-    renderPalettes(palettes);
-    setStatus("Palet kaydedildi.");
+    await paletteService.savePalette(uiView.getPaletteName(), paletteService.getHistory());
+    uiView.renderPalettes(await paletteService.listPalettes());
+    uiView.setStatus(TR_LABELS.status.paletteSaved);
   } catch (error) {
-    setStatus(error.message || "Palet kaydedilemedi.");
+    uiView.setStatus(errorMessage(error, TR_LABELS.status.paletteSaveFailed));
   }
+}
+
+function selectHistoryColor(hex) {
+  uiView.setHexValue(hex);
+  void convertCurrentHex();
+}
+
+function syncNativeColor(event) {
+  uiView.setHexValue(event.target.value);
 }
 
 async function boot() {
-  dom.convertButton.addEventListener("click", convertCurrentHex);
-  dom.captureButton.addEventListener("click", captureColor);
-  dom.savePaletteButton.addEventListener("click", savePalette);
-  dom.nativeColorInput.addEventListener("input", (event) => {
-    dom.hexInput.value = event.target.value;
-  });
-
-  renderHistory(paletteService.getHistory());
+  uiView.bindConvert(convertCurrentHex);
+  uiView.bindCapture(captureColor);
+  uiView.bindSavePalette(savePalette);
+  uiView.bindNativeColor(syncNativeColor);
+  uiView.renderHistory(paletteService.getHistory(), selectHistoryColor);
+  uiView.renderMagnifier(null);
   await convertCurrentHex();
 
   try {
-    renderPalettes(await paletteService.listPalettes());
+    uiView.renderPalettes(await paletteService.listPalettes());
   } catch (_error) {
-    renderPalettes([]);
+    uiView.renderPalettes([]);
   }
 }
 
-boot();
+void boot();
