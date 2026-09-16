@@ -2,8 +2,8 @@
 # 📄 Dosya Yolu: pixeltone/frontend/index.html
 # 📌 Amac: PixelTone ana arayuz sayfasi
 # 📌 View - HTML
-# Version: 0.1.0
-# Aciklama: Renk girisi, donusum sonucu, gecmis ve palet bolumlerini gosterir
+# Version: 0.2.0
+# Aciklama: Renk donusumu, ekran yakalama buyuteci, gecmis ve palet bolumlerini gosterir
 
 Bagimli Oldugu Katman: View
 -->
@@ -19,9 +19,9 @@ Bagimli Oldugu Katman: View
     <main class="pt-shell">
       <section class="pt-hero">
         <div>
-          <p class="pt-eyebrow">PixelTone v0.1.0</p>
+          <p class="pt-eyebrow">PixelTone v0.2.0</p>
           <h1>Platform bagimsiz renk secici</h1>
-          <p class="pt-lead">Ekran, gorsel ve proje paletleri icin hafif ColorPic alternatifi.</p>
+          <p class="pt-lead">Windows, Linux ve macOS icin hafif ekran rengi yakalama ve palet yonetim araci.</p>
         </div>
         <button id="capture-button" class="pt-button pt-button-secondary" type="button">Ekrandan Renk Al</button>
       </section>
@@ -42,6 +42,20 @@ Bagimli Oldugu Katman: View
           <h2>Onizleme</h2>
           <div id="color-preview" class="pt-color-preview"></div>
           <div id="color-output" class="pt-output-list"></div>
+        </article>
+
+        <article class="pt-card pt-magnifier-card">
+          <div class="pt-card-heading">
+            <div>
+              <h2>Buyutec</h2>
+              <p class="pt-status">Yakalanan pikselin 9x9 yakin cevresi.</p>
+            </div>
+            <div class="pt-capture-meta">
+              <span id="capture-platform">Platform: -</span>
+              <span id="capture-position">Cursor: -</span>
+            </div>
+          </div>
+          <div id="magnifier-grid" class="pt-magnifier-grid"></div>
         </article>
 
         <article class="pt-card pt-history-card">
