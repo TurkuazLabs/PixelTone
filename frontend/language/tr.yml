@@ -1,0 +1,18 @@
+# 📄 Dosya Yolu: pixeltone/frontend/language/tr.yml
+# 📌 Amac: PixelTone Turkce arayuz etiketlerini tutmak
+# 📌 Language - YAML
+# Version: 0.1.0
+# Aciklama: Gelecekte i18n servisinin okuyacagi dil metinleri
+
+Bagimli Oldugu Katman: Language
+
+app:
+  title: "PixelTone"
+  subtitle: "Platform bagimsiz renk secici"
+buttons:
+  convert: "Donustur"
+  capture: "Ekrandan Renk Al"
+  save_palette: "Paleti Kaydet"
+messages:
+  ready: "Hazir."
+  capture_not_ready: "Ekran yakalama adaptor implementasyonu v0.2.0 icin planlandi."

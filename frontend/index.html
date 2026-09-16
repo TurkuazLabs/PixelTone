@@ -1,0 +1,64 @@
+<!--
+# 📄 Dosya Yolu: pixeltone/frontend/index.html
+# 📌 Amac: PixelTone ana arayuz sayfasi
+# 📌 View - HTML
+# Version: 0.1.0
+# Aciklama: Renk girisi, donusum sonucu, gecmis ve palet bolumlerini gosterir
+
+Bagimli Oldugu Katman: View
+-->
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PixelTone</title>
+    <link rel="stylesheet" href="/views/app.css" />
+  </head>
+  <body>
+    <main class="pt-shell">
+      <section class="pt-hero">
+        <div>
+          <p class="pt-eyebrow">PixelTone v0.1.0</p>
+          <h1>Platform bagimsiz renk secici</h1>
+          <p class="pt-lead">Ekran, gorsel ve proje paletleri icin hafif ColorPic alternatifi.</p>
+        </div>
+        <button id="capture-button" class="pt-button pt-button-secondary" type="button">Ekrandan Renk Al</button>
+      </section>
+
+      <section class="pt-grid">
+        <article class="pt-card pt-picker-card">
+          <h2>Renk Donustur</h2>
+          <label class="pt-label" for="hex-input">HEX renk</label>
+          <div class="pt-input-row">
+            <input id="hex-input" class="pt-input" type="text" value="#4f8cff" maxlength="9" />
+            <input id="native-color-input" class="pt-color-input" type="color" value="#4f8cff" />
+          </div>
+          <button id="convert-button" class="pt-button" type="button">Donustur</button>
+          <p id="status-text" class="pt-status">Hazir.</p>
+        </article>
+
+        <article class="pt-card pt-preview-card">
+          <h2>Onizleme</h2>
+          <div id="color-preview" class="pt-color-preview"></div>
+          <div id="color-output" class="pt-output-list"></div>
+        </article>
+
+        <article class="pt-card pt-history-card">
+          <h2>Gecmis</h2>
+          <div id="history-list" class="pt-history-list"></div>
+        </article>
+
+        <article class="pt-card pt-palette-card">
+          <h2>Palet Kaydi</h2>
+          <label class="pt-label" for="palette-name-input">Palet adi</label>
+          <input id="palette-name-input" class="pt-input" type="text" value="Ilk Palet" />
+          <button id="save-palette-button" class="pt-button" type="button">Paleti Kaydet</button>
+          <div id="palette-list" class="pt-palette-list"></div>
+        </article>
+      </section>
+    </main>
+
+    <script type="module" src="/controllers/ui_controller.js"></script>
+  </body>
+</html>
