@@ -1,0 +1,15 @@
+# 📄 Dosya Yolu: pixeltone/.gitignore
+# 📌 Amac: PixelTone repo disi tutulacak dosyalari tanimlamak
+# 📌 Config - GitIgnore
+# Version: 0.1.0
+# Aciklama: Build, dependency ve local dosyalari dislar
+
+# Bagimli Oldugu Katman: Config
+
+node_modules/
+dist/
+src-tauri/target/
+src-tauri/gen/
+.DS_Store
+*.log
+.env
