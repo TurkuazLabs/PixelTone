@@ -9,6 +9,12 @@
 use mouse_position::mouse_position::Mouse;
 use xcap::Monitor;
 
+#[cfg(target_os = "macos")]
+use crate::config::app_config::PLATFORM_MACOS;
+#[cfg(not(any(target_os = "windows", target_os = "macos", target_os = "linux")))]
+use crate::config::app_config::PLATFORM_UNKNOWN;
+#[cfg(target_os = "windows")]
+use crate::config::app_config::PLATFORM_WINDOWS;
 use crate::config::app_config::{
     CAPTURE_SOURCE_XCAP, ERROR_CURSOR_POSITION, ERROR_MONITOR_NOT_FOUND, ERROR_SCREEN_CAPTURE,
     ERROR_SCREEN_SAMPLE, MAGNIFIER_SIZE,
@@ -18,12 +24,6 @@ use crate::config::app_config::{
     ENV_XDG_SESSION_TYPE, PLATFORM_LINUX_WAYLAND, PLATFORM_LINUX_X11, PLATFORM_UNKNOWN,
     SESSION_TYPE_WAYLAND, SESSION_TYPE_X11,
 };
-#[cfg(target_os = "macos")]
-use crate::config::app_config::PLATFORM_MACOS;
-#[cfg(target_os = "windows")]
-use crate::config::app_config::PLATFORM_WINDOWS;
-#[cfg(not(any(target_os = "windows", target_os = "macos", target_os = "linux")))]
-use crate::config::app_config::PLATFORM_UNKNOWN;
 use crate::models::capture::{CaptureColorResponse, CapturePoint, MagnifierPixel};
 
 pub struct PlatformCaptureTool;
