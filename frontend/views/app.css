@@ -3,7 +3,7 @@
 # 📌 Amac: PixelTone arayuz stil dosyasi
 # 📌 View - CSS
 # Version: 0.3.0
-# Aciklama: Acik tema, capture, Palette Studio, transfer ve responsive stilleri tanimlar
+# Aciklama: Acik tema, capture, Tailwind, Palette Studio, transfer ve responsive stilleri tanimlar
 
 Bagimli Oldugu Katman: View
 */
@@ -237,11 +237,52 @@ input {
   margin-top: 16px;
 }
 
-.pt-magnifier-card {
+.pt-tailwind-card,
+.pt-magnifier-card,
+.pt-palette-card {
   grid-column: 1 / -1;
 }
 
-.pt-palette-card {
+.pt-tailwind-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 10px;
+}
+
+.pt-tailwind-item {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+  padding: 12px;
+  border: 1px solid var(--pt-border);
+  border-radius: var(--pt-radius-md);
+  background: var(--pt-surface-soft);
+}
+
+.pt-tailwind-swatch {
+  width: 42px;
+  height: 42px;
+  border: 1px solid var(--pt-border);
+  border-radius: 12px;
+}
+
+.pt-tailwind-details {
+  display: grid;
+  min-width: 0;
+  gap: 3px;
+}
+
+.pt-tailwind-details span,
+.pt-tailwind-distance {
+  overflow: hidden;
+  color: var(--pt-muted);
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pt-tailwind-distance {
   grid-column: 1 / -1;
 }
 
@@ -297,6 +338,7 @@ input {
     grid-template-columns: 1fr;
   }
 
+  .pt-tailwind-card,
   .pt-magnifier-card,
   .pt-palette-card {
     grid-column: auto;
