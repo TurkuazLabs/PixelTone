@@ -21,7 +21,9 @@ fn generate_windows_icon() -> Result<(), Box<dyn std::error::Error>> {
     let mut icon_directory = IconDir::new(ResourceType::Icon);
 
     for &size in build_config::WINDOWS_ICON_SIZES {
-        let resized = source.resize_exact(size, size, FilterType::Lanczos3).to_rgba8();
+        let resized = source
+            .resize_exact(size, size, FilterType::Lanczos3)
+            .to_rgba8();
         let icon_image = IconImage::from_rgba_data(size, size, resized.into_raw());
         let entry = IconDirEntry::encode(&icon_image)?;
         icon_directory.add_entry(entry);
