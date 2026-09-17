@@ -24,9 +24,7 @@ pub fn list_palettes(project: String) -> Result<Vec<PaletteSummary>, String> {
 }
 
 #[tauri::command]
-pub fn export_palette(
-    request: ExportPaletteRequest,
-) -> Result<ExportPaletteResponse, String> {
+pub fn export_palette(request: ExportPaletteRequest) -> Result<ExportPaletteResponse, String> {
     PaletteService::new(PaletteRepository::new()).export_palette(request)
 }
 
