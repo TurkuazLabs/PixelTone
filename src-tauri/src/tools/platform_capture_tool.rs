@@ -1,7 +1,7 @@
 // # 📄 Dosya Yolu: pixeltone/src-tauri/src/tools/platform_capture_tool.rs
 // # 📌 Amac: Platform bazli ekran renk yakalama adaptorunu calistirmak
 // # 📌 Tool - Rust
-// # Version: 0.2.0
+// # Version: 0.2.1
 // # Aciklama: Cursor konumundaki monitoru xcap ile yakalar ve 9x9 buyutec verisi uretir
 //
 // Bagimli Oldugu Katman: Tool
@@ -46,18 +46,8 @@ impl PlatformCaptureTool {
             return Err(ERROR_SCREEN_SAMPLE.to_string());
         }
 
-        let image_x = Self::map_coordinate(
-            cursor_x,
-            monitor_x,
-            monitor_width,
-            image.width(),
-        )?;
-        let image_y = Self::map_coordinate(
-            cursor_y,
-            monitor_y,
-            monitor_height,
-            image.height(),
-        )?;
+        let image_x = Self::map_coordinate(cursor_x, monitor_x, monitor_width, image.width())?;
+        let image_y = Self::map_coordinate(cursor_y, monitor_y, monitor_height, image.height())?;
 
         let center_pixel = image.get_pixel(image_x, image_y);
         let center_hex = Self::rgba_to_hex(center_pixel[0], center_pixel[1], center_pixel[2]);
@@ -95,7 +85,8 @@ impl PlatformCaptureTool {
         }
 
         let max_monitor_coordinate = monitor_span.saturating_sub(1) as i32;
-        let relative_coordinate = (global_coordinate - monitor_origin).clamp(0, max_monitor_coordinate);
+        let relative_coordinate =
+            (global_coordinate - monitor_origin).clamp(0, max_monitor_coordinate);
         let scale = image_span as f64 / monitor_span as f64;
         let mapped = (relative_coordinate as f64 * scale).floor() as u32;
 
@@ -115,9 +106,11 @@ impl PlatformCaptureTool {
                 let offset_x = grid_x as i32 - radius;
                 let offset_y = grid_y as i32 - radius;
                 let sample_x = (center_x as i32 + offset_x)
-                    .clamp(0, image.width().saturating_sub(1) as i32) as u32;
+                    .clamp(0, image.width().saturating_sub(1) as i32)
+                    as u32;
                 let sample_y = (center_y as i32 + offset_y)
-                    .clamp(0, image.height().saturating_sub(1) as i32) as u32;
+                    .clamp(0, image.height().saturating_sub(1) as i32)
+                    as u32;
                 let pixel = image.get_pixel(sample_x, sample_y);
 
                 pixels.push(MagnifierPixel {
