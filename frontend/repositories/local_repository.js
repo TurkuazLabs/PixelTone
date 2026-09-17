@@ -1,8 +1,8 @@
 // # 📄 Dosya Yolu: pixeltone/frontend/repositories/local_repository.js
 // # 📌 Amac: Frontend local storage islemlerini yonetmek
 // # 📌 Repo - JavaScript
-// # Version: 0.1.0
-// # Aciklama: Gecmis renkleri tarayici localStorage icinde saklar
+// # Version: 0.3.0
+// # Aciklama: Renk gecmisi listelerini ve basit kullanici ayarlarini localStorage icinde saklar
 //
 // Bagimli Oldugu Katman: Repo
 
@@ -24,5 +24,13 @@ export const localRepository = Object.freeze({
 
   writeList(storageKey, items) {
     window.localStorage.setItem(storageKey, JSON.stringify(items));
+  },
+
+  readValue(storageKey, fallbackValue = "") {
+    return window.localStorage.getItem(storageKey) || fallbackValue;
+  },
+
+  writeValue(storageKey, value) {
+    window.localStorage.setItem(storageKey, String(value));
   },
 });
