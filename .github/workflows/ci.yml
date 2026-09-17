@@ -1,7 +1,7 @@
 # 📄 Dosya Yolu: pixeltone/.github/workflows/ci.yml
 # 📌 Amac: PixelTone kodunu Windows, Linux ve macOS uzerinde otomatik dogrulamak
 # 📌 Config - YAML
-# Version: 0.2.0
+# Version: 0.2.1
 # Aciklama: Frontend build, Rust format ve Tauri cargo check islemlerini platform matrisi ile calistirir
 #
 # Bagimli Oldugu Katman: Config
@@ -61,7 +61,6 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: lts/*
-          cache: npm
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
