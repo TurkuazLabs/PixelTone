@@ -2,7 +2,7 @@
 // # 📌 Amac: PixelTone frontend sabitlerini merkezi tutmak
 // # 📌 Config - JavaScript
 // # Version: 0.3.0
-// # Aciklama: Storage, Tauri komutlari, export formatlari, hata sabitleri ve capture ayarlarini merkezi tutar
+// # Aciklama: Storage, Tauri komutlari, export formatlari, Tailwind ve capture ayarlarini merkezi tutar
 //
 // Bagimli Oldugu Katman: Config
 
@@ -32,6 +32,10 @@ export const APP_CONFIG = Object.freeze({
   }),
   errors: Object.freeze({
     invalidHex: "Gecerli 6 haneli HEX renk girin.",
+  }),
+  tailwind: Object.freeze({
+    matchCount: 5,
+    excludedNames: Object.freeze(["inherit", "current", "transparent"]),
   }),
   limits: Object.freeze({
     maxHistoryItems: 12,
