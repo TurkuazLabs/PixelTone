@@ -17,12 +17,22 @@ function normalizeHex(hexValue) {
   return value.startsWith("#") ? value : `#${value}`;
 }
 
+function normalizeProjectName(projectName) {
+  return String(projectName || "").trim() || APP_CONFIG.defaults.projectName;
+}
+
+function storeProjectName(projectName) {
+  const normalizedProject = normalizeProjectName(projectName);
+  localRepository.writeValue(APP_CONFIG.storageKeys.projectName, normalizedProject);
+  return normalizedProject;
+}
+
 function fallbackConvert(hexValue) {
   const normalizedHex = normalizeHex(hexValue);
   const cleanHex = normalizedHex.replace("#", "");
 
   if (!/^[0-9a-fA-F]{6}$/.test(cleanHex)) {
-    throw new Error("Gecerli 6 haneli HEX renk girin.");
+    throw new Error(APP_CONFIG.errors.invalidHex);
   }
 
   const red = parseInt(cleanHex.slice(0, 2), 16);
@@ -88,9 +98,7 @@ export const paletteService = Object.freeze({
   },
 
   setProjectName(projectName) {
-    const normalizedProject = String(projectName || "").trim() || APP_CONFIG.defaults.projectName;
-    localRepository.writeValue(APP_CONFIG.storageKeys.projectName, normalizedProject);
-    return normalizedProject;
+    return storeProjectName(projectName);
   },
 
   async captureScreenColor() {
@@ -136,7 +144,7 @@ export const paletteService = Object.freeze({
     const response = await tauriBridge.invokeCommand(APP_CONFIG.commands.importPalette, {
       request: { content },
     });
-    this.setProjectName(response.project);
+    storeProjectName(response.project);
     return response;
   },
 });
