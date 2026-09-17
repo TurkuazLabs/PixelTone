@@ -1,7 +1,7 @@
 // # 📄 Dosya Yolu: pixeltone/src-tauri/src/services/palette_service.rs
 // # 📌 Amac: Palet is kurallarini yonetmek
 // # 📌 Service - Rust
-// # Version: 0.1.0
+// # Version: 0.2.1
 // # Aciklama: Palet adini dogrular ve repository katmanini cagirir
 //
 // Bagimli Oldugu Katman: Service
@@ -19,7 +19,10 @@ impl PaletteService {
         Self { repository }
     }
 
-    pub fn save_palette(&self, mut request: SavePaletteRequest) -> Result<SavePaletteResponse, String> {
+    pub fn save_palette(
+        &self,
+        mut request: SavePaletteRequest,
+    ) -> Result<SavePaletteResponse, String> {
         if request.name.trim().is_empty() {
             request.name = DEFAULT_PALETTE_NAME.to_string();
         }
