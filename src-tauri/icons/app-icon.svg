@@ -1,0 +1,20 @@
+<!--
+# 📄 Dosya Yolu: pixeltone/src-tauri/icons/app-icon.svg
+# 📌 Amac: PixelTone masaustu ikon seti icin kaynak vektor dosyasini tanimlamak
+# 📌 View - SVG
+# Version: 0.2.1
+# Aciklama: Tauri icon komutu icin platform bagimsiz ana ikon kaynagidir
+
+Bagimli Oldugu Katman: View
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect x="16" y="16" width="480" height="480" rx="92" fill="#4f8cff"/>
+  <g fill="#ffffff">
+    <rect x="64" y="64" width="36" height="36" rx="4"/>
+    <rect x="136" y="64" width="36" height="36" rx="4" opacity=".75"/>
+    <rect x="100" y="100" width="36" height="36" rx="4" opacity=".75"/>
+    <rect x="64" y="136" width="36" height="36" rx="4"/>
+    <path d="M142 206h62c64 0 104 31 104 82 0 50-40 82-104 82h-24v86h-38V206zm38 36v92h24c42 0 65-16 65-46 0-30-23-46-65-46h-24z"/>
+    <path d="M302 206h154v38h-58v212h-38V244h-58v-38z"/>
+  </g>
+</svg>
