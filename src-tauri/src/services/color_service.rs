@@ -1,7 +1,7 @@
 // # 📄 Dosya Yolu: pixeltone/src-tauri/src/services/color_service.rs
 // # 📌 Amac: Renk donusum is kurallarini calistirmak
 // # 📌 Service - Rust
-// # Version: 0.1.0
+// # Version: 0.2.1
 // # Aciklama: HEX degerini RGB, HSL, HSV ve CMYK formatlarina cevirir
 //
 // Bagimli Oldugu Katman: Service
@@ -31,7 +31,11 @@ impl ColorService {
     fn normalize_hex(hex: &str) -> Result<String, String> {
         let clean_hex = hex.trim().trim_start_matches('#');
 
-        if clean_hex.len() != 6 || !clean_hex.chars().all(|character| character.is_ascii_hexdigit()) {
+        if clean_hex.len() != 6
+            || !clean_hex
+                .chars()
+                .all(|character| character.is_ascii_hexdigit())
+        {
             return Err(ERROR_INVALID_HEX.to_string());
         }
 
@@ -40,9 +44,12 @@ impl ColorService {
 
     fn hex_to_rgb(hex: &str) -> Result<RgbColor, String> {
         let clean_hex = hex.trim_start_matches('#');
-        let red = u8::from_str_radix(&clean_hex[0..2], 16).map_err(|_| ERROR_INVALID_HEX.to_string())?;
-        let green = u8::from_str_radix(&clean_hex[2..4], 16).map_err(|_| ERROR_INVALID_HEX.to_string())?;
-        let blue = u8::from_str_radix(&clean_hex[4..6], 16).map_err(|_| ERROR_INVALID_HEX.to_string())?;
+        let red =
+            u8::from_str_radix(&clean_hex[0..2], 16).map_err(|_| ERROR_INVALID_HEX.to_string())?;
+        let green =
+            u8::from_str_radix(&clean_hex[2..4], 16).map_err(|_| ERROR_INVALID_HEX.to_string())?;
+        let blue =
+            u8::from_str_radix(&clean_hex[4..6], 16).map_err(|_| ERROR_INVALID_HEX.to_string())?;
 
         Ok(RgbColor { red, green, blue })
     }
