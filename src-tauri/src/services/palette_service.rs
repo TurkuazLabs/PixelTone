@@ -27,10 +27,7 @@ impl PaletteService {
         Self { repository }
     }
 
-    pub fn save_palette(
-        &self,
-        request: SavePaletteRequest,
-    ) -> Result<SavePaletteResponse, String> {
+    pub fn save_palette(&self, request: SavePaletteRequest) -> Result<SavePaletteResponse, String> {
         self.repository.save(Self::prepare_palette(request)?)
     }
 
