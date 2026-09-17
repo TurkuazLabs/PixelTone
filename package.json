@@ -1,7 +1,7 @@
 {
   "_pixeltone_header": {
     "dosya_yolu": "pixeltone/package.json",
-    "amac": "Node, Vite ve Tauri CLI komutlarini tanimlamak",
+    "amac": "Node, Vite, Tauri CLI ve resmi Tailwind renk kaynagini tanimlamak",
     "modul_filetype": "Config - JSON",
     "version": "0.3.0",
     "aciklama": "JSON yorum desteklemedigi icin header ilk nesne alani olarak tutulur",
@@ -19,7 +19,8 @@
     "tauri": "tauri"
   },
   "dependencies": {
-    "@tauri-apps/api": "^2.0.0"
+    "@tauri-apps/api": "^2.0.0",
+    "tailwindcss": "4.3.3"
   },
   "devDependencies": {
     "@tauri-apps/cli": "^2.0.0",
