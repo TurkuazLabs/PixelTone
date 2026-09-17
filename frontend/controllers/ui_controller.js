@@ -2,13 +2,14 @@
 // # 📌 Amac: PixelTone arayuz olaylarini almak ve servisleri cagirmak
 // # 📌 Controller - JavaScript
 // # Version: 0.3.0
-// # Aciklama: Capture, proje, palet ve transfer olaylarini Service katmanina aktarir
+// # Aciklama: Capture, Tailwind, proje, palet ve transfer olaylarini Service katmanina aktarir
 //
 // Bagimli Oldugu Katman: Controller
 
 import { APP_CONFIG } from "../config/app_config.js";
 import { TR_LABELS } from "../language/tr.js";
 import { paletteService } from "../services/palette_service.js";
+import { tailwindColorService } from "../services/tailwind_color_service.js";
 import { uiView } from "../views/ui_view.js";
 
 let currentColor = null;
@@ -21,6 +22,14 @@ function errorMessage(error, fallback) {
   return error?.message || fallback;
 }
 
+function renderTailwindMatches(hexValue) {
+  try {
+    uiView.renderTailwindMatches(tailwindColorService.findNearest(hexValue));
+  } catch (_error) {
+    uiView.renderTailwindMatches([]);
+  }
+}
+
 async function convertCurrentHex() {
   try {
     const colorInfo = await paletteService.convertHex(uiView.getHexValue());
@@ -28,6 +37,7 @@ async function convertCurrentHex() {
     uiView.setHexValue(colorInfo.hex);
     uiView.renderColorOutput(colorInfo);
     uiView.renderHistory(paletteService.addToHistory(colorInfo), selectHistoryColor);
+    renderTailwindMatches(colorInfo.hex);
     uiView.setStatus(TR_LABELS.status.converted);
   } catch (error) {
     uiView.setStatus(errorMessage(error, TR_LABELS.status.convertFailed));
@@ -158,6 +168,7 @@ async function boot() {
   uiView.bindImportYamlFile(importPalette);
   uiView.bindNativeColor(syncNativeColor);
   uiView.renderHistory(paletteService.getHistory(), selectHistoryColor);
+  uiView.renderTailwindMatches([]);
   uiView.renderMagnifier(null);
   await convertCurrentHex();
 
