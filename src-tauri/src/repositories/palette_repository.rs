@@ -1,7 +1,7 @@
 // # 📄 Dosya Yolu: pixeltone/src-tauri/src/repositories/palette_repository.rs
 // # 📌 Amac: Palet dosya kayit islemlerini yapmak
 // # 📌 Repo - Rust
-// # Version: 0.1.0
+// # Version: 0.2.1
 // # Aciklama: Paletleri kullanici local data klasorunde JSON olarak saklar
 //
 // Bagimli Oldugu Katman: Repo
@@ -10,7 +10,9 @@ use std::fs;
 use std::path::PathBuf;
 
 use crate::config::app_config::{APP_FOLDER_NAME, PALETTE_FILE_EXTENSION, PALETTE_FOLDER_NAME};
-use crate::models::palette::{PaletteFile, PaletteSummary, SavePaletteRequest, SavePaletteResponse};
+use crate::models::palette::{
+    PaletteFile, PaletteSummary, SavePaletteRequest, SavePaletteResponse,
+};
 
 pub struct PaletteRepository;
 
@@ -29,7 +31,8 @@ impl PaletteRepository {
             name: request.name.clone(),
             colors: request.colors,
         };
-        let content = serde_json::to_string_pretty(&palette_file).map_err(|error| error.to_string())?;
+        let content =
+            serde_json::to_string_pretty(&palette_file).map_err(|error| error.to_string())?;
 
         fs::write(&path, content).map_err(|error| error.to_string())?;
 
@@ -57,7 +60,8 @@ impl PaletteRepository {
             }
 
             let content = fs::read_to_string(&path).map_err(|error| error.to_string())?;
-            let palette: PaletteFile = serde_json::from_str(&content).map_err(|error| error.to_string())?;
+            let palette: PaletteFile =
+                serde_json::from_str(&content).map_err(|error| error.to_string())?;
 
             palettes.push(PaletteSummary {
                 name: palette.name,
@@ -74,7 +78,9 @@ impl PaletteRepository {
             .or_else(dirs_next::data_dir)
             .unwrap_or_else(std::env::temp_dir);
 
-        Ok(base_directory.join(APP_FOLDER_NAME).join(PALETTE_FOLDER_NAME))
+        Ok(base_directory
+            .join(APP_FOLDER_NAME)
+            .join(PALETTE_FOLDER_NAME))
     }
 
     fn safe_file_name(value: &str) -> String {
