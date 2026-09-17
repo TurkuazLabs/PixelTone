@@ -1,29 +1,33 @@
 # 📄 Dosya Yolu: pixeltone/docs/MODULES.md
-# 📌 Amac: PixelTone modul listesini tanimlamak
+# 📌 Amac: PixelTone modul listesini, mevcut durumu ve sonraki hedefleri tanimlamak
 # 📌 Docs - Markdown
-# Version: 0.1.0
-# Aciklama: Capture, Palette, Export ve Image modul hedefleri
+# Version: 0.3.0
+# Aciklama: Capture, Palette Studio, Tailwind, Export, Image ve Settings modul durumlarini kaydeder
 
 Bagimli Oldugu Katman: View
 
 # Modules
 
-## PixelTone Capture
+## PixelTone Capture - Aktif
 
-Ekrandan renk alma ve buyutec sistemi.
+Ekrandan renk alma, coklu monitor secimi ve 9x9 buyutec sistemi.
 
-## PixelTone Palette
+## PixelTone Palette Studio - Aktif
 
-Palet kaydetme, listeleme ve proje bazli renk yonetimi.
+Proje bazli palet kaydetme, listeleme, legacy palet okuma ve renk yonetimi.
 
-## PixelTone Export
+## PixelTone Export - Aktif
 
-HEX, RGB, HSL, HSV, CMYK, CSS ve YAML ciktilari.
+HEX, RGB, HSL, HSV ve CMYK renk donusumlerinin yaninda YAML palet aktarimi ve CSS custom property export.
 
-## PixelTone Image
+## PixelTone Tailwind Match - Aktif
 
-Resimden ana renk cikarma ve ortalama renk alma.
+Resmi Tailwind CSS renk paletini okuyup secili HEX renge OKLab uzayinda en yakin renkleri bulma ve arayuzde gosterme.
 
-## PixelTone Settings
+## PixelTone Image - Sonraki Modul
+
+Resim dosyasi acma, pikselden renk secme, ana renk cikarma ve ortalama renk analizi. Bu modul v0.4.0 icin sonraki gelistirme hedefidir.
+
+## PixelTone Settings - Planli
 
 Kisayol, tema, export formati ve platform ayarlari.
