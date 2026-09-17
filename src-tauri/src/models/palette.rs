@@ -1,12 +1,18 @@
 // # 📄 Dosya Yolu: pixeltone/src-tauri/src/models/palette.rs
 // # 📌 Amac: Palet kayit ve listeleme modellerini tanimlamak
 // # 📌 Model - Rust
-// # Version: 0.1.0
-// # Aciklama: Palette request, response ve summary DTO yapilari
+// # Version: 0.3.0
+// # Aciklama: Proje bazli palet request, storage ve response DTO tiplerini tanimlar
 //
 // Bagimli Oldugu Katman: Repo
 
 use serde::{Deserialize, Serialize};
+
+use crate::config::app_config::DEFAULT_PROJECT_NAME;
+
+fn default_project_name() -> String {
+    DEFAULT_PROJECT_NAME.to_string()
+}
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PaletteColor {
@@ -16,18 +22,23 @@ pub struct PaletteColor {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SavePaletteRequest {
+    #[serde(default = "default_project_name")]
+    pub project: String,
     pub name: String,
     pub colors: Vec<PaletteColor>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PaletteFile {
+    #[serde(default = "default_project_name")]
+    pub project: String,
     pub name: String,
     pub colors: Vec<PaletteColor>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SavePaletteResponse {
+    pub project: String,
     pub name: String,
     pub path: String,
     pub color_count: usize,
@@ -35,6 +46,7 @@ pub struct SavePaletteResponse {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PaletteSummary {
+    pub project: String,
     pub name: String,
     pub path: String,
     pub color_count: usize,
