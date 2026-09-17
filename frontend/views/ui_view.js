@@ -2,7 +2,7 @@
 // # 📌 Amac: PixelTone DOM ciktilarini ve event baglantilarini yonetmek
 // # 📌 View - JavaScript
 // # Version: 0.3.0
-// # Aciklama: Controller katmanini DOM detaylarindan ayirir ve Palette Studio kontrollerini sunar
+// # Aciklama: Controller katmanini DOM detaylarindan ayirir, Tailwind ve Palette Studio ciktilarini cizer
 //
 // Bagimli Oldugu Katman: View
 
@@ -23,6 +23,7 @@ const dom = Object.freeze({
   statusText: document.getElementById("status-text"),
   colorPreview: document.getElementById("color-preview"),
   colorOutput: document.getElementById("color-output"),
+  tailwindColorList: document.getElementById("tailwind-color-list"),
   historyList: document.getElementById("history-list"),
   paletteList: document.getElementById("palette-list"),
   magnifierGrid: document.getElementById("magnifier-grid"),
@@ -144,6 +145,39 @@ export const uiView = Object.freeze({
     ];
 
     rows.forEach(([label, value]) => dom.colorOutput.appendChild(createOutputRow(label, value)));
+  },
+
+  renderTailwindMatches(matches) {
+    dom.tailwindColorList.innerHTML = "";
+
+    if (!Array.isArray(matches) || matches.length === 0) {
+      const empty = document.createElement("p");
+      empty.className = "pt-status";
+      empty.textContent = TR_LABELS.empty.tailwind;
+      dom.tailwindColorList.appendChild(empty);
+      return;
+    }
+
+    matches.forEach((match) => {
+      const row = document.createElement("div");
+      const swatch = document.createElement("span");
+      const details = document.createElement("div");
+      const name = document.createElement("strong");
+      const value = document.createElement("span");
+      const distance = document.createElement("span");
+
+      row.className = "pt-tailwind-item";
+      swatch.className = "pt-tailwind-swatch";
+      swatch.style.background = match.value;
+      details.className = "pt-tailwind-details";
+      name.textContent = match.name;
+      value.textContent = match.value;
+      distance.className = "pt-tailwind-distance";
+      distance.textContent = `${TR_LABELS.tailwind.distancePrefix}: ${Number(match.distance).toFixed(4)}`;
+      details.append(name, value);
+      row.append(swatch, details, distance);
+      dom.tailwindColorList.appendChild(row);
+    });
   },
 
   renderHistory(historyItems, onSelect) {
