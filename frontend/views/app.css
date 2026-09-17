@@ -2,8 +2,8 @@
 # 📄 Dosya Yolu: pixeltone/frontend/views/app.css
 # 📌 Amac: PixelTone arayuz stil dosyasi
 # 📌 View - CSS
-# Version: 0.2.0
-# Aciklama: Acik tema, kartlar, renk onizleme, buyutec ve form stilleri
+# Version: 0.3.0
+# Aciklama: Acik tema, capture, Palette Studio, transfer ve responsive stilleri tanimlar
 
 Bagimli Oldugu Katman: View
 */
@@ -120,6 +120,10 @@ input {
   font-weight: 600;
 }
 
+.pt-label-spaced {
+  margin-top: 16px;
+}
+
 .pt-input-row {
   display: grid;
   grid-template-columns: 1fr 58px;
@@ -168,6 +172,10 @@ input {
   box-shadow: none;
 }
 
+.pt-button-secondary:hover {
+  color: #ffffff;
+}
+
 .pt-status {
   color: var(--pt-muted);
 }
@@ -187,6 +195,10 @@ input {
   gap: 10px;
 }
 
+.pt-palette-list {
+  margin-top: 18px;
+}
+
 .pt-output-item,
 .pt-history-item,
 .pt-palette-item {
@@ -200,6 +212,16 @@ input {
   background: var(--pt-surface-soft);
 }
 
+.pt-palette-details {
+  display: grid;
+  gap: 3px;
+}
+
+.pt-palette-details span {
+  color: var(--pt-muted);
+  font-size: 12px;
+}
+
 .pt-swatch {
   width: 30px;
   height: 30px;
@@ -208,7 +230,18 @@ input {
   border-radius: 999px;
 }
 
+.pt-action-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 16px;
+}
+
 .pt-magnifier-card {
+  grid-column: 1 / -1;
+}
+
+.pt-palette-card {
   grid-column: 1 / -1;
 }
 
@@ -259,11 +292,13 @@ input {
     flex-direction: column;
   }
 
-  .pt-grid {
+  .pt-grid,
+  .pt-action-grid {
     grid-template-columns: 1fr;
   }
 
-  .pt-magnifier-card {
+  .pt-magnifier-card,
+  .pt-palette-card {
     grid-column: auto;
   }
 
