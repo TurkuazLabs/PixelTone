@@ -120,16 +120,17 @@ function visibilityChanged() {
   }
 }
 
-function boot() {
+async function boot() {
   pickerView.initializeLabels(APP_CONFIG.picker.shortcut);
   pickerView.bindPointerMove(pointerMove);
   pickerView.bindPointerDown((event) => void pointerDown(event));
   pickerView.bindKeyDown(keyDown);
   pickerView.bindVisibilityChange(visibilityChanged);
 
-  if (pickerView.isVisible()) {
+  await pickerService.onActivation(() => {
+    currentSample = null;
     startSampling();
-  }
+  });
 }
 
-boot();
+void boot();
