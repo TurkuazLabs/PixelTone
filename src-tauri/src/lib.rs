@@ -1,8 +1,8 @@
 // # 📄 Dosya Yolu: pixeltone/src-tauri/src/lib.rs
-// # 📌 Amac: PixelTone Tauri runtime ve komut kayitlarini baslatmak
+// # 📌 Amac: PixelTone Tauri runtime, plugin ve komut kayitlarini baslatmak
 // # 📌 Controller - Rust
-// # Version: 0.3.0
-// # Aciklama: Capture, color ve tam Palette Studio Tauri komutlarini runtime'a kaydeder
+// # Version: 0.4.0
+// # Aciklama: Capture, Palette Studio, clipboard ve desktop global shortcut altyapisini runtime'a kaydeder
 //
 // Bagimli Oldugu Katman: Controller
 
@@ -15,7 +15,13 @@ pub mod tools;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
-    tauri::Builder::default()
+    let builder = tauri::Builder::default()
+        .plugin(tauri_plugin_clipboard_manager::init());
+
+    #[cfg(any(target_os = "windows", target_os = "macos", target_os = "linux"))]
+    let builder = builder.plugin(tauri_plugin_global_shortcut::Builder::new().build());
+
+    builder
         .invoke_handler(tauri::generate_handler![
             controllers::color_controller::convert_hex_color,
             controllers::color_controller::capture_screen_color,
