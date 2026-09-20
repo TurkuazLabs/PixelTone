@@ -2,8 +2,8 @@
 # 📄 Dosya Yolu: pixeltone/frontend/index.html
 # 📌 Amac: PixelTone ana arayuz sayfasi
 # 📌 View - HTML
-# Version: 0.3.0
-# Aciklama: Capture, renk donusumu, Tailwind eslesmesi ve proje bazli Palette Studio kontrollerini gosterir
+# Version: 0.4.0
+# Aciklama: Live Picker, capture, renk donusumu, Tailwind ve Palette Studio kontrollerini gosterir
 
 Bagimli Oldugu Katman: View
 -->
@@ -19,11 +19,15 @@ Bagimli Oldugu Katman: View
     <main class="pt-shell">
       <section class="pt-hero">
         <div>
-          <p class="pt-eyebrow">PixelTone v0.3.0</p>
+          <p class="pt-eyebrow">PixelTone v0.4.0</p>
           <h1>Platform bagimsiz renk secici</h1>
-          <p class="pt-lead">Windows, Linux ve macOS icin ekran rengi yakalama, proje ve palet yonetim araci.</p>
+          <p class="pt-lead">Windows, Linux ve macOS icin canli picker, ekran rengi yakalama, proje ve palet yonetim araci.</p>
         </div>
-        <button id="capture-button" class="pt-button pt-button-secondary" type="button">Ekrandan Renk Al</button>
+        <div class="pt-hero-actions">
+          <button id="picker-launch-button" class="pt-button" type="button"></button>
+          <span id="picker-shortcut-hint" class="pt-shortcut-hint"></span>
+          <button id="capture-button" class="pt-button pt-button-secondary" type="button">Ekrandan Renk Al</button>
+        </div>
       </section>
 
       <section class="pt-grid">
