@@ -95,7 +95,10 @@ export const pickerView = Object.freeze({
     dom.status.textContent = `${TR_LABELS.capture.positionPrefix}: ${captureResult.cursor.x}, ${captureResult.cursor.y}`;
   },
 
-  renderError(message) {
-    dom.status.textContent = message;
+  renderError(error, fallback) {
+    dom.status.textContent =
+      typeof error === "string" && error.trim()
+        ? error
+        : error?.message || fallback;
   },
 });
