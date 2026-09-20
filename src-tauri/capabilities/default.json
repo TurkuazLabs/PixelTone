@@ -1,7 +1,10 @@
 {
-  "description": "# Dosya Yolu: pixeltone/src-tauri/capabilities/default.json | Amac: Ana pencere ve picker overlay yetkilerini tanimlamak | Modul - JSON | Version: 0.4.0 | Bagimli Oldugu Katman: Config",
+  "description": "📄 Dosya Yolu: pixeltone/src-tauri/capabilities/default.json | 📌 Amac: Ana pencere ve picker overlay yetkilerini tanimlamak | 📌 Config - JSON | Version: 0.4.0 | Aciklama: Window, global shortcut ve clipboard izinlerini sinirli olarak acar | Bagimli Oldugu Katman: Config",
   "identifier": "default",
-  "windows": ["main", "picker"],
+  "windows": [
+    "main",
+    "picker"
+  ],
   "permissions": [
     "core:default",
     "core:window:allow-minimize",
