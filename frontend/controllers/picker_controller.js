@@ -1,7 +1,7 @@
 // # 📄 Dosya Yolu: pixeltone/frontend/controllers/picker_controller.js
 // # 📌 Amac: Picker overlay input olaylarini alip PickerService katmanina aktarmak
 // # 📌 Controller - JavaScript
-// # Version: 0.4.0
+// # Version: 1.0.0
 // # Aciklama: Pointer, klavye, visibility ve aktivasyon olaylarini Service katmanina yonlendirir
 //
 // Bagimli Oldugu Katman: Controller
@@ -38,8 +38,8 @@ async function boot() {
     pickerService.setVisibility(pickerView.isVisible());
   });
 
-  await pickerService.onActivation(() => {
-    pickerService.startSession(renderSample, renderError);
+  await pickerService.onActivation((options) => {
+    pickerService.startSession(options, renderSample, renderError);
   });
 }
 
