@@ -160,12 +160,18 @@ async function cancelSession() {
 
 export const pickerService = Object.freeze({
   async configure(settings) {
-    configuredShortcut =
+    const nextShortcut =
       String(settings.picker_shortcut || "").trim() ||
       APP_CONFIG.defaults.settings.pickerShortcut;
     configuredDefaultCopyFormat = normalizeCopyFormat(
       settings.default_copy_format,
     );
+
+    if (configuredShortcut && configuredShortcut !== nextShortcut) {
+      await shortcutTool.unregister(configuredShortcut);
+    }
+
+    configuredShortcut = nextShortcut;
 
     await shortcutTool.replace(configuredShortcut, () => {
       void openPicker().catch(notifyError);
