@@ -2,7 +2,7 @@
 // # 📌 Amac: Picker overlay input olaylarini alip PickerService katmanina aktarmak
 // # 📌 Controller - JavaScript
 // # Version: 0.4.0
-// # Aciklama: Canli sample, monitor takibi, H/R format secimi, sol tik kopyalama ve Esc iptal olaylarini yonlendirir
+// # Aciklama: Canli sample, H/R format secimi, sol tik kopyalama ve Esc iptal olaylarini Service katmanina yonlendirir
 //
 // Bagimli Oldugu Katman: Controller
 
@@ -11,8 +11,7 @@ import { TR_LABELS } from "../language/tr.js";
 import { pickerService } from "../services/picker_service.js";
 import { pickerView } from "../views/picker_view.js";
 
-let currentCapture = null;
-let currentColorInfo = null;
+let currentSample = null;
 let copyFormat = APP_CONFIG.picker.defaultCopyFormat;
 let sampleTimer = null;
 let sampleBusy = false;
@@ -33,11 +32,12 @@ async function sampleColor() {
   sampleBusy = true;
 
   try {
-    currentCapture = await pickerService.sampleLiveColor();
-    currentColorInfo = await import("../services/palette_service.js").then(
-      ({ paletteService }) => paletteService.convertHex(currentCapture.hex),
+    currentSample = await pickerService.sampleLiveColor();
+    pickerView.renderCapture(
+      currentSample.capture,
+      currentSample.colorInfo,
+      copyFormat,
     );
-    pickerView.renderCapture(currentCapture, currentColorInfo, copyFormat);
   } catch (error) {
     pickerView.renderError(errorMessage(error, TR_LABELS.status.pickerSampleFailed));
   } finally {
@@ -71,14 +71,17 @@ function pointerMove(event) {
 }
 
 async function pointerDown(event) {
-  if (event.button !== APP_CONFIG.picker.primaryPointerButton || !currentCapture) {
+  if (
+    event.button !== APP_CONFIG.picker.primaryPointerButton ||
+    !currentSample
+  ) {
     return;
   }
 
   stopSampling();
 
   try {
-    await pickerService.copySelection(currentCapture, copyFormat);
+    await pickerService.copySelection(currentSample, copyFormat);
   } catch (error) {
     pickerView.renderError(errorMessage(error, TR_LABELS.status.pickerCopyFailed));
     startSampling();
@@ -100,8 +103,12 @@ function keyDown(event) {
     return;
   }
 
-  if (currentCapture && currentColorInfo) {
-    pickerView.renderCapture(currentCapture, currentColorInfo, copyFormat);
+  if (currentSample) {
+    pickerView.renderCapture(
+      currentSample.capture,
+      currentSample.colorInfo,
+      copyFormat,
+    );
   }
 }
 
