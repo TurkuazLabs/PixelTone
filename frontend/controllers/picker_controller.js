@@ -20,12 +20,7 @@ function renderSample(sample) {
 }
 
 function renderError(error) {
-  const message =
-    typeof error === "string" && error.trim()
-      ? error
-      : error?.message || TR_LABELS.status.pickerSampleFailed;
-
-  pickerView.renderError(message);
+  pickerView.renderError(error, TR_LABELS.status.pickerSampleFailed);
 }
 
 async function boot() {
