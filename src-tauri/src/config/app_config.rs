@@ -1,8 +1,8 @@
 // # 📄 Dosya Yolu: pixeltone/src-tauri/src/config/app_config.rs
 // # 📌 Amac: Rust tarafinda magic string kullanilmasini azaltmak
 // # 📌 Config - Rust
-// # Version: 0.3.0
-// # Aciklama: Storage, capture, palette transfer, duzenleme ve export sabitlerini merkezi tutar
+// # Version: 1.0.0
+// # Aciklama: Storage, capture, palette, settings ve stable desktop sabitlerini merkezi tutar
 //
 // Bagimli Oldugu Katman: Config
 
@@ -10,6 +10,7 @@ pub const APP_FOLDER_NAME: &str = "pixeltone";
 pub const PROJECT_FOLDER_NAME: &str = "projects";
 pub const PALETTE_FOLDER_NAME: &str = "palettes";
 pub const PALETTE_FILE_EXTENSION: &str = "json";
+pub const SETTINGS_FILE_NAME: &str = "settings.json";
 pub const DEFAULT_PROJECT_NAME: &str = "Genel";
 pub const DEFAULT_PALETTE_NAME: &str = "untitled-palette";
 
@@ -20,6 +21,12 @@ pub const EXPORT_MIME_YAML: &str = "application/yaml;charset=utf-8";
 pub const EXPORT_MIME_CSS: &str = "text/css;charset=utf-8";
 pub const CSS_ROOT_SELECTOR: &str = ":root";
 pub const CSS_VARIABLE_PREFIX: &str = "--pt";
+
+pub const DEFAULT_CLOSE_TO_TRAY: bool = true;
+pub const DEFAULT_CHECK_UPDATES_ON_START: bool = true;
+pub const DEFAULT_PICKER_SHORTCUT: &str = "CommandOrControl+Shift+P";
+pub const COPY_FORMAT_HEX: &str = "hex";
+pub const COPY_FORMAT_RGB: &str = "rgb";
 
 pub const CAPTURE_SOURCE_XCAP: &str = "xcap";
 pub const PLATFORM_WINDOWS: &str = "windows";
@@ -43,3 +50,5 @@ pub const ERROR_PALETTE_NOT_FOUND: &str = "Palet bulunamadi.";
 pub const ERROR_PROJECT_EMPTY: &str = "Proje adi bos olamaz.";
 pub const ERROR_IMPORT_EMPTY: &str = "YAML import icerigi bos olamaz.";
 pub const ERROR_TRANSFER_VERSION: &str = "Desteklenmeyen PixelTone palet surumu.";
+pub const ERROR_PICKER_SHORTCUT_EMPTY: &str = "Picker kisayolu bos olamaz.";
+pub const ERROR_COPY_FORMAT_INVALID: &str = "Varsayilan kopyalama formati hex veya rgb olmalidir.";
