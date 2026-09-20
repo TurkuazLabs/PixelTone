@@ -21,6 +21,7 @@ const dom = Object.freeze({
   copyFormat: document.getElementById("settings-copy-format"),
   saveButton: document.getElementById("settings-save-button"),
   status: document.getElementById("settings-status"),
+  pickerShortcutHint: document.getElementById("picker-shortcut-hint"),
 });
 
 export const settingsView = Object.freeze({
@@ -63,6 +64,8 @@ export const settingsView = Object.freeze({
     dom.checkUpdates.checked = settings.check_updates_on_start;
     dom.shortcut.value = settings.picker_shortcut;
     dom.copyFormat.value = settings.default_copy_format;
+    dom.pickerShortcutHint.textContent =
+      `${TR_LABELS.picker.shortcutPrefix}: ${settings.picker_shortcut}`;
   },
 
   setStatus(message) {
