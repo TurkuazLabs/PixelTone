@@ -214,10 +214,10 @@ export const pickerService = Object.freeze({
   },
 
   async onActivation(handler) {
-    return eventTool.listenEvent(APP_CONFIG.picker.activationEvent, handler);
+    return eventTool.listenCurrentWindow(APP_CONFIG.picker.activationEvent, handler);
   },
 
   async onSelection(handler) {
-    return eventTool.listenEvent(APP_CONFIG.picker.selectionEvent, handler);
+    return eventTool.listenCurrentWindow(APP_CONFIG.picker.selectionEvent, handler);
   },
 });
