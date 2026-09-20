@@ -2,7 +2,7 @@
 // # 📌 Amac: PixelTone Tauri runtime ve komut kayitlarini baslatmak
 // # 📌 Controller - Rust
 // # Version: 0.3.0
-// # Aciklama: Capture, color ve palette studio Tauri komutlarini runtime'a kaydeder
+// # Aciklama: Capture, color ve tam Palette Studio Tauri komutlarini runtime'a kaydeder
 //
 // Bagimli Oldugu Katman: Controller
 
@@ -20,6 +20,9 @@ pub fn run() {
             controllers::color_controller::convert_hex_color,
             controllers::color_controller::capture_screen_color,
             controllers::palette_controller::save_palette,
+            controllers::palette_controller::get_palette,
+            controllers::palette_controller::update_palette,
+            controllers::palette_controller::delete_palette,
             controllers::palette_controller::list_palettes,
             controllers::palette_controller::export_palette,
             controllers::palette_controller::import_palette
