@@ -2,7 +2,7 @@
 // # 📌 Amac: Ayarlar ekranindaki kullanici olaylarini SettingsService katmanina aktarmak
 // # 📌 Controller - JavaScript
 // # Version: 1.0.0
-// # Aciklama: Ayar yukleme ve kaydetme olaylarini alir, Service sonucunu View katmanina iletir
+// # Aciklama: Ayar yukleme/kaydetme ve surum kontrol olaylarini Service sonucuyla View katmanina iletir
 //
 // Bagimli Oldugu Katman: Controller
 
@@ -30,13 +30,22 @@ async function saveSettings() {
   }
 }
 
+async function checkUpdates() {
+  settingsView.setStatus(TR_LABELS.status.updateCheckRunning);
+  const result = await settingsService.checkForUpdates();
+  settingsView.renderVersionStatus(result);
+  settingsView.setStatus(TR_LABELS.status.updateCheckCompleted);
+}
+
 async function boot() {
   settingsView.initialize();
   settingsView.bindSave(() => void saveSettings());
+  settingsView.bindCheckUpdates(() => void checkUpdates());
 
   try {
-    const settings = await settingsService.load();
-    settingsView.renderSettings(settings);
+    const state = await settingsService.initialize();
+    settingsView.renderSettings(state.settings);
+    settingsView.renderVersionStatus(state.versionCheck);
     settingsView.setStatus(TR_LABELS.status.settingsLoaded);
   } catch (error) {
     settingsView.setStatus(
