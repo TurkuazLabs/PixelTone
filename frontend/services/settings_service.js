@@ -2,12 +2,13 @@
 // # 📌 Amac: Masaustu ayarlarini backend ile senkronlamak ve runtime servislere uygulamak
 // # 📌 Service - JavaScript
 // # Version: 1.0.0
-// # Aciklama: Rust settings komutlarini cagirir, ayarlari normalize eder ve PickerService runtime ayarlarini gunceller
+// # Aciklama: Rust settings komutlarini, PickerService runtime ayarlarini ve opsiyonel baslangic surum kontrolunu koordine eder
 //
 // Bagimli Oldugu Katman: Service
 
 import { APP_CONFIG } from "../config/app_config.js";
 import { pickerService } from "./picker_service.js";
+import { versionService } from "./version_service.js";
 import { tauriBridge } from "../tools/tauri_bridge.js";
 
 let currentSettings = null;
@@ -47,17 +48,33 @@ async function applyRuntime(settings) {
   return settings;
 }
 
+async function loadSettings() {
+  let settings;
+
+  try {
+    settings = await tauriBridge.invokeCommand(APP_CONFIG.commands.getSettings);
+  } catch (_error) {
+    settings = fallbackSettings();
+  }
+
+  return applyRuntime(normalizeSettings(settings));
+}
+
 export const settingsService = Object.freeze({
+  async initialize() {
+    const settings = await loadSettings();
+    const versionCheck = settings.check_updates_on_start
+      ? await versionService.checkLatest()
+      : null;
+
+    return {
+      settings,
+      versionCheck,
+    };
+  },
+
   async load() {
-    let settings;
-
-    try {
-      settings = await tauriBridge.invokeCommand(APP_CONFIG.commands.getSettings);
-    } catch (_error) {
-      settings = fallbackSettings();
-    }
-
-    return applyRuntime(normalizeSettings(settings));
+    return loadSettings();
   },
 
   async save(settings) {
@@ -68,6 +85,10 @@ export const settingsService = Object.freeze({
     );
 
     return applyRuntime(normalizeSettings(saved));
+  },
+
+  async checkForUpdates() {
+    return versionService.checkLatest();
   },
 
   getCurrent() {
