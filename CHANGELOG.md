@@ -1,12 +1,30 @@
 # 📄 Dosya Yolu: pixeltone/CHANGELOG.md
 # 📌 Amac: PixelTone surum degisikliklerini kaydetmek
 # 📌 Docs - Markdown
-# Version: 0.3.0
-# Aciklama: Proje degisiklik gecmisi ve tamamlanan v0.3.0 Palette Studio kaydi
+# Version: 0.4.0
+# Aciklama: Proje degisiklik gecmisi ve v0.4.0 Picker Experience kaydi
 
 Bagimli Oldugu Katman: View
 
 # Changelog
+
+## 0.4.0
+
+- Global picker kisayolu icin Tauri Global Shortcut plugin altyapisi eklendi.
+- Varsayilan desktop picker kisayolu `CommandOrControl+Shift+P` olarak tanimlandi.
+- Gizli, seffaf ve always-on-top `picker` penceresi eklendi.
+- Picker penceresi cursorun bulundugu monitorun fiziksel konum ve boyutuna tasiniyor.
+- Canli 9x9 buyutec yaklasik 90 ms aralikla guncelleniyor.
+- Picker bilgi karti cursoru takip ediyor ve hedef pikselin uzerini kapatmayacak sekilde konumlanıyor.
+- H tusu HEX, R tusu RGB kopyalama modunu seciyor.
+- Sol tik secili rengi sistem panosuna yaziyor ve ana pencereye aktariyor.
+- Esc canli picker deneyimini iptal ediyor.
+- Clipboard ve pencere event islemleri Tool katmanlarina ayrildi.
+- Gizli picker penceresinin arka planda capture dongusu calistirmamasi icin acilis aktivasyon eventi eklendi.
+- Vite build iki HTML entry uretecek sekilde main ve picker sayfalarina ayrildi.
+- macOS seffaf pencere destegi icin Tauri private API ayari etkinlestirildi.
+- Wayland icin canli overlay ve XDG Desktop Portal PickColor fallback stratejisi dokumante edildi.
+- Uygulama, Cargo ve Tauri surumu 0.4.0 olarak guncellendi.
 
 ## 0.3.0
 
