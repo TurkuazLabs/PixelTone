@@ -6,7 +6,7 @@
 //
 // Bagimli Oldugu Katman: Service
 
-use tauri::{RunEvent, WindowEvent};
+use tauri::WindowEvent;
 
 use crate::config::app_config::MAIN_WINDOW_LABEL;
 use crate::language::tr;
@@ -29,7 +29,7 @@ impl DesktopService {
         )
     }
 
-    pub fn handle_window_event(window: &tauri::WebviewWindow, event: &WindowEvent) {
+    pub fn handle_window_event(window: &tauri::Window, event: &WindowEvent) {
         if window.label() != MAIN_WINDOW_LABEL {
             return;
         }
@@ -39,10 +39,8 @@ impl DesktopService {
 
             if settings.close_to_tray {
                 api.prevent_close();
-                let _ = WindowTool::hide(window);
+                let _ = WindowTool::hide_native(window);
             }
         }
     }
-
-    pub fn handle_run_event(_app: &tauri::AppHandle, _event: &RunEvent) {}
 }
