@@ -1,13 +1,14 @@
 // # 📄 Dosya Yolu: pixeltone/frontend/services/palette_service.js
-// # 📌 Amac: Frontend palet, renk ve capture is kurallarini yonetmek
+// # 📌 Amac: Frontend palet, renk, capture ve transfer is kurallarini yonetmek
 // # 📌 Service - JavaScript
-// # Version: 0.2.0
-// # Aciklama: Tauri komutlarini cagirir, capture akisini yonetir ve local fallback saglar
+// # Version: 0.3.0
+// # Aciklama: Proje bazli palet kaydi, YAML/CSS aktarimi ve capture akislarini koordine eder
 //
 // Bagimli Oldugu Katman: Service
 
 import { APP_CONFIG } from "../config/app_config.js";
 import { localRepository } from "../repositories/local_repository.js";
+import { fileTransferTool } from "../tools/file_transfer_tool.js";
 import { tauriBridge } from "../tools/tauri_bridge.js";
 import { windowTool } from "../tools/window_tool.js";
 
@@ -16,12 +17,22 @@ function normalizeHex(hexValue) {
   return value.startsWith("#") ? value : `#${value}`;
 }
 
+function normalizeProjectName(projectName) {
+  return String(projectName || "").trim() || APP_CONFIG.defaults.projectName;
+}
+
+function storeProjectName(projectName) {
+  const normalizedProject = normalizeProjectName(projectName);
+  localRepository.writeValue(APP_CONFIG.storageKeys.projectName, normalizedProject);
+  return normalizedProject;
+}
+
 function fallbackConvert(hexValue) {
   const normalizedHex = normalizeHex(hexValue);
   const cleanHex = normalizedHex.replace("#", "");
 
   if (!/^[0-9a-fA-F]{6}$/.test(cleanHex)) {
-    throw new Error("Gecerli 6 haneli HEX renk girin.");
+    throw new Error(APP_CONFIG.errors.invalidHex);
   }
 
   const red = parseInt(cleanHex.slice(0, 2), 16);
@@ -39,6 +50,21 @@ function fallbackConvert(hexValue) {
 
 function delay(milliseconds) {
   return new Promise((resolve) => window.setTimeout(resolve, milliseconds));
+}
+
+function mapPaletteColors(colors) {
+  return colors.map((color) => ({
+    name: color.name || color.hex,
+    hex: color.hex,
+  }));
+}
+
+function buildPaletteRequest(project, name, colors) {
+  return {
+    project,
+    name,
+    colors: mapPaletteColors(colors),
+  };
 }
 
 export const paletteService = Object.freeze({
@@ -64,6 +90,17 @@ export const paletteService = Object.freeze({
     return localRepository.readList(APP_CONFIG.storageKeys.history);
   },
 
+  getProjectName() {
+    return localRepository.readValue(
+      APP_CONFIG.storageKeys.projectName,
+      APP_CONFIG.defaults.projectName,
+    );
+  },
+
+  setProjectName(projectName) {
+    return storeProjectName(projectName);
+  },
+
   async captureScreenColor() {
     let minimized = false;
 
@@ -83,19 +120,31 @@ export const paletteService = Object.freeze({
     }
   },
 
-  async savePalette(name, colors) {
-    const request = {
-      name,
-      colors: colors.map((color) => ({
-        name: color.hex,
-        hex: color.hex,
-      })),
-    };
-
+  async savePalette(project, name, colors) {
+    const request = buildPaletteRequest(project, name, colors);
     return tauriBridge.invokeCommand(APP_CONFIG.commands.savePalette, { request });
   },
 
-  async listPalettes() {
-    return tauriBridge.invokeCommand(APP_CONFIG.commands.listPalettes);
+  async listPalettes(project) {
+    return tauriBridge.invokeCommand(APP_CONFIG.commands.listPalettes, { project });
+  },
+
+  async exportPalette(project, name, colors, format) {
+    const request = {
+      ...buildPaletteRequest(project, name, colors),
+      format,
+    };
+    const exportFile = await tauriBridge.invokeCommand(APP_CONFIG.commands.exportPalette, { request });
+    fileTransferTool.downloadText(exportFile);
+    return exportFile;
+  },
+
+  async importPalette(file) {
+    const content = await fileTransferTool.readTextFile(file);
+    const response = await tauriBridge.invokeCommand(APP_CONFIG.commands.importPalette, {
+      request: { content },
+    });
+    storeProjectName(response.project);
+    return response;
   },
 });

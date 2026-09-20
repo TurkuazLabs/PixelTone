@@ -1,15 +1,15 @@
 // # 📄 Dosya Yolu: pixeltone/src-tauri/tauri.conf.json5
 // # 📌 Amac: Tauri uygulama ayarlarini tanimlamak
 // # 📌 Config - JSON5
-// # Version: 0.2.0
-// # Aciklama: JSON5 secildi cunku header yorumlari valid kalir
+// # Version: 0.3.0
+// # Aciklama: PixelTone v0.3.0 masaustu pencere, build ve bundle ayarlarini tanimlar
 //
 // Bagimli Oldugu Katman: Config
 
 {
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "PixelTone",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "identifier": "com.pixeltone.app",
   "build": {
     "beforeDevCommand": "npm run dev",

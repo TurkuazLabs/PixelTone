@@ -1,13 +1,15 @@
 // # 📄 Dosya Yolu: pixeltone/frontend/controllers/ui_controller.js
 // # 📌 Amac: PixelTone arayuz olaylarini almak ve servisleri cagirmak
 // # 📌 Controller - JavaScript
-// # Version: 0.2.0
-// # Aciklama: DOM detaylarini View katmanina birakir ve yalnizca servis akislarini tetikler
+// # Version: 0.3.0
+// # Aciklama: Capture, Tailwind, proje, palet ve transfer olaylarini Service katmanina aktarir
 //
 // Bagimli Oldugu Katman: Controller
 
+import { APP_CONFIG } from "../config/app_config.js";
 import { TR_LABELS } from "../language/tr.js";
 import { paletteService } from "../services/palette_service.js";
+import { tailwindColorService } from "../services/tailwind_color_service.js";
 import { uiView } from "../views/ui_view.js";
 
 let currentColor = null;
@@ -20,6 +22,14 @@ function errorMessage(error, fallback) {
   return error?.message || fallback;
 }
 
+function renderTailwindMatches(hexValue) {
+  try {
+    uiView.renderTailwindMatches(tailwindColorService.findNearest(hexValue));
+  } catch (_error) {
+    uiView.renderTailwindMatches([]);
+  }
+}
+
 async function convertCurrentHex() {
   try {
     const colorInfo = await paletteService.convertHex(uiView.getHexValue());
@@ -27,6 +37,7 @@ async function convertCurrentHex() {
     uiView.setHexValue(colorInfo.hex);
     uiView.renderColorOutput(colorInfo);
     uiView.renderHistory(paletteService.addToHistory(colorInfo), selectHistoryColor);
+    renderTailwindMatches(colorInfo.hex);
     uiView.setStatus(TR_LABELS.status.converted);
   } catch (error) {
     uiView.setStatus(errorMessage(error, TR_LABELS.status.convertFailed));
@@ -47,18 +58,77 @@ async function captureColor() {
   }
 }
 
+async function refreshPalettes(projectName) {
+  uiView.renderPalettes(await paletteService.listPalettes(projectName));
+}
+
+async function changeProject() {
+  const projectName = paletteService.setProjectName(uiView.getProjectName());
+  uiView.setProjectName(projectName);
+
+  try {
+    await refreshPalettes(projectName);
+    uiView.setStatus(TR_LABELS.status.projectChanged);
+  } catch (error) {
+    uiView.setStatus(errorMessage(error, TR_LABELS.status.paletteSaveFailed));
+  }
+}
+
 async function savePalette() {
   if (!currentColor) {
     uiView.setStatus(TR_LABELS.status.paletteNeedsColor);
     return;
   }
 
+  const projectName = paletteService.setProjectName(uiView.getProjectName());
+  uiView.setProjectName(projectName);
+
   try {
-    await paletteService.savePalette(uiView.getPaletteName(), paletteService.getHistory());
-    uiView.renderPalettes(await paletteService.listPalettes());
+    await paletteService.savePalette(
+      projectName,
+      uiView.getPaletteName(),
+      paletteService.getHistory(),
+    );
+    await refreshPalettes(projectName);
     uiView.setStatus(TR_LABELS.status.paletteSaved);
   } catch (error) {
     uiView.setStatus(errorMessage(error, TR_LABELS.status.paletteSaveFailed));
+  }
+}
+
+async function exportPalette(format) {
+  const colors = paletteService.getHistory();
+
+  if (colors.length === 0) {
+    uiView.setStatus(TR_LABELS.status.paletteNeedsColor);
+    return;
+  }
+
+  const projectName = paletteService.setProjectName(uiView.getProjectName());
+  uiView.setProjectName(projectName);
+
+  try {
+    await paletteService.exportPalette(projectName, uiView.getPaletteName(), colors, format);
+    uiView.setStatus(TR_LABELS.status.exportCompleted);
+  } catch (error) {
+    uiView.setStatus(errorMessage(error, TR_LABELS.status.exportFailed));
+  }
+}
+
+async function importPalette(event) {
+  const file = uiView.getImportFile(event);
+
+  if (!file) {
+    return;
+  }
+
+  try {
+    const response = await paletteService.importPalette(file);
+    uiView.setProjectName(response.project);
+    await refreshPalettes(response.project);
+    uiView.setStatus(TR_LABELS.status.importCompleted);
+  } catch (error) {
+    uiView.setStatus(errorMessage(error, TR_LABELS.status.importFailed));
   }
 }
 
@@ -71,17 +141,39 @@ function syncNativeColor(event) {
   uiView.setHexValue(event.target.value);
 }
 
+function openImportDialog() {
+  uiView.openImportDialog();
+}
+
+function exportYaml() {
+  void exportPalette(APP_CONFIG.exportFormats.yaml);
+}
+
+function exportCss() {
+  void exportPalette(APP_CONFIG.exportFormats.css);
+}
+
 async function boot() {
+  const projectName = paletteService.getProjectName();
+
+  uiView.setProjectName(projectName);
+  uiView.setImportAccept(APP_CONFIG.fileTypes.yamlAccept);
   uiView.bindConvert(convertCurrentHex);
   uiView.bindCapture(captureColor);
+  uiView.bindProjectChange(changeProject);
   uiView.bindSavePalette(savePalette);
+  uiView.bindExportYaml(exportYaml);
+  uiView.bindExportCss(exportCss);
+  uiView.bindImportYamlOpen(openImportDialog);
+  uiView.bindImportYamlFile(importPalette);
   uiView.bindNativeColor(syncNativeColor);
   uiView.renderHistory(paletteService.getHistory(), selectHistoryColor);
+  uiView.renderTailwindMatches([]);
   uiView.renderMagnifier(null);
   await convertCurrentHex();
 
   try {
-    uiView.renderPalettes(await paletteService.listPalettes());
+    await refreshPalettes(projectName);
   } catch (_error) {
     uiView.renderPalettes([]);
   }

@@ -2,8 +2,8 @@
 # 📄 Dosya Yolu: pixeltone/frontend/index.html
 # 📌 Amac: PixelTone ana arayuz sayfasi
 # 📌 View - HTML
-# Version: 0.2.0
-# Aciklama: Renk donusumu, ekran yakalama buyuteci, gecmis ve palet bolumlerini gosterir
+# Version: 0.3.0
+# Aciklama: Capture, renk donusumu, Tailwind eslesmesi ve proje bazli Palette Studio kontrollerini gosterir
 
 Bagimli Oldugu Katman: View
 -->
@@ -19,9 +19,9 @@ Bagimli Oldugu Katman: View
     <main class="pt-shell">
       <section class="pt-hero">
         <div>
-          <p class="pt-eyebrow">PixelTone v0.2.0</p>
+          <p class="pt-eyebrow">PixelTone v0.3.0</p>
           <h1>Platform bagimsiz renk secici</h1>
-          <p class="pt-lead">Windows, Linux ve macOS icin hafif ekran rengi yakalama ve palet yonetim araci.</p>
+          <p class="pt-lead">Windows, Linux ve macOS icin ekran rengi yakalama, proje ve palet yonetim araci.</p>
         </div>
         <button id="capture-button" class="pt-button pt-button-secondary" type="button">Ekrandan Renk Al</button>
       </section>
@@ -44,6 +44,17 @@ Bagimli Oldugu Katman: View
           <div id="color-output" class="pt-output-list"></div>
         </article>
 
+        <article class="pt-card pt-tailwind-card">
+          <div class="pt-card-heading">
+            <div>
+              <p class="pt-eyebrow">Tailwind CSS</p>
+              <h2>Yakin Renkler</h2>
+              <p class="pt-status">Secili renge OKLab uzayinda en yakin resmi Tailwind renkleri.</p>
+            </div>
+          </div>
+          <div id="tailwind-color-list" class="pt-tailwind-list"></div>
+        </article>
+
         <article class="pt-card pt-magnifier-card">
           <div class="pt-card-heading">
             <div>
@@ -64,10 +75,27 @@ Bagimli Oldugu Katman: View
         </article>
 
         <article class="pt-card pt-palette-card">
-          <h2>Palet Kaydi</h2>
-          <label class="pt-label" for="palette-name-input">Palet adi</label>
+          <div class="pt-card-heading">
+            <div>
+              <p class="pt-eyebrow">Palette Studio</p>
+              <h2>Proje Paletleri</h2>
+            </div>
+          </div>
+
+          <label class="pt-label" for="project-name-input">Proje adi</label>
+          <input id="project-name-input" class="pt-input" type="text" value="Genel" />
+
+          <label class="pt-label pt-label-spaced" for="palette-name-input">Palet adi</label>
           <input id="palette-name-input" class="pt-input" type="text" value="Ilk Palet" />
-          <button id="save-palette-button" class="pt-button" type="button">Paleti Kaydet</button>
+
+          <div class="pt-action-grid">
+            <button id="save-palette-button" class="pt-button" type="button">Paleti Kaydet</button>
+            <button id="export-yaml-button" class="pt-button pt-button-secondary" type="button">YAML Export</button>
+            <button id="export-css-button" class="pt-button pt-button-secondary" type="button">CSS Export</button>
+            <button id="import-yaml-button" class="pt-button pt-button-secondary" type="button">YAML Import</button>
+          </div>
+
+          <input id="import-yaml-input" type="file" hidden />
           <div id="palette-list" class="pt-palette-list"></div>
         </article>
       </section>

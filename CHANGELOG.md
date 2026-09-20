@@ -1,12 +1,30 @@
 # 📄 Dosya Yolu: pixeltone/CHANGELOG.md
 # 📌 Amac: PixelTone surum degisikliklerini kaydetmek
 # 📌 Docs - Markdown
-# Version: 0.2.0
-# Aciklama: Proje degisiklik gecmisi
+# Version: 0.3.0
+# Aciklama: Proje degisiklik gecmisi ve v0.3.0 Palette Studio kaydi
 
 Bagimli Oldugu Katman: View
 
 # Changelog
+
+## 0.3.0
+
+- Proje bazli Palette Studio yapisi eklendi.
+- Palet storage yapisi `projects/<proje>/palettes/` duzenine tasindi.
+- v0.2.x paletleri icin `Genel` proje legacy fallback destegi eklendi.
+- YAML palet import ve export eklendi.
+- CSS custom property export eklendi.
+- Import edilen palet renkleri ColorService ile yeniden dogrulaniyor.
+- Palet format islemleri PaletteFormatTool katmanina ayrildi.
+- Resmi Tailwind CSS 4.3.3 `tailwindcss/colors` kaynagi eklendi.
+- Tailwind renkleri icin OKLCH -> OKLab adaptor akisi eklendi.
+- Secili HEX renge OKLab mesafesiyle en yakin 5 Tailwind rengini bulan TailwindColorService eklendi.
+- Tailwind yakin renk paneli View katmanina eklendi.
+- Tailwind eslestirme ayarlari Config, metinleri Language katmaninda merkezilestirildi.
+- Windows ICO olusturma islemi kaynak PNG kullanilarak build zamanina tasindi.
+- Windows, Linux ve macOS ortak CI akisi iyilestirildi.
+- Uygulama, Cargo ve Tauri surumu 0.3.0 olarak guncellendi.
 
 ## 0.2.0
 

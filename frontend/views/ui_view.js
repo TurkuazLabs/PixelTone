@@ -1,8 +1,8 @@
 // # 📄 Dosya Yolu: pixeltone/frontend/views/ui_view.js
 // # 📌 Amac: PixelTone DOM ciktilarini ve event baglantilarini yonetmek
 // # 📌 View - JavaScript
-// # Version: 0.2.0
-// # Aciklama: Controller katmanini DOM detaylarindan ayirir ve buyutec panelini cizer
+// # Version: 0.3.0
+// # Aciklama: Controller katmanini DOM detaylarindan ayirir, Tailwind ve Palette Studio ciktilarini cizer
 //
 // Bagimli Oldugu Katman: View
 
@@ -13,11 +13,17 @@ const dom = Object.freeze({
   nativeColorInput: document.getElementById("native-color-input"),
   convertButton: document.getElementById("convert-button"),
   captureButton: document.getElementById("capture-button"),
-  savePaletteButton: document.getElementById("save-palette-button"),
+  projectNameInput: document.getElementById("project-name-input"),
   paletteNameInput: document.getElementById("palette-name-input"),
+  savePaletteButton: document.getElementById("save-palette-button"),
+  exportYamlButton: document.getElementById("export-yaml-button"),
+  exportCssButton: document.getElementById("export-css-button"),
+  importYamlButton: document.getElementById("import-yaml-button"),
+  importYamlInput: document.getElementById("import-yaml-input"),
   statusText: document.getElementById("status-text"),
   colorPreview: document.getElementById("color-preview"),
   colorOutput: document.getElementById("color-output"),
+  tailwindColorList: document.getElementById("tailwind-color-list"),
   historyList: document.getElementById("history-list"),
   paletteList: document.getElementById("palette-list"),
   magnifierGrid: document.getElementById("magnifier-grid"),
@@ -55,6 +61,26 @@ export const uiView = Object.freeze({
     dom.savePaletteButton.addEventListener("click", handler);
   },
 
+  bindProjectChange(handler) {
+    dom.projectNameInput.addEventListener("change", handler);
+  },
+
+  bindExportYaml(handler) {
+    dom.exportYamlButton.addEventListener("click", handler);
+  },
+
+  bindExportCss(handler) {
+    dom.exportCssButton.addEventListener("click", handler);
+  },
+
+  bindImportYamlOpen(handler) {
+    dom.importYamlButton.addEventListener("click", handler);
+  },
+
+  bindImportYamlFile(handler) {
+    dom.importYamlInput.addEventListener("change", handler);
+  },
+
   bindNativeColor(handler) {
     dom.nativeColorInput.addEventListener("input", handler);
   },
@@ -63,13 +89,34 @@ export const uiView = Object.freeze({
     return dom.hexInput.value;
   },
 
+  getProjectName() {
+    return dom.projectNameInput.value;
+  },
+
   getPaletteName() {
     return dom.paletteNameInput.value;
+  },
+
+  getImportFile(event) {
+    return event.target.files?.[0] || null;
   },
 
   setHexValue(hex) {
     dom.hexInput.value = hex;
     dom.nativeColorInput.value = hex.toLowerCase();
+  },
+
+  setProjectName(projectName) {
+    dom.projectNameInput.value = projectName;
+  },
+
+  setImportAccept(acceptValue) {
+    dom.importYamlInput.accept = acceptValue;
+  },
+
+  openImportDialog() {
+    dom.importYamlInput.value = "";
+    dom.importYamlInput.click();
   },
 
   setStatus(message) {
@@ -98,6 +145,39 @@ export const uiView = Object.freeze({
     ];
 
     rows.forEach(([label, value]) => dom.colorOutput.appendChild(createOutputRow(label, value)));
+  },
+
+  renderTailwindMatches(matches) {
+    dom.tailwindColorList.innerHTML = "";
+
+    if (!Array.isArray(matches) || matches.length === 0) {
+      const empty = document.createElement("p");
+      empty.className = "pt-status";
+      empty.textContent = TR_LABELS.empty.tailwind;
+      dom.tailwindColorList.appendChild(empty);
+      return;
+    }
+
+    matches.forEach((match) => {
+      const row = document.createElement("div");
+      const swatch = document.createElement("span");
+      const details = document.createElement("div");
+      const name = document.createElement("strong");
+      const value = document.createElement("span");
+      const distance = document.createElement("span");
+
+      row.className = "pt-tailwind-item";
+      swatch.className = "pt-tailwind-swatch";
+      swatch.style.background = match.value;
+      details.className = "pt-tailwind-details";
+      name.textContent = match.name;
+      value.textContent = match.value;
+      distance.className = "pt-tailwind-distance";
+      distance.textContent = `${TR_LABELS.tailwind.distancePrefix}: ${Number(match.distance).toFixed(4)}`;
+      details.append(name, value);
+      row.append(swatch, details, distance);
+      dom.tailwindColorList.appendChild(row);
+    });
   },
 
   renderHistory(historyItems, onSelect) {
@@ -140,13 +220,18 @@ export const uiView = Object.freeze({
 
     palettes.forEach((palette) => {
       const row = document.createElement("div");
+      const details = document.createElement("div");
       const name = document.createElement("strong");
+      const project = document.createElement("span");
       const count = document.createElement("span");
 
       row.className = "pt-palette-item";
+      details.className = "pt-palette-details";
       name.textContent = palette.name;
-      count.textContent = `${palette.color_count} renk`;
-      row.append(name, count);
+      project.textContent = `${TR_LABELS.palette.projectPrefix}: ${palette.project}`;
+      count.textContent = `${palette.color_count} ${TR_LABELS.palette.colorCountSuffix}`;
+      details.append(name, project);
+      row.append(details, count);
       dom.paletteList.appendChild(row);
     });
   },
