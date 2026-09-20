@@ -58,6 +58,11 @@ export const APP_CONFIG = Object.freeze({
       hex: "hex",
       rgb: "rgb",
     }),
+    rgbFormat: Object.freeze({
+      prefix: "rgb(",
+      separator: ", ",
+      suffix: ")",
+    }),
     defaultCopyFormat: "hex",
     keys: Object.freeze({
       cancel: "Escape",
