@@ -30,7 +30,7 @@ async function colorInfoForCapture(captureResult) {
 export const pickerService = Object.freeze({
   async initializeGlobalShortcut() {
     await shortcutTool.replace(APP_CONFIG.picker.shortcut, () => {
-      void openPicker();
+      void openPicker().catch(() => undefined);
     });
   },
 
@@ -44,25 +44,30 @@ export const pickerService = Object.freeze({
 
   async sampleLiveColor() {
     await pickerWindowTool.syncToCursorMonitor();
-    return tauriBridge.invokeCommand(APP_CONFIG.commands.captureScreenColor);
+    const capture = await tauriBridge.invokeCommand(APP_CONFIG.commands.captureScreenColor);
+    const colorInfo = await colorInfoForCapture(capture);
+
+    return {
+      capture,
+      colorInfo,
+    };
   },
 
-  async copySelection(captureResult, format) {
-    const colorInfo = await colorInfoForCapture(captureResult);
+  async copySelection(sample, format) {
     const normalizedFormat =
       format === APP_CONFIG.picker.copyFormats.rgb
         ? APP_CONFIG.picker.copyFormats.rgb
         : APP_CONFIG.picker.copyFormats.hex;
     const text =
       normalizedFormat === APP_CONFIG.picker.copyFormats.rgb
-        ? formatRgb(colorInfo)
-        : colorInfo.hex;
+        ? formatRgb(sample.colorInfo)
+        : sample.colorInfo.hex;
 
     await clipboardTool.writeText(text);
 
     const selection = {
-      capture: captureResult,
-      colorInfo,
+      capture: sample.capture,
+      colorInfo: sample.colorInfo,
       format: normalizedFormat,
       text,
     };
