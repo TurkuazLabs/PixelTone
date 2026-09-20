@@ -2,7 +2,7 @@
 // # 📌 Amac: PixelTone frontend Turkce runtime etiketlerini merkezi tutmak
 // # 📌 Language - JavaScript
 // # Version: 0.3.0
-// # Aciklama: Capture, proje, palet, aktarim ve Tailwind renk mesajlarini merkezi tutar
+// # Aciklama: Capture, palet CRUD, renk adlandirma/siralama, aktarim ve Tailwind mesajlarini merkezi tutar
 //
 // Bagimli Oldugu Katman: Language
 
@@ -17,6 +17,10 @@ export const TR_LABELS = Object.freeze({
     paletteNeedsColor: "Once bir renk donusturun.",
     paletteSaved: "Palet kaydedildi.",
     paletteSaveFailed: "Palet kaydedilemedi.",
+    paletteEditing: "Palet duzenleme icin yuklendi.",
+    paletteEditFailed: "Palet duzenleme icin yuklenemedi.",
+    paletteDeleted: "Palet silindi.",
+    paletteDeleteFailed: "Palet silinemedi.",
     projectChanged: "Proje degistirildi.",
     exportCompleted: "Palet dosyasi olusturuldu.",
     exportFailed: "Palet disari aktarilamadi.",
@@ -38,9 +42,17 @@ export const TR_LABELS = Object.freeze({
     hsv: "HSV",
     cmyk: "CMYK",
   }),
+  history: Object.freeze({
+    namePlaceholder: "Renk adi",
+    moveUp: "Yukari",
+    moveDown: "Asagi",
+  }),
   palette: Object.freeze({
     projectPrefix: "Proje",
     colorCountSuffix: "renk",
+    editAction: "Duzenle",
+    deleteAction: "Sil",
+    deleteConfirm: "Bu paleti silmek istediginizden emin misiniz?",
   }),
   tailwind: Object.freeze({
     title: "Tailwind Yakin Renkler",

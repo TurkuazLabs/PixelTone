@@ -2,7 +2,7 @@
 # 📌 Amac: PixelTone surum degisikliklerini kaydetmek
 # 📌 Docs - Markdown
 # Version: 0.3.0
-# Aciklama: Proje degisiklik gecmisi ve v0.3.0 Palette Studio kaydi
+# Aciklama: Proje degisiklik gecmisi ve tamamlanan v0.3.0 Palette Studio kaydi
 
 Bagimli Oldugu Katman: View
 
@@ -13,6 +13,9 @@ Bagimli Oldugu Katman: View
 - Proje bazli Palette Studio yapisi eklendi.
 - Palet storage yapisi `projects/<proje>/palettes/` duzenine tasindi.
 - v0.2.x paletleri icin `Genel` proje legacy fallback destegi eklendi.
+- Palet detayini yukleme, mevcut paleti duzenleme/yeniden adlandirma ve palet silme CRUD akisi eklendi.
+- Palet renklerine kullanici adi verme ve renkleri yukari/asagi siralama eklendi.
+- Palet duzenleme sirasinda renklerin ColorService ile tekrar dogrulanarak calisma listesine yuklenmesi eklendi.
 - YAML palet import ve export eklendi.
 - CSS custom property export eklendi.
 - Import edilen palet renkleri ColorService ile yeniden dogrulaniyor.
@@ -23,6 +26,7 @@ Bagimli Oldugu Katman: View
 - Tailwind yakin renk paneli View katmanina eklendi.
 - Tailwind eslestirme ayarlari Config, metinleri Language katmaninda merkezilestirildi.
 - Windows ICO olusturma islemi kaynak PNG kullanilarak build zamanina tasindi.
+- Bozuk PNG icon kaynagi gecerli 512x512 RGBA kaynakla degistirildi.
 - Windows, Linux ve macOS ortak CI akisi iyilestirildi.
 - Uygulama, Cargo ve Tauri surumu 0.3.0 olarak guncellendi.
 

@@ -2,11 +2,14 @@
 // # 📌 Amac: Palet ile ilgili Tauri komut isteklerini almak
 // # 📌 Controller - Rust
 // # Version: 0.3.0
-// # Aciklama: Kaydetme, listeleme, import ve export isteklerini service katmanina aktarir
+// # Aciklama: CRUD, import ve export isteklerini service katmanina aktarir
 //
 // Bagimli Oldugu Katman: Controller
 
-use crate::models::palette::{PaletteSummary, SavePaletteRequest, SavePaletteResponse};
+use crate::models::palette::{
+    DeletePaletteResponse, PaletteFile, PaletteIdentity, PaletteSummary, SavePaletteRequest,
+    SavePaletteResponse, UpdatePaletteRequest,
+};
 use crate::models::palette_transfer::{
     ExportPaletteRequest, ExportPaletteResponse, ImportPaletteRequest,
 };
@@ -16,6 +19,21 @@ use crate::services::palette_service::PaletteService;
 #[tauri::command]
 pub fn save_palette(request: SavePaletteRequest) -> Result<SavePaletteResponse, String> {
     PaletteService::new(PaletteRepository::new()).save_palette(request)
+}
+
+#[tauri::command]
+pub fn get_palette(identity: PaletteIdentity) -> Result<PaletteFile, String> {
+    PaletteService::new(PaletteRepository::new()).get_palette(identity)
+}
+
+#[tauri::command]
+pub fn update_palette(request: UpdatePaletteRequest) -> Result<SavePaletteResponse, String> {
+    PaletteService::new(PaletteRepository::new()).update_palette(request)
+}
+
+#[tauri::command]
+pub fn delete_palette(identity: PaletteIdentity) -> Result<DeletePaletteResponse, String> {
+    PaletteService::new(PaletteRepository::new()).delete_palette(identity)
 }
 
 #[tauri::command]

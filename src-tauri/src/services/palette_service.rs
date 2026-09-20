@@ -1,16 +1,19 @@
 // # 📄 Dosya Yolu: pixeltone/src-tauri/src/services/palette_service.rs
-// # 📌 Amac: Proje bazli palet, import ve export is kurallarini yonetmek
+// # 📌 Amac: Proje bazli palet CRUD, import ve export is kurallarini yonetmek
 // # 📌 Service - Rust
 // # Version: 0.3.0
-// # Aciklama: Paletleri dogrular, repository ve format tool akislarini koordine eder
+// # Aciklama: Paletleri dogrular, CRUD repository ve format tool akislarini koordine eder
 //
 // Bagimli Oldugu Katman: Service
 
 use crate::config::app_config::{
     DEFAULT_PALETTE_NAME, DEFAULT_PROJECT_NAME, ERROR_IMPORT_EMPTY, ERROR_PALETTE_EMPTY,
-    ERROR_TRANSFER_VERSION, PALETTE_TRANSFER_VERSION,
+    ERROR_PALETTE_NAME_EMPTY, ERROR_TRANSFER_VERSION, PALETTE_TRANSFER_VERSION,
 };
-use crate::models::palette::{PaletteSummary, SavePaletteRequest, SavePaletteResponse};
+use crate::models::palette::{
+    DeletePaletteResponse, PaletteFile, PaletteIdentity, PaletteSummary, SavePaletteRequest,
+    SavePaletteResponse, UpdatePaletteRequest,
+};
 use crate::models::palette_transfer::{
     ExportPaletteRequest, ExportPaletteResponse, ImportPaletteRequest, PaletteTransferFile,
 };
@@ -29,6 +32,28 @@ impl PaletteService {
 
     pub fn save_palette(&self, request: SavePaletteRequest) -> Result<SavePaletteResponse, String> {
         self.repository.save(Self::prepare_palette(request)?)
+    }
+
+    pub fn get_palette(&self, identity: PaletteIdentity) -> Result<PaletteFile, String> {
+        let identity = Self::normalize_identity(identity)?;
+        self.repository.get(&identity)
+    }
+
+    pub fn update_palette(
+        &self,
+        request: UpdatePaletteRequest,
+    ) -> Result<SavePaletteResponse, String> {
+        let original = Self::normalize_identity(request.original)?;
+        let palette = Self::prepare_palette(request.palette)?;
+        self.repository.update(&original, palette)
+    }
+
+    pub fn delete_palette(
+        &self,
+        identity: PaletteIdentity,
+    ) -> Result<DeletePaletteResponse, String> {
+        let identity = Self::normalize_identity(identity)?;
+        self.repository.delete(&identity)
     }
 
     pub fn list_palettes(&self, project: String) -> Result<Vec<PaletteSummary>, String> {
@@ -101,6 +126,17 @@ impl PaletteService {
         }
 
         Ok(request)
+    }
+
+    fn normalize_identity(mut identity: PaletteIdentity) -> Result<PaletteIdentity, String> {
+        identity.project = Self::normalize_project(identity.project);
+        identity.name = identity.name.trim().to_string();
+
+        if identity.name.is_empty() {
+            return Err(ERROR_PALETTE_NAME_EMPTY.to_string());
+        }
+
+        Ok(identity)
     }
 
     fn normalize_project(project: String) -> String {

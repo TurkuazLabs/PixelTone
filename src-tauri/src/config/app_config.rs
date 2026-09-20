@@ -2,7 +2,7 @@
 // # 📌 Amac: Rust tarafinda magic string kullanilmasini azaltmak
 // # 📌 Config - Rust
 // # Version: 0.3.0
-// # Aciklama: Storage, capture, palette transfer ve export sabitlerini merkezi tutar
+// # Aciklama: Storage, capture, palette transfer, duzenleme ve export sabitlerini merkezi tutar
 //
 // Bagimli Oldugu Katman: Config
 
@@ -38,6 +38,8 @@ pub const ERROR_MONITOR_NOT_FOUND: &str = "Cursor konumundaki monitor bulunamadi
 pub const ERROR_SCREEN_CAPTURE: &str = "Ekran goruntusu alinamadi.";
 pub const ERROR_SCREEN_SAMPLE: &str = "Cursor konumundaki piksel okunamadi.";
 pub const ERROR_PALETTE_EMPTY: &str = "Palet en az bir renk icermelidir.";
+pub const ERROR_PALETTE_NAME_EMPTY: &str = "Palet adi bos olamaz.";
+pub const ERROR_PALETTE_NOT_FOUND: &str = "Palet bulunamadi.";
 pub const ERROR_PROJECT_EMPTY: &str = "Proje adi bos olamaz.";
 pub const ERROR_IMPORT_EMPTY: &str = "YAML import icerigi bos olamaz.";
 pub const ERROR_TRANSFER_VERSION: &str = "Desteklenmeyen PixelTone palet surumu.";

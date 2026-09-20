@@ -2,7 +2,7 @@
 // # 📌 Amac: PixelTone arayuz olaylarini almak ve servisleri cagirmak
 // # 📌 Controller - JavaScript
 // # Version: 0.3.0
-// # Aciklama: Capture, Tailwind, proje, palet ve transfer olaylarini Service katmanina aktarir
+// # Aciklama: Capture, Tailwind ve tam Palette Studio olaylarini Service katmanina aktarir
 //
 // Bagimli Oldugu Katman: Controller
 
@@ -30,13 +30,22 @@ function renderTailwindMatches(hexValue) {
   }
 }
 
+function renderHistory(historyItems = paletteService.getHistory()) {
+  uiView.renderHistory(
+    historyItems,
+    selectHistoryColor,
+    renameHistoryColor,
+    moveHistoryColor,
+  );
+}
+
 async function convertCurrentHex() {
   try {
     const colorInfo = await paletteService.convertHex(uiView.getHexValue());
     currentColor = colorInfo;
     uiView.setHexValue(colorInfo.hex);
     uiView.renderColorOutput(colorInfo);
-    uiView.renderHistory(paletteService.addToHistory(colorInfo), selectHistoryColor);
+    renderHistory(paletteService.addToHistory(colorInfo));
     renderTailwindMatches(colorInfo.hex);
     uiView.setStatus(TR_LABELS.status.converted);
   } catch (error) {
@@ -59,7 +68,11 @@ async function captureColor() {
 }
 
 async function refreshPalettes(projectName) {
-  uiView.renderPalettes(await paletteService.listPalettes(projectName));
+  uiView.renderPalettes(
+    await paletteService.listPalettes(projectName),
+    editPalette,
+    deletePalette,
+  );
 }
 
 async function changeProject() {
@@ -94,6 +107,57 @@ async function savePalette() {
   } catch (error) {
     uiView.setStatus(errorMessage(error, TR_LABELS.status.paletteSaveFailed));
   }
+}
+
+async function editPalette(palette) {
+  try {
+    const editState = await paletteService.beginPaletteEdit(palette.project, palette.name);
+    currentColor = editState.selectedColor;
+    uiView.setProjectName(editState.project);
+    uiView.setPaletteName(editState.name);
+    renderHistory(editState.history);
+
+    if (editState.selectedColor) {
+      uiView.setHexValue(editState.selectedColor.hex);
+      uiView.renderColorOutput(editState.selectedColor);
+      renderTailwindMatches(editState.selectedColor.hex);
+    }
+
+    uiView.setStatus(TR_LABELS.status.paletteEditing);
+  } catch (error) {
+    uiView.setStatus(errorMessage(error, TR_LABELS.status.paletteEditFailed));
+  }
+}
+
+async function deletePalette(palette) {
+  try {
+    await paletteService.deletePalette(palette.project, palette.name);
+    await refreshPalettes(paletteService.getProjectName());
+    uiView.setStatus(TR_LABELS.status.paletteDeleted);
+  } catch (error) {
+    uiView.setStatus(errorMessage(error, TR_LABELS.status.paletteDeleteFailed));
+  }
+}
+
+async function selectHistoryColor(hex) {
+  try {
+    const colorInfo = await paletteService.convertHex(hex);
+    currentColor = colorInfo;
+    uiView.setHexValue(colorInfo.hex);
+    uiView.renderColorOutput(colorInfo);
+    renderTailwindMatches(colorInfo.hex);
+    uiView.setStatus(TR_LABELS.status.converted);
+  } catch (error) {
+    uiView.setStatus(errorMessage(error, TR_LABELS.status.convertFailed));
+  }
+}
+
+function renameHistoryColor(index, name) {
+  renderHistory(paletteService.renameHistoryColor(index, name));
+}
+
+function moveHistoryColor(index, offset) {
+  renderHistory(paletteService.moveHistoryColor(index, offset));
 }
 
 async function exportPalette(format) {
@@ -132,11 +196,6 @@ async function importPalette(event) {
   }
 }
 
-function selectHistoryColor(hex) {
-  uiView.setHexValue(hex);
-  void convertCurrentHex();
-}
-
 function syncNativeColor(event) {
   uiView.setHexValue(event.target.value);
 }
@@ -167,7 +226,7 @@ async function boot() {
   uiView.bindImportYamlOpen(openImportDialog);
   uiView.bindImportYamlFile(importPalette);
   uiView.bindNativeColor(syncNativeColor);
-  uiView.renderHistory(paletteService.getHistory(), selectHistoryColor);
+  renderHistory();
   uiView.renderTailwindMatches([]);
   uiView.renderMagnifier(null);
   await convertCurrentHex();
@@ -175,7 +234,7 @@ async function boot() {
   try {
     await refreshPalettes(projectName);
   } catch (_error) {
-    uiView.renderPalettes([]);
+    uiView.renderPalettes([], editPalette, deletePalette);
   }
 }
 

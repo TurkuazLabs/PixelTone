@@ -1,8 +1,8 @@
 # 📄 Dosya Yolu: pixeltone/frontend/language/tr.yml
 # 📌 Amac: PixelTone Turkce arayuz etiketlerini tutmak
 # 📌 Language - YAML
-# Version: 0.1.0
-# Aciklama: Gelecekte i18n servisinin okuyacagi dil metinleri
+# Version: 0.3.0
+# Aciklama: Palette Studio CRUD, renk adlandirma ve siralama dahil Turkce etiketleri tanimlar
 
 Bagimli Oldugu Katman: Language
 
@@ -13,6 +13,16 @@ buttons:
   convert: "Donustur"
   capture: "Ekrandan Renk Al"
   save_palette: "Paleti Kaydet"
+  edit_palette: "Duzenle"
+  delete_palette: "Sil"
+  move_color_up: "Yukari"
+  move_color_down: "Asagi"
+labels:
+  color_name: "Renk adi"
+  project: "Proje"
+  color_count: "renk"
 messages:
   ready: "Hazir."
-  capture_not_ready: "Ekran yakalama adaptor implementasyonu v0.2.0 icin planlandi."
+  palette_editing: "Palet duzenleme icin yuklendi."
+  palette_deleted: "Palet silindi."
+  palette_delete_confirm: "Bu paleti silmek istediginizden emin misiniz?"
