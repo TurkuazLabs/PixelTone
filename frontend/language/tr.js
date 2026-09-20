@@ -39,6 +39,8 @@ export const TR_LABELS = Object.freeze({
     settingsLoadFailed: "Ayarlar yuklenemedi.",
     settingsSaved: "Ayarlar kaydedildi ve uygulandi.",
     settingsSaveFailed: "Ayarlar kaydedilemedi.",
+    updateCheckRunning: "Surum kontrol ediliyor.",
+    updateCheckCompleted: "Surum kontrolu tamamlandi.",
   }),
   empty: Object.freeze({
     history: "Henuz renk gecmisi yok.",
@@ -81,6 +83,11 @@ export const TR_LABELS = Object.freeze({
     copyHex: "HEX",
     copyRgb: "RGB",
     saveAction: "Ayarlari Kaydet",
+    checkUpdateAction: "Surum Kontrol Et",
+    versionUnavailable: "Surum bilgisi alinamadi. Private repo icin public release endpoint gerekir.",
+    updateAvailablePrefix: "Yeni surum:",
+    currentVersionPrefix: "kurulu:",
+    upToDatePrefix: "PixelTone guncel:",
   }),
   tailwind: Object.freeze({
     title: "Tailwind Yakin Renkler",
