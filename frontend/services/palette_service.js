@@ -2,7 +2,7 @@
 // # 📌 Amac: Frontend palet, renk, capture ve transfer is kurallarini yonetmek
 // # 📌 Service - JavaScript
 // # Version: 0.3.0
-// # Aciklama: Proje bazli palet kaydi, YAML/CSS aktarimi ve capture akislarini koordine eder
+// # Aciklama: Palet CRUD, renk adlandirma/siralama, YAML/CSS aktarimi ve capture akislarini koordine eder
 //
 // Bagimli Oldugu Katman: Service
 
@@ -11,6 +11,8 @@ import { localRepository } from "../repositories/local_repository.js";
 import { fileTransferTool } from "../tools/file_transfer_tool.js";
 import { tauriBridge } from "../tools/tauri_bridge.js";
 import { windowTool } from "../tools/window_tool.js";
+
+let editingPaletteIdentity = null;
 
 function normalizeHex(hexValue) {
   const value = String(hexValue || "").trim();
@@ -48,13 +50,37 @@ function fallbackConvert(hexValue) {
   };
 }
 
+async function convertHexValue(hexValue) {
+  const normalizedHex = normalizeHex(hexValue);
+
+  try {
+    return await tauriBridge.invokeCommand(APP_CONFIG.commands.convertHexColor, {
+      hex: normalizedHex,
+    });
+  } catch (_error) {
+    return fallbackConvert(normalizedHex);
+  }
+}
+
 function delay(milliseconds) {
   return new Promise((resolve) => window.setTimeout(resolve, milliseconds));
 }
 
+function storeHistory(historyItems) {
+  localRepository.writeList(APP_CONFIG.storageKeys.history, historyItems);
+  return historyItems;
+}
+
+function normalizeHistoryItem(colorInfo, preservedName = "") {
+  return {
+    ...colorInfo,
+    name: String(preservedName || colorInfo.name || colorInfo.hex).trim() || colorInfo.hex,
+  };
+}
+
 function mapPaletteColors(colors) {
   return colors.map((color) => ({
-    name: color.name || color.hex,
+    name: String(color.name || color.hex).trim() || color.hex,
     hex: color.hex,
   }));
 }
@@ -67,27 +93,63 @@ function buildPaletteRequest(project, name, colors) {
   };
 }
 
+async function convertPaletteColors(colors) {
+  const convertedColors = [];
+
+  for (const color of colors) {
+    const converted = await convertHexValue(color.hex);
+    convertedColors.push(normalizeHistoryItem(converted, color.name));
+  }
+
+  return convertedColors;
+}
+
 export const paletteService = Object.freeze({
   async convertHex(hexValue) {
-    const normalizedHex = normalizeHex(hexValue);
-
-    try {
-      return await tauriBridge.invokeCommand(APP_CONFIG.commands.convertHexColor, { hex: normalizedHex });
-    } catch (_error) {
-      return fallbackConvert(normalizedHex);
-    }
+    return convertHexValue(hexValue);
   },
 
   addToHistory(colorInfo) {
     const currentHistory = localRepository.readList(APP_CONFIG.storageKeys.history);
-    const filteredHistory = currentHistory.filter((item) => item.hex !== colorInfo.hex);
-    const nextHistory = [colorInfo, ...filteredHistory].slice(0, APP_CONFIG.limits.maxHistoryItems);
-    localRepository.writeList(APP_CONFIG.storageKeys.history, nextHistory);
-    return nextHistory;
+    const existingColor = currentHistory.find((item) => item.hex === colorInfo.hex);
+    const normalizedColor = normalizeHistoryItem(colorInfo, existingColor?.name);
+    const filteredHistory = currentHistory.filter((item) => item.hex !== normalizedColor.hex);
+    return storeHistory(
+      [normalizedColor, ...filteredHistory].slice(0, APP_CONFIG.limits.maxHistoryItems),
+    );
   },
 
   getHistory() {
     return localRepository.readList(APP_CONFIG.storageKeys.history);
+  },
+
+  renameHistoryColor(index, name) {
+    const historyItems = this.getHistory();
+
+    if (!historyItems[index]) {
+      return historyItems;
+    }
+
+    const normalizedName = String(name || "").trim();
+    historyItems[index] = {
+      ...historyItems[index],
+      name: normalizedName || historyItems[index].hex,
+    };
+
+    return storeHistory(historyItems);
+  },
+
+  moveHistoryColor(index, offset) {
+    const historyItems = this.getHistory();
+    const targetIndex = index + offset;
+
+    if (!historyItems[index] || targetIndex < 0 || targetIndex >= historyItems.length) {
+      return historyItems;
+    }
+
+    const [item] = historyItems.splice(index, 1);
+    historyItems.splice(targetIndex, 0, item);
+    return storeHistory(historyItems);
   },
 
   getProjectName() {
@@ -121,8 +183,62 @@ export const paletteService = Object.freeze({
   },
 
   async savePalette(project, name, colors) {
-    const request = buildPaletteRequest(project, name, colors);
-    return tauriBridge.invokeCommand(APP_CONFIG.commands.savePalette, { request });
+    const palette = buildPaletteRequest(project, name, colors);
+
+    if (!editingPaletteIdentity) {
+      return tauriBridge.invokeCommand(APP_CONFIG.commands.savePalette, { request: palette });
+    }
+
+    const response = await tauriBridge.invokeCommand(APP_CONFIG.commands.updatePalette, {
+      request: {
+        original: editingPaletteIdentity,
+        palette,
+      },
+    });
+    editingPaletteIdentity = null;
+    return response;
+  },
+
+  async beginPaletteEdit(project, name) {
+    const identity = {
+      project: normalizeProjectName(project),
+      name: String(name || "").trim(),
+    };
+    const palette = await tauriBridge.invokeCommand(APP_CONFIG.commands.getPalette, { identity });
+    const history = storeHistory(await convertPaletteColors(palette.colors));
+
+    editingPaletteIdentity = {
+      project: palette.project,
+      name: palette.name,
+    };
+    storeProjectName(palette.project);
+
+    return {
+      project: palette.project,
+      name: palette.name,
+      history,
+      selectedColor: history[0] || null,
+    };
+  },
+
+  async deletePalette(project, name) {
+    const identity = {
+      project: normalizeProjectName(project),
+      name: String(name || "").trim(),
+    };
+    const response = await tauriBridge.invokeCommand(APP_CONFIG.commands.deletePalette, {
+      identity,
+    });
+
+    if (
+      editingPaletteIdentity &&
+      editingPaletteIdentity.project === identity.project &&
+      editingPaletteIdentity.name === identity.name
+    ) {
+      editingPaletteIdentity = null;
+    }
+
+    return response;
   },
 
   async listPalettes(project) {
@@ -134,7 +250,9 @@ export const paletteService = Object.freeze({
       ...buildPaletteRequest(project, name, colors),
       format,
     };
-    const exportFile = await tauriBridge.invokeCommand(APP_CONFIG.commands.exportPalette, { request });
+    const exportFile = await tauriBridge.invokeCommand(APP_CONFIG.commands.exportPalette, {
+      request,
+    });
     fileTransferTool.downloadText(exportFile);
     return exportFile;
   },
