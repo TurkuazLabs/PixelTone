@@ -46,6 +46,9 @@ export const APP_CONFIG = Object.freeze({
     pickerWindowMissing: "Picker overlay penceresi bulunamadi.",
     pickerMonitorMissing: "Cursorun bulundugu monitor bulunamadi.",
   }),
+  desktop: Object.freeze({
+    trayPickerEvent: "pixeltone://tray-picker",
+  }),
   historyMove: Object.freeze({
     up: -1,
     down: 1,
