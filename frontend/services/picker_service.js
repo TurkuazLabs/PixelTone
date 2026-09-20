@@ -19,6 +19,11 @@ function formatRgb(colorInfo) {
 
 async function openPicker() {
   await pickerWindowTool.showAtCursor();
+  await eventTool.emitToWindow(
+    APP_CONFIG.picker.windowLabel,
+    APP_CONFIG.picker.activationEvent,
+    {},
+  );
 }
 
 async function colorInfoForCapture(captureResult) {
@@ -80,6 +85,10 @@ export const pickerService = Object.freeze({
     await pickerWindowTool.hide();
 
     return selection;
+  },
+
+  async onActivation(handler) {
+    return eventTool.listenEvent(APP_CONFIG.picker.activationEvent, handler);
   },
 
   async onSelection(handler) {
