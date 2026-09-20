@@ -1,8 +1,8 @@
 // # 📄 Dosya Yolu: pixeltone/src-tauri/src/lib.rs
 // # 📌 Amac: PixelTone Tauri runtime, plugin ve komut kayitlarini baslatmak
 // # 📌 Controller - Rust
-// # Version: 0.4.0
-// # Aciklama: Capture, Palette Studio, clipboard ve desktop global shortcut altyapisini runtime'a kaydeder
+// # Version: 1.0.0
+// # Aciklama: Capture, Palette Studio, settings, clipboard ve desktop global shortcut altyapisini runtime'a kaydeder
 //
 // Bagimli Oldugu Katman: Controller
 
@@ -31,7 +31,9 @@ pub fn run() {
             controllers::palette_controller::delete_palette,
             controllers::palette_controller::list_palettes,
             controllers::palette_controller::export_palette,
-            controllers::palette_controller::import_palette
+            controllers::palette_controller::import_palette,
+            controllers::settings_controller::get_settings,
+            controllers::settings_controller::save_settings
         ])
         .run(tauri::generate_context!())
         .expect("PixelTone Tauri runtime baslatilamadi");
