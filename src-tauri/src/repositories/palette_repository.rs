@@ -1,8 +1,8 @@
 // # 📄 Dosya Yolu: pixeltone/src-tauri/src/repositories/palette_repository.rs
-// # 📌 Amac: Proje bazli palet dosya kayit ve listeleme islemlerini yapmak
+// # 📌 Amac: Proje bazli palet dosya CRUD islemlerini yapmak
 // # 📌 Repo - Rust
 // # Version: 0.3.0
-// # Aciklama: Paletleri projects/<project>/palettes altinda saklar ve legacy paletleri okuyabilir
+// # Aciklama: Paletleri projects/<project>/palettes altinda saklar, duzenler, siler ve legacy paletleri okuyabilir
 //
 // Bagimli Oldugu Katman: Repo
 
@@ -10,11 +10,12 @@ use std::fs;
 use std::path::{Path, PathBuf};
 
 use crate::config::app_config::{
-    APP_FOLDER_NAME, DEFAULT_PROJECT_NAME, PALETTE_FILE_EXTENSION, PALETTE_FOLDER_NAME,
-    PROJECT_FOLDER_NAME,
+    APP_FOLDER_NAME, DEFAULT_PROJECT_NAME, ERROR_PALETTE_NOT_FOUND, PALETTE_FILE_EXTENSION,
+    PALETTE_FOLDER_NAME, PROJECT_FOLDER_NAME,
 };
 use crate::models::palette::{
-    PaletteFile, PaletteSummary, SavePaletteRequest, SavePaletteResponse,
+    DeletePaletteResponse, PaletteFile, PaletteIdentity, PaletteSummary, SavePaletteRequest,
+    SavePaletteResponse,
 };
 
 pub struct PaletteRepository;
@@ -28,8 +29,7 @@ impl PaletteRepository {
         let directory = self.palette_directory(&request.project);
         fs::create_dir_all(&directory).map_err(|error| error.to_string())?;
 
-        let safe_name = Self::safe_file_name(&request.name);
-        let path = directory.join(format!("{}.{}", safe_name, PALETTE_FILE_EXTENSION));
+        let path = self.palette_path(&request.project, &request.name);
         let palette_file = PaletteFile {
             project: request.project.clone(),
             name: request.name.clone(),
@@ -45,6 +45,37 @@ impl PaletteRepository {
             name: palette_file.name,
             path: path.to_string_lossy().to_string(),
             color_count: palette_file.colors.len(),
+        })
+    }
+
+    pub fn get(&self, identity: &PaletteIdentity) -> Result<PaletteFile, String> {
+        let path = self.existing_palette_path(identity)?;
+        self.read_palette(&path, &identity.project)
+    }
+
+    pub fn update(
+        &self,
+        original: &PaletteIdentity,
+        request: SavePaletteRequest,
+    ) -> Result<SavePaletteResponse, String> {
+        let original_path = self.existing_palette_path(original)?;
+        let response = self.save(request)?;
+        let target_path = PathBuf::from(&response.path);
+
+        if original_path != target_path && original_path.exists() {
+            fs::remove_file(original_path).map_err(|error| error.to_string())?;
+        }
+
+        Ok(response)
+    }
+
+    pub fn delete(&self, identity: &PaletteIdentity) -> Result<DeletePaletteResponse, String> {
+        let path = self.existing_palette_path(identity)?;
+        fs::remove_file(path).map_err(|error| error.to_string())?;
+
+        Ok(DeletePaletteResponse {
+            project: identity.project.clone(),
+            name: identity.name.clone(),
         })
     }
 
@@ -79,14 +110,7 @@ impl PaletteRepository {
                 continue;
             }
 
-            let content = fs::read_to_string(&path).map_err(|error| error.to_string())?;
-            let mut palette: PaletteFile =
-                serde_json::from_str(&content).map_err(|error| error.to_string())?;
-
-            if palette.project.trim().is_empty() {
-                palette.project = fallback_project.to_string();
-            }
-
+            let palette = self.read_palette(&path, fallback_project)?;
             palettes.push(PaletteSummary {
                 project: palette.project,
                 name: palette.name,
@@ -96,6 +120,52 @@ impl PaletteRepository {
         }
 
         Ok(())
+    }
+
+    fn read_palette(&self, path: &Path, fallback_project: &str) -> Result<PaletteFile, String> {
+        let content = fs::read_to_string(path).map_err(|error| error.to_string())?;
+        let mut palette: PaletteFile =
+            serde_json::from_str(&content).map_err(|error| error.to_string())?;
+
+        if palette.project.trim().is_empty() {
+            palette.project = fallback_project.to_string();
+        }
+
+        Ok(palette)
+    }
+
+    fn existing_palette_path(&self, identity: &PaletteIdentity) -> Result<PathBuf, String> {
+        let project_path = self.palette_path(&identity.project, &identity.name);
+
+        if project_path.exists() {
+            return Ok(project_path);
+        }
+
+        if identity.project == DEFAULT_PROJECT_NAME {
+            let legacy_path = self.legacy_palette_path(&identity.name);
+
+            if legacy_path.exists() {
+                return Ok(legacy_path);
+            }
+        }
+
+        Err(ERROR_PALETTE_NOT_FOUND.to_string())
+    }
+
+    fn palette_path(&self, project: &str, name: &str) -> PathBuf {
+        self.palette_directory(project).join(format!(
+            "{}.{}",
+            Self::safe_file_name(name),
+            PALETTE_FILE_EXTENSION
+        ))
+    }
+
+    fn legacy_palette_path(&self, name: &str) -> PathBuf {
+        self.legacy_palette_directory().join(format!(
+            "{}.{}",
+            Self::safe_file_name(name),
+            PALETTE_FILE_EXTENSION
+        ))
     }
 
     fn palette_directory(&self, project: &str) -> PathBuf {
