@@ -1,0 +1,35 @@
+<!--
+# 📄 Dosya Yolu: pixeltone/frontend/picker.html
+# 📌 Amac: PixelTone canli picker overlay sayfasini tanimlamak
+# 📌 View - HTML
+# Version: 0.4.0
+# Aciklama: Seffaf overlay, 9x9 buyutec ve secili renk bilgi karti icin HTML girisidir
+
+Bagimli Oldugu Katman: View
+-->
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PixelTone Picker</title>
+    <link rel="stylesheet" href="/views/picker.css" />
+  </head>
+  <body>
+    <main id="picker-overlay" class="pt-picker-overlay">
+      <section id="picker-card" class="pt-picker-card">
+        <p class="pt-picker-eyebrow">PixelTone Picker</p>
+        <div id="picker-grid" class="pt-picker-grid"></div>
+        <div class="pt-picker-values">
+          <strong id="picker-hex">#000000</strong>
+          <span id="picker-rgb">rgb(0, 0, 0)</span>
+        </div>
+        <span id="picker-mode" class="pt-picker-mode"></span>
+        <p id="picker-instruction" class="pt-picker-instruction"></p>
+        <p id="picker-status" class="pt-picker-status"></p>
+      </section>
+    </main>
+
+    <script type="module" src="/controllers/picker_controller.js"></script>
+  </body>
+</html>
