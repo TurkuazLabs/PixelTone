@@ -1,7 +1,7 @@
 # 📄 Dosya Yolu: pixeltone/ROADMAP.md
 # 📌 Amac: PixelTone gelistirme yol haritasini tanimlamak
 # 📌 Docs - Markdown
-# Version: 0.2.0
+# Version: 0.3.0
 # Aciklama: Tamamlanan ve siradaki minor/major surum planlari
 
 Bagimli Oldugu Katman: View
@@ -26,7 +26,7 @@ Bagimli Oldugu Katman: View
 - Capture icin Controller -> Service -> Tool akisi
 - Capture sirasinda ana pencereyi gecici kucultme
 
-## v0.3.0 - Palette Studio - SIRADAKI
+## v0.3.0 - Palette Studio - TAMAMLANDI
 
 - Proje bazli paletler
 - YAML export/import
@@ -35,7 +35,7 @@ Bagimli Oldugu Katman: View
 - Palet icinde renk adlandirma ve siralama
 - Palet silme/duzenleme
 
-## v0.4.0 - Picker Experience
+## v0.4.0 - Picker Experience - SIRADAKI
 
 - Global shortcut
 - Canli picker overlay
