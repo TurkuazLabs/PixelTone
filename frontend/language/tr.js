@@ -1,8 +1,8 @@
 // # 📄 Dosya Yolu: pixeltone/frontend/language/tr.js
 // # 📌 Amac: PixelTone frontend Turkce runtime etiketlerini merkezi tutmak
 // # 📌 Language - JavaScript
-// # Version: 0.3.0
-// # Aciklama: Capture, palet CRUD, renk adlandirma/siralama, aktarim ve Tailwind mesajlarini merkezi tutar
+// # Version: 0.4.0
+// # Aciklama: Capture, Palette Studio, live picker, aktarim ve Tailwind mesajlarini merkezi tutar
 //
 // Bagimli Oldugu Katman: Language
 
@@ -14,6 +14,13 @@ export const TR_LABELS = Object.freeze({
     capturePreparing: "PixelTone kucultulecek. Cursoru hedef renge tasiyin.",
     captureFailed: "Ekran rengi yakalanamadi.",
     captureCompleted: "Ekran rengi yakalandi.",
+    pickerReady: "Canli picker hazir.",
+    pickerStarted: "Canli picker acildi.",
+    pickerStartFailed: "Canli picker acilamadi.",
+    pickerShortcutFailed: "Global picker kisayolu kaydedilemedi.",
+    pickerSelected: "Picker rengi panoya kopyalandi.",
+    pickerSampleFailed: "Canli picker rengi okunamadi.",
+    pickerCopyFailed: "Secilen renk panoya kopyalanamadi.",
     paletteNeedsColor: "Once bir renk donusturun.",
     paletteSaved: "Palet kaydedildi.",
     paletteSaveFailed: "Palet kaydedilemedi.",
@@ -53,6 +60,13 @@ export const TR_LABELS = Object.freeze({
     editAction: "Duzenle",
     deleteAction: "Sil",
     deleteConfirm: "Bu paleti silmek istediginizden emin misiniz?",
+  }),
+  picker: Object.freeze({
+    launchAction: "Canli Picker",
+    shortcutPrefix: "Kisayol",
+    instruction: "H: HEX | R: RGB | Sol tik: Kopyala | Esc: Iptal",
+    copyModeHex: "Kopyalama: HEX",
+    copyModeRgb: "Kopyalama: RGB",
   }),
   tailwind: Object.freeze({
     title: "Tailwind Yakin Renkler",
