@@ -2,7 +2,7 @@
 # 📌 Amac: PixelTone projesinin genel aciklamasini ve calisma durumunu tanimlamak
 # 📌 Docs - Markdown
 # Version: 0.3.0
-# Aciklama: Tauri + Rust + HTML UI tabanli renk yakalama, Tailwind eslestirme ve Palette Studio uygulama girisi
+# Aciklama: Tauri + Rust + HTML UI tabanli renk yakalama, Tailwind eslestirme ve tam Palette Studio uygulama girisi
 
 Bagimli Oldugu Katman: View
 
@@ -33,9 +33,12 @@ PixelTone, ColorPic alternatifi olarak gelistirilen platform bagimsiz renk secic
 - Proje bazli palet yonetimi
 - Paletlerin `projects/<proje>/palettes/` mantigiyla ayrilmasi
 - v0.2.x paletleri icin `Genel` proje legacy fallback destegi
+- Palet yukleme, duzenleme, yeniden adlandirma ve silme
+- Palet renklerini adlandirma
+- Palet renklerini yukari/asagi siralama
 - YAML palet import ve export
 - CSS custom property export
-- Import edilen renklerin Rust ColorService ile yeniden dogrulanmasi
+- Import ve edit sirasinda renklerin Rust ColorService ile yeniden dogrulanmasi
 - Resmi `tailwindcss/colors` kaynagindan Tailwind renk paleti okuma
 - Secili HEX renge OKLab uzayinda en yakin 5 Tailwind rengini hesaplama
 - Tailwind renk adi, OKLCH degeri ve renk mesafesini arayuzde gosterme
@@ -56,7 +59,7 @@ Renk donusturuldugunda frontend TailwindColorService HEX degerini OKLab koordina
 
 ## Palette Studio Akisi
 
-Paletler proje adi ile kaydedilir. YAML import edilen palet once format Tool tarafinda parse edilir, ardindan PaletteService her HEX degerini ColorService uzerinden dogrular ve Repository ile local storage alanina yazar. YAML ve CSS export da ayni hazirlanmis palet modelini kullanir.
+Paletler proje adi ile kaydedilir. Kullanici calisma listesindeki her renge ad verebilir ve renklerin sirasini degistirebilir. Kayitli palet `get_palette` ile yuklenir; duzenleme/yeniden adlandirma `update_palette`, silme ise `delete_palette` komutuyla Service ve Repository katmanlarindan gecerek yapilir. YAML import edilen palet once format Tool tarafinda parse edilir, ardindan PaletteService her HEX degerini ColorService uzerinden dogrular ve Repository ile local storage alanina yazar.
 
 ## Capture Akisi
 
