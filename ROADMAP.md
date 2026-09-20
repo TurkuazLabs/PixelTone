@@ -35,7 +35,7 @@ Bagimli Oldugu Katman: View
 - Palet icinde renk adlandirma ve siralama
 - Palet silme/duzenleme
 
-## v0.4.0 - Picker Experience - GELISTIRILIYOR
+## v0.4.0 - Picker Experience - TAMAMLANDI
 
 - Global shortcut
 - Canli picker overlay
