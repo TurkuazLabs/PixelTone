@@ -49,6 +49,11 @@ export const APP_CONFIG = Object.freeze({
   desktop: Object.freeze({
     trayPickerEvent: "pixeltone://tray-picker",
   }),
+  update: Object.freeze({
+    releaseApiUrl: "https://api.github.com/repos/TurkuazLabs/PixelTone/releases/latest",
+    acceptHeaderName: "Accept",
+    acceptHeaderValue: "application/vnd.github+json",
+  }),
   historyMove: Object.freeze({
     up: -1,
     down: 1,
