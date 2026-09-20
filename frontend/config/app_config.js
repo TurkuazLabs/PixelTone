@@ -47,6 +47,7 @@ export const APP_CONFIG = Object.freeze({
     mainWindowLabel: "main",
     shortcut: "CommandOrControl+Shift+P",
     shortcutPressedState: "Pressed",
+    activationEvent: "pixeltone://picker-open",
     selectionEvent: "pixeltone://picker-selected",
     visibleDocumentState: "visible",
     sampleIntervalMs: 90,
