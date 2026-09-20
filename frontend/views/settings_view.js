@@ -20,6 +20,8 @@ const dom = Object.freeze({
   copyFormatLabel: document.getElementById("settings-copy-format-label"),
   copyFormat: document.getElementById("settings-copy-format"),
   saveButton: document.getElementById("settings-save-button"),
+  updateButton: document.getElementById("settings-update-button"),
+  versionStatus: document.getElementById("settings-version-status"),
   status: document.getElementById("settings-status"),
   pickerShortcutHint: document.getElementById("picker-shortcut-hint"),
 });
@@ -32,6 +34,7 @@ export const settingsView = Object.freeze({
     dom.shortcutLabel.textContent = TR_LABELS.settings.pickerShortcut;
     dom.copyFormatLabel.textContent = TR_LABELS.settings.defaultCopyFormat;
     dom.saveButton.textContent = TR_LABELS.settings.saveAction;
+    dom.updateButton.textContent = TR_LABELS.settings.checkUpdateAction;
 
     dom.copyFormat.innerHTML = "";
 
@@ -50,6 +53,10 @@ export const settingsView = Object.freeze({
     dom.saveButton.addEventListener("click", handler);
   },
 
+  bindCheckUpdates(handler) {
+    dom.updateButton.addEventListener("click", handler);
+  },
+
   getSettings() {
     return {
       close_to_tray: dom.closeToTray.checked,
@@ -66,6 +73,27 @@ export const settingsView = Object.freeze({
     dom.copyFormat.value = settings.default_copy_format;
     dom.pickerShortcutHint.textContent =
       `${TR_LABELS.picker.shortcutPrefix}: ${settings.picker_shortcut}`;
+  },
+
+  renderVersionStatus(result) {
+    if (!result) {
+      dom.versionStatus.textContent = "";
+      return;
+    }
+
+    if (!result.available) {
+      dom.versionStatus.textContent = TR_LABELS.settings.versionUnavailable;
+      return;
+    }
+
+    if (result.updateAvailable) {
+      dom.versionStatus.textContent =
+        `${TR_LABELS.settings.updateAvailablePrefix} ${result.latestVersion} (${TR_LABELS.settings.currentVersionPrefix} ${result.currentVersion})`;
+      return;
+    }
+
+    dom.versionStatus.textContent =
+      `${TR_LABELS.settings.upToDatePrefix} ${result.currentVersion}`;
   },
 
   setStatus(message) {
