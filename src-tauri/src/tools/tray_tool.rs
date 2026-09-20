@@ -75,7 +75,7 @@ impl TrayTool {
 
     fn show_main_window(app: &tauri::AppHandle) {
         if let Some(window) = app.get_webview_window(MAIN_WINDOW_LABEL) {
-            let _ = WindowTool::show_and_focus(&window);
+            let _ = WindowTool::show_and_focus_webview(&window);
         }
     }
 }
