@@ -1,8 +1,8 @@
 # 📄 Dosya Yolu: pixeltone/frontend/language/tr.yml
 # 📌 Amac: PixelTone Turkce arayuz etiketlerini tutmak
 # 📌 Language - YAML
-# Version: 0.3.0
-# Aciklama: Palette Studio CRUD, renk adlandirma ve siralama dahil Turkce etiketleri tanimlar
+# Version: 0.4.0
+# Aciklama: Live Picker, Palette Studio CRUD, renk adlandirma ve siralama etiketlerini tanimlar
 
 Bagimli Oldugu Katman: Language
 
@@ -10,6 +10,7 @@ app:
   title: "PixelTone"
   subtitle: "Platform bagimsiz renk secici"
 buttons:
+  live_picker: "Canli Picker"
   convert: "Donustur"
   capture: "Ekrandan Renk Al"
   save_palette: "Paleti Kaydet"
@@ -18,11 +19,16 @@ buttons:
   move_color_up: "Yukari"
   move_color_down: "Asagi"
 labels:
+  picker_shortcut: "Kisayol"
+  picker_copy_hex: "Kopyalama: HEX"
+  picker_copy_rgb: "Kopyalama: RGB"
   color_name: "Renk adi"
   project: "Proje"
   color_count: "renk"
 messages:
   ready: "Hazir."
+  picker_instruction: "H: HEX | R: RGB | Sol tik: Kopyala | Esc: Iptal"
+  picker_selected: "Picker rengi panoya kopyalandi."
   palette_editing: "Palet duzenleme icin yuklendi."
   palette_deleted: "Palet silindi."
   palette_delete_confirm: "Bu paleti silmek istediginizden emin misiniz?"

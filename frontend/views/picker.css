@@ -1,0 +1,128 @@
+/*
+# 📄 Dosya Yolu: pixeltone/frontend/views/picker.css
+# 📌 Amac: Canli picker overlay arayuz stilini tanimlamak
+# 📌 View - CSS
+# Version: 0.4.0
+# Aciklama: Seffaf tam ekran secim alani, cursor takipli bilgi karti ve 9x9 buyutec stillerini tanimlar
+
+Bagimli Oldugu Katman: View
+*/
+
+:root {
+  --pt-picker-card-bg: rgba(17, 24, 39, 0.94);
+  --pt-picker-card-text: #f8fafc;
+  --pt-picker-muted: #cbd5e1;
+  --pt-picker-border: rgba(255, 255, 255, 0.22);
+  --pt-picker-accent: #60a5fa;
+  --pt-picker-columns: 9;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  background: transparent;
+}
+
+body {
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  cursor: crosshair;
+  user-select: none;
+}
+
+.pt-picker-overlay {
+  position: fixed;
+  inset: 0;
+  background: transparent;
+}
+
+.pt-picker-card {
+  position: fixed;
+  top: 24px;
+  left: 24px;
+  z-index: 2;
+  width: 252px;
+  padding: 14px;
+  border: 1px solid var(--pt-picker-border);
+  border-radius: 16px;
+  color: var(--pt-picker-card-text);
+  background: var(--pt-picker-card-bg);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.34);
+  pointer-events: none;
+  backdrop-filter: blur(12px);
+}
+
+.pt-picker-eyebrow,
+.pt-picker-instruction,
+.pt-picker-status {
+  margin: 0;
+  color: var(--pt-picker-muted);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.pt-picker-eyebrow {
+  margin-bottom: 8px;
+  color: var(--pt-picker-accent);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.pt-picker-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--pt-picker-columns), 1fr);
+  overflow: hidden;
+  margin-bottom: 10px;
+  border: 1px solid var(--pt-picker-border);
+  border-radius: 10px;
+}
+
+.pt-picker-pixel {
+  aspect-ratio: 1;
+  min-width: 0;
+}
+
+.pt-picker-pixel-center {
+  position: relative;
+  z-index: 1;
+  outline: 2px solid #ffffff;
+  outline-offset: -2px;
+  box-shadow: inset 0 0 0 4px rgba(17, 24, 39, 0.72);
+}
+
+.pt-picker-values {
+  display: grid;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.pt-picker-values strong {
+  font-size: 18px;
+}
+
+.pt-picker-values span {
+  color: var(--pt-picker-muted);
+  font-size: 12px;
+}
+
+.pt-picker-mode {
+  display: inline-block;
+  margin-bottom: 8px;
+  padding: 4px 8px;
+  border: 1px solid var(--pt-picker-border);
+  border-radius: 999px;
+  color: var(--pt-picker-accent);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.pt-picker-instruction {
+  margin-bottom: 6px;
+}

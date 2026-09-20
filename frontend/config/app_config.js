@@ -1,8 +1,8 @@
 // # 📄 Dosya Yolu: pixeltone/frontend/config/app_config.js
 // # 📌 Amac: PixelTone frontend sabitlerini merkezi tutmak
 // # 📌 Config - JavaScript
-// # Version: 0.3.0
-// # Aciklama: Storage, Tauri komutlari, palet CRUD, history siralama, Tailwind ve capture ayarlarini merkezi tutar
+// # Version: 0.4.0
+// # Aciklama: Storage, Tauri komutlari, Palette Studio, live picker, Tailwind ve capture ayarlarini merkezi tutar
 //
 // Bagimli Oldugu Katman: Config
 
@@ -35,10 +35,40 @@ export const APP_CONFIG = Object.freeze({
   }),
   errors: Object.freeze({
     invalidHex: "Gecerli 6 haneli HEX renk girin.",
+    pickerWindowMissing: "Picker overlay penceresi bulunamadi.",
+    pickerMonitorMissing: "Cursorun bulundugu monitor bulunamadi.",
   }),
   historyMove: Object.freeze({
     up: -1,
     down: 1,
+  }),
+  picker: Object.freeze({
+    windowLabel: "picker",
+    mainWindowLabel: "main",
+    shortcut: "CommandOrControl+Shift+P",
+    shortcutPressedState: "Pressed",
+    activationEvent: "pixeltone://picker-open",
+    selectionEvent: "pixeltone://picker-selected",
+    visibleDocumentState: "visible",
+    sampleIntervalMs: 90,
+    cardOffsetPx: 28,
+    cardMarginPx: 16,
+    primaryPointerButton: 0,
+    copyFormats: Object.freeze({
+      hex: "hex",
+      rgb: "rgb",
+    }),
+    rgbFormat: Object.freeze({
+      prefix: "rgb(",
+      separator: ", ",
+      suffix: ")",
+    }),
+    defaultCopyFormat: "hex",
+    keys: Object.freeze({
+      cancel: "Escape",
+      hex: "KeyH",
+      rgb: "KeyR",
+    }),
   }),
   tailwind: Object.freeze({
     matchCount: 5,

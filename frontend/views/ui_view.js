@@ -1,8 +1,8 @@
 // # 📄 Dosya Yolu: pixeltone/frontend/views/ui_view.js
 // # 📌 Amac: PixelTone DOM ciktilarini ve event baglantilarini yonetmek
 // # 📌 View - JavaScript
-// # Version: 0.3.0
-// # Aciklama: Tailwind, Palette Studio CRUD, renk adlandirma ve siralama ciktilarini cizer
+// # Version: 0.4.0
+// # Aciklama: Live Picker, Tailwind, Palette Studio CRUD, renk adlandirma ve siralama ciktilarini cizer
 //
 // Bagimli Oldugu Katman: View
 
@@ -14,6 +14,8 @@ const dom = Object.freeze({
   nativeColorInput: document.getElementById("native-color-input"),
   convertButton: document.getElementById("convert-button"),
   captureButton: document.getElementById("capture-button"),
+  pickerLaunchButton: document.getElementById("picker-launch-button"),
+  pickerShortcutHint: document.getElementById("picker-shortcut-hint"),
   projectNameInput: document.getElementById("project-name-input"),
   paletteNameInput: document.getElementById("palette-name-input"),
   savePaletteButton: document.getElementById("save-palette-button"),
@@ -60,6 +62,16 @@ function createMiniButton(label, handler, isDisabled = false, extraClass = "") {
 }
 
 export const uiView = Object.freeze({
+  initializePickerControls(shortcut) {
+    dom.pickerLaunchButton.textContent = TR_LABELS.picker.launchAction;
+    dom.pickerShortcutHint.textContent =
+      `${TR_LABELS.picker.shortcutPrefix}: ${shortcut}`;
+  },
+
+  bindLivePicker(handler) {
+    dom.pickerLaunchButton.addEventListener("click", handler);
+  },
+
   bindConvert(handler) {
     dom.convertButton.addEventListener("click", handler);
   },

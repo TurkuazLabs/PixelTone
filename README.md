@@ -1,12 +1,12 @@
 # 📄 Dosya Yolu: pixeltone/README.md
 # 📌 Amac: PixelTone projesinin genel aciklamasini ve calisma durumunu tanimlamak
 # 📌 Docs - Markdown
-# Version: 0.3.0
-# Aciklama: Tauri + Rust + HTML UI tabanli renk yakalama, Tailwind eslestirme ve tam Palette Studio uygulama girisi
+# Version: 0.4.0
+# Aciklama: Tauri + Rust + HTML UI tabanli canli picker, renk yakalama, Tailwind eslestirme ve Palette Studio uygulama girisi
 
 Bagimli Oldugu Katman: View
 
-# PixelTone v0.3.0
+# PixelTone v0.4.0
 
 PixelTone, ColorPic alternatifi olarak gelistirilen platform bagimsiz renk secici, renk analiz ve palet yonetim uygulamasidir.
 
@@ -22,28 +22,41 @@ PixelTone, ColorPic alternatifi olarak gelistirilen platform bagimsiz renk secic
 - Rust core
 - HTML/CSS/JavaScript UI
 - xcap ekran yakalama adaptoru
+- Tauri Global Shortcut plugin
+- Tauri Clipboard Manager plugin
 - Local JSON proje/palet storage
 - YAML palet aktarimi
 - Tailwind CSS 4.3.3 resmi renk paleti
 - OKLab tabanli renk yakinlik hesabi
 
-## v0.3.0 Ozellikleri
+## v0.4.0 Picker Experience
 
-- v0.2.0 ekran yakalama ve 9x9 buyutec ozelliklerinin korunmasi
+- `CommandOrControl+Shift+P` global kisayolu
+- Ana penceredeki Canli Picker butonu
+- Cursorun bulundugu monitoru kaplayan seffaf picker overlay
+- Canli 9x9 cursor buyuteci
+- Cursor takipli renk bilgi karti
+- H tusuyla HEX kopyalama modu
+- R tusuyla RGB kopyalama modu
+- Sol tikla rengi panoya kopyalama
+- Esc ile picker iptali
+- Secilen rengin ana pencere, gecmis, buyutec ve Tailwind eslesmesine aktarilmasi
+- Coklu monitor gecisinde picker penceresinin yeni monitore tasinmasi
+- Gizli picker penceresinde gereksiz capture dongusunun engellenmesi
+- Wayland portal/overlay fallback stratejisi
+
+## v0.3.0 Palette Studio
+
 - Proje bazli palet yonetimi
 - Paletlerin `projects/<proje>/palettes/` mantigiyla ayrilmasi
 - v0.2.x paletleri icin `Genel` proje legacy fallback destegi
 - Palet yukleme, duzenleme, yeniden adlandirma ve silme
-- Palet renklerini adlandirma
-- Palet renklerini yukari/asagi siralama
+- Palet renklerini adlandirma ve yukari/asagi siralama
 - YAML palet import ve export
 - CSS custom property export
 - Import ve edit sirasinda renklerin Rust ColorService ile yeniden dogrulanmasi
 - Resmi `tailwindcss/colors` kaynagindan Tailwind renk paleti okuma
 - Secili HEX renge OKLab uzayinda en yakin 5 Tailwind rengini hesaplama
-- Tailwind renk adi, OKLCH degeri ve renk mesafesini arayuzde gosterme
-- Windows build sirasinda PNG kaynaktan standart coklu boyutlu ICO uretimi
-- Windows, Linux ve macOS icin ortak CI dogrulamasi
 
 ## Mimari
 
@@ -53,25 +66,29 @@ PixelTone katman akisi:
 
 Controller sadece arayuz veya Tauri istegini alir ve Service katmanina aktarir. Is kurallari Service katmaninda, storage Repository katmaninda, dis format/platform adaptorleri Tool katmaninda tutulur.
 
-## Tailwind Yakin Renk Akisi
+## Live Picker Akisi
 
-Renk donusturuldugunda frontend TailwindColorService HEX degerini OKLab koordinatlarina cevirir. TailwindPaletteTool resmi `tailwindcss/colors` kaynagini duzlestirir ve OKLCH renkleri OKLab koordinatlarina donusturur. Service iki renk arasindaki OKLab mesafesini hesaplar, sonuclari siralar ve en yakin 5 rengi View katmanina verir.
+Global kisayol veya Canli Picker butonu PickerService katmanini cagirir. Service picker Tool ile seffaf pencereyi cursorun bulundugu monitore tasir ve aktivasyon eventini gonderir. Picker Controller yalnizca input olaylarini Service katmanina aktarir.
+
+Canli ornekleme mevcut CaptureService uzerinden yapilir. Secim tamamlandiginda PickerService HEX veya RGB metnini Clipboard Tool ile sistem panosuna yazar ve pencere eventiyle ana UI tarafina aktarir.
+
+Picker penceresi gizliyken canli capture dongusu calismaz.
 
 ## Palette Studio Akisi
 
-Paletler proje adi ile kaydedilir. Kullanici calisma listesindeki her renge ad verebilir ve renklerin sirasini degistirebilir. Kayitli palet `get_palette` ile yuklenir; duzenleme/yeniden adlandirma `update_palette`, silme ise `delete_palette` komutuyla Service ve Repository katmanlarindan gecerek yapilir. YAML import edilen palet once format Tool tarafinda parse edilir, ardindan PaletteService her HEX degerini ColorService uzerinden dogrular ve Repository ile local storage alanina yazar.
+Paletler proje adi ile kaydedilir. Kullanici calisma listesindeki her renge ad verebilir ve renklerin sirasini degistirebilir. Kayitli palet `get_palette` ile yuklenir; duzenleme/yeniden adlandirma `update_palette`, silme ise `delete_palette` komutuyla Service ve Repository katmanlarindan gecerek yapilir.
 
 ## Capture Akisi
 
-`Ekrandan Renk Al` butonuna basildiginda PixelTone gecici olarak kuculur. Kisa gecikme sirasinda cursor hedef renge tasinir. Rust capture service cursorun bulundugu monitoru yakalar, merkez pikseli okur ve 9x9 buyutec verisini UI tarafina dondurur.
+`Ekrandan Renk Al` butonuna basildiginda PixelTone gecici olarak kuculur. Kisa gecikme sirasinda cursor hedef renge tasinir. Rust CaptureService cursorun bulundugu monitoru yakalar, merkez pikseli okur ve 9x9 buyutec verisini UI tarafina dondurur.
 
 ## Platform Notlari
 
 Windows ana test platformudur. Windows resource ikonu build sirasinda `src-tauri/icons/icon.png` kaynagindan uretilir.
 
-Linux X11 global cursor konumu ve ekran yakalama icin desteklenir. Wayland ortaminda compositor guvenlik modeli global cursor konumunu veya ekran goruntusunu sinirlayabilir; bu nedenle bazi Wayland compositorlerinde ek portal/overlay adaptoru gerekecektir.
+Linux X11 ve global capture erisimi veren masaustu ortamlarinda canli picker mevcut capture akisini kullanir. Wayland compositorleri global cursor veya ekran yakalamayi kisitlayabilir. Bu durumda hedef fallback XDG Desktop Portal Screenshot arayuzundeki `PickColor` metodudur. Portal fallback stratejisi `docs/WAYLAND_PICKER.md` dosyasinda tanimlanmistir; portal adaptorunun kendisi v0.4.0 kapsaminda uygulanmis sayilmaz.
 
-macOS tarafinda ekran yakalama icin kullanicinin Screen Recording izni vermesi gerekebilir.
+macOS ekran yakalama icin kullanicinin Screen Recording izni vermesi gerekebilir. Seffaf picker penceresi icin Tauri `macOSPrivateApi` etkinlestirilmistir; bu tercih Mac App Store dagitimiyla uyumlu degildir ve PixelTone masaustu installer dagitimini hedefler.
 
 ## Kurulum
 
@@ -86,4 +103,4 @@ npm run tauri dev
 npm run tauri build
 ```
 
-Detaylar `docs/BUILD.md` ve `docs/INSTALL.md` dosyalarindadir.
+Detaylar `docs/BUILD.md`, `docs/INSTALL.md` ve `docs/WAYLAND_PICKER.md` dosyalarindadir.

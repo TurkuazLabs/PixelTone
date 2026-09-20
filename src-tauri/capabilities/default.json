@@ -1,10 +1,25 @@
 {
-  "description": "# Dosya Yolu: pixeltone/src-tauri/capabilities/default.json | Amac: Tauri default window yetkilerini tanimlamak | Modul - JSON | Version: 0.2.0 | Bagimli Oldugu Katman: Config",
+  "description": "📄 Dosya Yolu: pixeltone/src-tauri/capabilities/default.json | 📌 Amac: Ana pencere ve picker overlay yetkilerini tanimlamak | 📌 Config - JSON | Version: 0.4.0 | Aciklama: Window, global shortcut ve clipboard izinlerini sinirli olarak acar | Bagimli Oldugu Katman: Config",
   "identifier": "default",
-  "windows": ["main"],
+  "windows": [
+    "main",
+    "picker"
+  ],
   "permissions": [
     "core:default",
     "core:window:allow-minimize",
-    "core:window:allow-unminimize"
+    "core:window:allow-unminimize",
+    "core:window:allow-show",
+    "core:window:allow-hide",
+    "core:window:allow-set-focus",
+    "core:window:allow-set-position",
+    "core:window:allow-set-size",
+    "core:window:allow-set-always-on-top",
+    "core:window:allow-available-monitors",
+    "core:window:allow-cursor-position",
+    "global-shortcut:allow-is-registered",
+    "global-shortcut:allow-register",
+    "global-shortcut:allow-unregister",
+    "clipboard-manager:allow-write-text"
   ]
 }

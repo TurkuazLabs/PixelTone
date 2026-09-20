@@ -1,14 +1,14 @@
 # 📄 Dosya Yolu: pixeltone/src-tauri/Cargo.toml
 # 📌 Amac: PixelTone Rust/Tauri paket bagimliliklarini tanimlamak
 # 📌 Config - TOML
-# Version: 0.3.0
-# Aciklama: Tauri v2, capture, local storage, YAML aktarim ve Windows icon build bagimliliklarini yonetir
+# Version: 0.4.0
+# Aciklama: Tauri v2, capture, picker shortcut/clipboard, storage ve Windows icon bagimliliklarini yonetir
 
 # Bagimli Oldugu Katman: Config
 
 [package]
 name = "pixeltone"
-version = "0.3.0"
+version = "0.4.0"
 description = "PixelTone platform independent color picker and palette manager"
 authors = ["PixelTone"]
 edition = "2021"
@@ -32,3 +32,7 @@ dirs-next = "2"
 xcap = "0.9.8"
 mouse_position = "0.1.4"
 noyalib = "0.0.44"
+tauri-plugin-clipboard-manager = "2"
+
+[target.'cfg(any(target_os = "windows", target_os = "macos", target_os = "linux"))'.dependencies]
+tauri-plugin-global-shortcut = "2"

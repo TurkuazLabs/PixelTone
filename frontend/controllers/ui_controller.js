@@ -1,14 +1,15 @@
 // # 📄 Dosya Yolu: pixeltone/frontend/controllers/ui_controller.js
 // # 📌 Amac: PixelTone arayuz olaylarini almak ve servisleri cagirmak
 // # 📌 Controller - JavaScript
-// # Version: 0.3.0
-// # Aciklama: Capture, Tailwind ve tam Palette Studio olaylarini Service katmanina aktarir
+// # Version: 0.4.0
+// # Aciklama: Live Picker, capture, Tailwind ve Palette Studio olaylarini Service katmanina aktarir
 //
 // Bagimli Oldugu Katman: Controller
 
 import { APP_CONFIG } from "../config/app_config.js";
 import { TR_LABELS } from "../language/tr.js";
 import { paletteService } from "../services/palette_service.js";
+import { pickerService } from "../services/picker_service.js";
 import { tailwindColorService } from "../services/tailwind_color_service.js";
 import { uiView } from "../views/ui_view.js";
 
@@ -39,14 +40,22 @@ function renderHistory(historyItems = paletteService.getHistory()) {
   );
 }
 
+function renderSelectedColor(colorInfo, addToHistory) {
+  currentColor = colorInfo;
+  uiView.setHexValue(colorInfo.hex);
+  uiView.renderColorOutput(colorInfo);
+
+  if (addToHistory) {
+    renderHistory(paletteService.addToHistory(colorInfo));
+  }
+
+  renderTailwindMatches(colorInfo.hex);
+}
+
 async function convertCurrentHex() {
   try {
     const colorInfo = await paletteService.convertHex(uiView.getHexValue());
-    currentColor = colorInfo;
-    uiView.setHexValue(colorInfo.hex);
-    uiView.renderColorOutput(colorInfo);
-    renderHistory(paletteService.addToHistory(colorInfo));
-    renderTailwindMatches(colorInfo.hex);
+    renderSelectedColor(colorInfo, true);
     uiView.setStatus(TR_LABELS.status.converted);
   } catch (error) {
     uiView.setStatus(errorMessage(error, TR_LABELS.status.convertFailed));
@@ -65,6 +74,21 @@ async function captureColor() {
   } catch (error) {
     uiView.setStatus(errorMessage(error, TR_LABELS.status.captureFailed));
   }
+}
+
+async function openLivePicker() {
+  try {
+    await pickerService.openPicker();
+    uiView.setStatus(TR_LABELS.status.pickerStarted);
+  } catch (error) {
+    uiView.setStatus(errorMessage(error, TR_LABELS.status.pickerStartFailed));
+  }
+}
+
+function acceptPickerSelection(selection) {
+  uiView.renderMagnifier(selection.capture);
+  renderSelectedColor(selection.colorInfo, true);
+  uiView.setStatus(`${TR_LABELS.status.pickerSelected} ${selection.text}`);
 }
 
 async function refreshPalettes(projectName) {
@@ -118,9 +142,7 @@ async function editPalette(palette) {
     renderHistory(editState.history);
 
     if (editState.selectedColor) {
-      uiView.setHexValue(editState.selectedColor.hex);
-      uiView.renderColorOutput(editState.selectedColor);
-      renderTailwindMatches(editState.selectedColor.hex);
+      renderSelectedColor(editState.selectedColor, false);
     }
 
     uiView.setStatus(TR_LABELS.status.paletteEditing);
@@ -142,10 +164,7 @@ async function deletePalette(palette) {
 async function selectHistoryColor(hex) {
   try {
     const colorInfo = await paletteService.convertHex(hex);
-    currentColor = colorInfo;
-    uiView.setHexValue(colorInfo.hex);
-    uiView.renderColorOutput(colorInfo);
-    renderTailwindMatches(colorInfo.hex);
+    renderSelectedColor(colorInfo, false);
     uiView.setStatus(TR_LABELS.status.converted);
   } catch (error) {
     uiView.setStatus(errorMessage(error, TR_LABELS.status.convertFailed));
@@ -212,6 +231,18 @@ function exportCss() {
   void exportPalette(APP_CONFIG.exportFormats.css);
 }
 
+async function initializePicker() {
+  uiView.initializePickerControls(APP_CONFIG.picker.shortcut);
+  uiView.bindLivePicker(() => void openLivePicker());
+  await pickerService.onSelection(acceptPickerSelection);
+
+  try {
+    await pickerService.initializeGlobalShortcut();
+  } catch (error) {
+    uiView.setStatus(errorMessage(error, TR_LABELS.status.pickerShortcutFailed));
+  }
+}
+
 async function boot() {
   const projectName = paletteService.getProjectName();
 
@@ -229,6 +260,7 @@ async function boot() {
   renderHistory();
   uiView.renderTailwindMatches([]);
   uiView.renderMagnifier(null);
+  await initializePicker();
   await convertCurrentHex();
 
   try {
