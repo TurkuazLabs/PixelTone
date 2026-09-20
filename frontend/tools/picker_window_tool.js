@@ -12,7 +12,7 @@ import { WebviewWindow } from "@tauri-apps/api/webviewWindow";
 
 import { APP_CONFIG } from "../config/app_config.js";
 
-let lastMonitorKey = "";
+let lastMonitorBounds = null;
 
 function monitorContainsCursor(monitor, cursor) {
   const left = monitor.position.x;
@@ -23,13 +23,24 @@ function monitorContainsCursor(monitor, cursor) {
   return cursor.x >= left && cursor.x < right && cursor.y >= top && cursor.y < bottom;
 }
 
-function monitorKey(monitor) {
-  return [
-    monitor.position.x,
-    monitor.position.y,
-    monitor.size.width,
-    monitor.size.height,
-  ].join(":");
+function monitorBounds(monitor) {
+  return Object.freeze({
+    x: monitor.position.x,
+    y: monitor.position.y,
+    width: monitor.size.width,
+    height: monitor.size.height,
+  });
+}
+
+function sameMonitor(left, right) {
+  return Boolean(
+    left &&
+      right &&
+      left.x === right.x &&
+      left.y === right.y &&
+      left.width === right.width &&
+      left.height === right.height,
+  );
 }
 
 async function pickerWindow() {
@@ -59,9 +70,9 @@ async function cursorMonitor() {
 export const pickerWindowTool = Object.freeze({
   async syncToCursorMonitor() {
     const monitor = await cursorMonitor();
-    const key = monitorKey(monitor);
+    const bounds = monitorBounds(monitor);
 
-    if (key === lastMonitorKey) {
+    if (sameMonitor(bounds, lastMonitorBounds)) {
       return;
     }
 
@@ -72,7 +83,7 @@ export const pickerWindowTool = Object.freeze({
     await window.setSize(
       new PhysicalSize(monitor.size.width, monitor.size.height),
     );
-    lastMonitorKey = key;
+    lastMonitorBounds = bounds;
   },
 
   async showAtCursor() {
