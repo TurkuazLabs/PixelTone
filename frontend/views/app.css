@@ -376,6 +376,15 @@ select.pt-input {
   margin: 0;
 }
 
+.pt-version-status {
+  margin: 14px 0 0;
+  padding: 12px 14px;
+  border: 1px solid var(--pt-border);
+  border-radius: var(--pt-radius-md);
+  color: var(--pt-muted);
+  background: var(--pt-surface-soft);
+}
+
 .pt-tailwind-list {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
