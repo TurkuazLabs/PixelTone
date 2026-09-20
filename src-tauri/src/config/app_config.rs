@@ -2,11 +2,12 @@
 // # 📌 Amac: Rust tarafinda magic string kullanilmasini azaltmak
 // # 📌 Config - Rust
 // # Version: 1.0.0
-// # Aciklama: Storage, capture, palette, settings ve stable desktop sabitlerini merkezi tutar
+// # Aciklama: Storage, capture, palette, settings, tray ve stable desktop sabitlerini merkezi tutar
 //
 // Bagimli Oldugu Katman: Config
 
 pub const APP_FOLDER_NAME: &str = "pixeltone";
+pub const MAIN_WINDOW_LABEL: &str = "main";
 pub const PROJECT_FOLDER_NAME: &str = "projects";
 pub const PALETTE_FOLDER_NAME: &str = "palettes";
 pub const PALETTE_FILE_EXTENSION: &str = "json";
@@ -27,6 +28,12 @@ pub const DEFAULT_CHECK_UPDATES_ON_START: bool = true;
 pub const DEFAULT_PICKER_SHORTCUT: &str = "CommandOrControl+Shift+P";
 pub const COPY_FORMAT_HEX: &str = "hex";
 pub const COPY_FORMAT_RGB: &str = "rgb";
+
+pub const TRAY_ID: &str = "pixeltone-main-tray";
+pub const TRAY_MENU_SHOW_ID: &str = "tray-show";
+pub const TRAY_MENU_PICKER_ID: &str = "tray-picker";
+pub const TRAY_MENU_QUIT_ID: &str = "tray-quit";
+pub const TRAY_PICKER_EVENT: &str = "pixeltone://tray-picker";
 
 pub const CAPTURE_SOURCE_XCAP: &str = "xcap";
 pub const PLATFORM_WINDOWS: &str = "windows";
