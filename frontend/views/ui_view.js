@@ -6,6 +6,7 @@
 //
 // Bagimli Oldugu Katman: View
 
+import { APP_CONFIG } from "../config/app_config.js";
 import { TR_LABELS } from "../language/tr.js";
 
 const dom = Object.freeze({
@@ -234,12 +235,12 @@ export const uiView = Object.freeze({
       actions.append(
         createMiniButton(
           TR_LABELS.history.moveUp,
-          () => onMove(index, -1),
+          () => onMove(index, APP_CONFIG.historyMove.up),
           index === 0,
         ),
         createMiniButton(
           TR_LABELS.history.moveDown,
-          () => onMove(index, 1),
+          () => onMove(index, APP_CONFIG.historyMove.down),
           index === historyItems.length - 1,
         ),
       );
