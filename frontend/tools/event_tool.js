@@ -2,18 +2,22 @@
 // # 📌 Amac: Tauri pencere event iletisimini frontend servislerinden soyutlamak
 // # 📌 Tool - JavaScript
 // # Version: 0.4.0
-// # Aciklama: Picker secimini ana pencereye iletmek ve event dinlemek icin adaptor saglar
+// # Aciklama: Hedef pencereye event gonderir ve mevcut WebviewWindow uzerindeki hedefli eventleri dinler
 //
 // Bagimli Oldugu Katman: Tool
 
-import { emitTo, listen } from "@tauri-apps/api/event";
+import { emitTo } from "@tauri-apps/api/event";
+import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
 
 export const eventTool = Object.freeze({
   async emitToWindow(windowLabel, eventName, payload) {
     await emitTo(windowLabel, eventName, payload);
   },
 
-  async listenEvent(eventName, handler) {
-    return listen(eventName, (event) => handler(event.payload));
+  async listenCurrentWindow(eventName, handler) {
+    return getCurrentWebviewWindow().listen(
+      eventName,
+      (event) => handler(event.payload),
+    );
   },
 });
