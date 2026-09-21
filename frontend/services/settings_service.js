@@ -57,7 +57,28 @@ async function loadSettings() {
     settings = fallbackSettings();
   }
 
-  return applyRuntime(normalizeSettings(settings));
+  const normalized = normalizeSettings(settings);
+
+  try {
+    return await applyRuntime(normalized);
+  } catch (_error) {
+    const repaired = {
+      ...normalized,
+      picker_shortcut: APP_CONFIG.defaults.settings.pickerShortcut,
+    };
+
+    await applyRuntime(repaired);
+
+    try {
+      await tauriBridge.invokeCommand(APP_CONFIG.commands.saveSettings, {
+        settings: repaired,
+      });
+    } catch (_saveError) {
+      // Runtime duzeltmesi storage yazma hatasindan etkilenmemelidir.
+    }
+
+    return repaired;
+  }
 }
 
 export const settingsService = Object.freeze({
