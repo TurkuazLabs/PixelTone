@@ -79,12 +79,22 @@ export const settingsService = Object.freeze({
 
   async save(settings) {
     const normalized = normalizeSettings(settings);
-    const saved = await tauriBridge.invokeCommand(
-      APP_CONFIG.commands.saveSettings,
-      { settings: normalized },
-    );
+    const previous = currentSettings || fallbackSettings();
 
-    return applyRuntime(normalizeSettings(saved));
+    await pickerService.configure(normalized);
+
+    try {
+      const saved = await tauriBridge.invokeCommand(
+        APP_CONFIG.commands.saveSettings,
+        { settings: normalized },
+      );
+      currentSettings = normalizeSettings(saved);
+      return currentSettings;
+    } catch (error) {
+      await pickerService.configure(previous);
+      currentSettings = previous;
+      throw error;
+    }
   },
 
   async checkForUpdates() {
