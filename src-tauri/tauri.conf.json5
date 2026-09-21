@@ -69,6 +69,7 @@
     "category": "DeveloperTool",
     "shortDescription": "Platform independent color picker",
     "longDescription": "PixelTone is a platform independent color picker and palette manager built with Tauri, Rust and HTML UI.",
+    "createUpdaterArtifacts": true,
     "windows": {
       "allowDowngrades": false,
       "webviewInstallMode": {
@@ -83,7 +84,8 @@
           "English"
         ],
         "displayLanguageSelector": true,
-        "startMenuFolder": "PixelTone"
+        "startMenuFolder": "PixelTone",
+        "template": "./windows/installer.nsi"
       }
     }
   }
