@@ -17,7 +17,8 @@ pub mod tools;
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     let builder = tauri::Builder::default()
-        .plugin(tauri_plugin_clipboard_manager::init());
+        .plugin(tauri_plugin_clipboard_manager::init())
+        .plugin(tauri_plugin_updater::Builder::new().build());
 
     #[cfg(any(target_os = "windows", target_os = "macos", target_os = "linux"))]
     let builder = builder.plugin(tauri_plugin_global_shortcut::Builder::new().build());
@@ -41,7 +42,8 @@ pub fn run() {
             controllers::palette_controller::export_palette,
             controllers::palette_controller::import_palette,
             controllers::settings_controller::get_settings,
-            controllers::settings_controller::save_settings
+            controllers::settings_controller::save_settings,
+            controllers::update_controller::check_and_install_update
         ])
         .run(tauri::generate_context!())
         .expect("PixelTone Tauri runtime baslatilamadi");
