@@ -80,8 +80,8 @@ jobs:
       - name: Install frontend dependencies
         run: npm install
 
-      - name: Check application version consistency
-        run: npm run check:version
+      - name: Run Stable Desktop preflight
+        run: npm run preflight
 
 
       - name: Build frontend
