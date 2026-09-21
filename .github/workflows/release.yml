@@ -79,6 +79,10 @@ jobs:
       - name: Install frontend dependencies
         run: npm install
 
+      - name: Check application version consistency
+        run: npm run check:version
+
+
       - name: Generate platform icons
         run: npm run tauri icon src-tauri/icons/icon.png
 
