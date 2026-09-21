@@ -40,6 +40,9 @@ jobs:
         with:
           components: rustfmt
 
+      - name: Check updater public key configuration
+        run: npm run check:updater
+
       - name: Verify updater signing secrets
         shell: powershell
         run: |
