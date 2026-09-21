@@ -11,8 +11,7 @@ use tauri::tray::{MouseButton, MouseButtonState, TrayIconEvent};
 use tauri::{Emitter, Manager, WindowEvent};
 
 use crate::config::app_config::{
-    MAIN_WINDOW_LABEL, TRAY_MENU_PICKER_ID, TRAY_MENU_QUIT_ID, TRAY_MENU_SHOW_ID,
-    TRAY_PICKER_EVENT,
+    MAIN_WINDOW_LABEL, TRAY_MENU_PICKER_ID, TRAY_MENU_QUIT_ID, TRAY_MENU_SHOW_ID, TRAY_PICKER_EVENT,
 };
 use crate::language::tr;
 use crate::repositories::settings_repository::SettingsRepository;
