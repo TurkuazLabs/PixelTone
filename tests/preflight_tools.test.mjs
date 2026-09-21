@@ -15,6 +15,11 @@ import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
 import test from "node:test";
 
+import {
+  compareVersions,
+  normalizeVersion,
+} from "../frontend/tools/version_compare_tool.js";
+
 const execFileAsync = promisify(execFile);
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -52,6 +57,13 @@ async function runScript(scriptName, cwd, env = {}) {
     },
   );
 }
+
+test("version compare handles prefixes, prerelease and multi-digit segments", () => {
+  assert.equal(normalizeVersion(" v1.10.0-beta.1 "), "1.10.0");
+  assert.equal(compareVersions("1.9.0", "1.10.0"), -1);
+  assert.equal(compareVersions("v1.10.0", "1.10.0"), 0);
+  assert.equal(compareVersions("2.0", "1.99.99"), 1);
+});
 
 test("version guard accepts matching versions", async () => {
   const root = await workspace();
