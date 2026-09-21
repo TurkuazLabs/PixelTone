@@ -2,21 +2,16 @@
 // # 📌 Amac: Tauri sistem tepsisi ikonunu ve native menu adaptorunu kurmak
 // # 📌 Tool - Rust
 // # Version: 1.0.0
-// # Aciklama: Tray menu, sol tik pencere acma, picker event iletimi ve cikis platform islemlerini yonetir
+// # Aciklama: Tray ikonunu, menu elemanlarini ve native gorunum ayarlarini kurar; davranis karari Service katmaninda kalir
 //
 // Bagimli Oldugu Katman: Tool
 
 use tauri::menu::{MenuBuilder, MenuItemBuilder};
-use tauri::tray::{
-    MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent,
-};
-use tauri::{Emitter, Manager};
+use tauri::tray::TrayIconBuilder;
 
 use crate::config::app_config::{
-    MAIN_WINDOW_LABEL, TRAY_ID, TRAY_MENU_PICKER_ID, TRAY_MENU_QUIT_ID,
-    TRAY_MENU_SHOW_ID, TRAY_PICKER_EVENT,
+    TRAY_ID, TRAY_MENU_PICKER_ID, TRAY_MENU_QUIT_ID, TRAY_MENU_SHOW_ID,
 };
-use crate::tools::window_tool::WindowTool;
 
 pub struct TrayLabels<'a> {
     pub tooltip: &'a str,
@@ -39,41 +34,13 @@ impl TrayTool {
             .items(&[&show_item, &picker_item, &quit_item])
             .build()?;
 
-        let tray = TrayIconBuilder::with_id(TRAY_ID)
+        TrayIconBuilder::with_id(TRAY_ID)
             .icon(tauri::include_image!("./icons/icon.png"))
             .menu(&menu)
             .show_menu_on_left_click(false)
             .tooltip(labels.tooltip)
-            .on_menu_event(|app, event| match event.id().as_ref() {
-                TRAY_MENU_SHOW_ID => {
-                    Self::show_main_window(app);
-                }
-                TRAY_MENU_PICKER_ID => {
-                    let _ = app.emit_to(MAIN_WINDOW_LABEL, TRAY_PICKER_EVENT, ());
-                }
-                TRAY_MENU_QUIT_ID => {
-                    app.exit(0);
-                }
-                _ => {}
-            })
-            .on_tray_icon_event(|tray, event| {
-                if let TrayIconEvent::Click {
-                    button: MouseButton::Left,
-                    button_state: MouseButtonState::Up,
-                    ..
-                } = event
-                {
-                    Self::show_main_window(tray.app_handle());
-                }
-            });
+            .build(app)?;
 
-        tray.build(app)?;
         Ok(())
-    }
-
-    fn show_main_window(app: &tauri::AppHandle) {
-        if let Some(window) = app.get_webview_window(MAIN_WINDOW_LABEL) {
-            let _ = WindowTool::show_and_focus_webview(&window);
-        }
     }
 }
