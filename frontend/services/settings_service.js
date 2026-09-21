@@ -89,8 +89,6 @@ export const settingsService = Object.freeze({
   async save(settings) {
     const normalized = normalizeSettings(settings);
     const previousSettings = currentSettings || fallbackSettings();
-    const previousRuntime = currentRuntime;
-
     const runtime = await pickerService.configure(normalized);
 
     try {
@@ -112,7 +110,7 @@ export const settingsService = Object.freeze({
         { allowShortcutFailure: true },
       );
       currentSettings = previousSettings;
-      currentRuntime = previousRuntime || restoredRuntime;
+      currentRuntime = restoredRuntime;
       throw error;
     }
   },
