@@ -40,6 +40,8 @@ impl DesktopService {
             if settings.close_to_tray {
                 api.prevent_close();
                 let _ = WindowTool::hide_native(window);
+            } else {
+                window.app_handle().exit(0);
             }
         }
     }
