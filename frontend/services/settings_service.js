@@ -12,6 +12,7 @@ import { versionService } from "./version_service.js";
 import { tauriBridge } from "../tools/tauri_bridge.js";
 
 let currentSettings = null;
+let currentRuntime = null;
 
 function fallbackSettings() {
   return {
@@ -42,10 +43,15 @@ function normalizeSettings(settings) {
   };
 }
 
-async function applyRuntime(settings) {
-  await pickerService.configure(settings);
+async function applyRuntime(settings, options = {}) {
+  const runtime = await pickerService.configure(settings, options);
   currentSettings = settings;
-  return settings;
+  currentRuntime = runtime;
+
+  return {
+    settings,
+    runtime,
+  };
 }
 
 async function loadSettings() {
@@ -57,39 +63,21 @@ async function loadSettings() {
     settings = fallbackSettings();
   }
 
-  const normalized = normalizeSettings(settings);
-
-  try {
-    return await applyRuntime(normalized);
-  } catch (_error) {
-    const repaired = {
-      ...normalized,
-      picker_shortcut: APP_CONFIG.defaults.settings.pickerShortcut,
-    };
-
-    await applyRuntime(repaired);
-
-    try {
-      await tauriBridge.invokeCommand(APP_CONFIG.commands.saveSettings, {
-        settings: repaired,
-      });
-    } catch (_saveError) {
-      // Runtime duzeltmesi storage yazma hatasindan etkilenmemelidir.
-    }
-
-    return repaired;
-  }
+  return applyRuntime(
+    normalizeSettings(settings),
+    { allowShortcutFailure: true },
+  );
 }
 
 export const settingsService = Object.freeze({
   async initialize() {
-    const settings = await loadSettings();
-    const versionCheck = settings.check_updates_on_start
+    const state = await loadSettings();
+    const versionCheck = state.settings.check_updates_on_start
       ? await versionService.checkLatest()
       : null;
 
     return {
-      settings,
+      ...state,
       versionCheck,
     };
   },
@@ -100,20 +88,31 @@ export const settingsService = Object.freeze({
 
   async save(settings) {
     const normalized = normalizeSettings(settings);
-    const previous = currentSettings || fallbackSettings();
+    const previousSettings = currentSettings || fallbackSettings();
+    const previousRuntime = currentRuntime;
 
-    await pickerService.configure(normalized);
+    const runtime = await pickerService.configure(normalized);
 
     try {
       const saved = await tauriBridge.invokeCommand(
         APP_CONFIG.commands.saveSettings,
         { settings: normalized },
       );
+
       currentSettings = normalizeSettings(saved);
-      return currentSettings;
+      currentRuntime = runtime;
+
+      return {
+        settings: currentSettings,
+        runtime: currentRuntime,
+      };
     } catch (error) {
-      await pickerService.configure(previous);
-      currentSettings = previous;
+      const restoredRuntime = await pickerService.configure(
+        previousSettings,
+        { allowShortcutFailure: true },
+      );
+      currentSettings = previousSettings;
+      currentRuntime = previousRuntime || restoredRuntime;
       throw error;
     }
   },
@@ -124,5 +123,9 @@ export const settingsService = Object.freeze({
 
   getCurrent() {
     return currentSettings || fallbackSettings();
+  },
+
+  getRuntime() {
+    return currentRuntime;
   },
 });
