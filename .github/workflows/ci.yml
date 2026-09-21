@@ -1,8 +1,8 @@
 # 📄 Dosya Yolu: pixeltone/.github/workflows/ci.yml
 # 📌 Amac: PixelTone kodunu Windows, Linux ve macOS uzerinde otomatik dogrulamak
 # 📌 Config - YAML
-# Version: 0.2.1
-# Aciklama: Frontend build, Rust format ve Tauri cargo check islemlerini platform matrisi ile calistirir
+# Version: 1.0.0
+# Aciklama: Main, feature ve fix branchlerinde frontend build, Rust format ve Tauri cargo check islemlerini platform matrisi ile calistirir
 #
 # Bagimli Oldugu Katman: Config
 
@@ -12,6 +12,8 @@ on:
   push:
     branches:
       - main
+      - "feature/**"
+      - "fix/**"
   pull_request:
     branches:
       - main
