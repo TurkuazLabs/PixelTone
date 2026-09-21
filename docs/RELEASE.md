@@ -54,6 +54,14 @@ Bu nedenle release oncesi su dosyalar repoya commit edilmelidir:
 
 CI ortami lockfile uretse bile release workflow yalniz repoya commit edilmis lockfile'lari kabul eder.
 
+## Atomik Release Yayinlama
+
+Windows, Linux ve macOS matrix joblari ayni release'i once taslak olarak doldurur.
+
+Release tum platform buildleri tamamlanmadan public olmaz. `publish-release` final job'u yalniz `build-release` matrix tamamen basarili oldugunda taslak release'i yayinlar.
+
+Bir platform buildi hata verirse release taslak olarak kalir ve eksik installer kullaniciya Stable olarak sunulmaz.
+
 ## Uretilen Paketler
 
 Windows:
