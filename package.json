@@ -22,7 +22,9 @@
     "check:release-lockfiles": "node tools/check_release_lockfiles.mjs",
     "preflight": "node tools/preflight.mjs",
     "preflight:release": "node tools/preflight.mjs --release",
-    "test:tools": "node --test tests/*.test.mjs"
+    "test:tools": "node --test tests/*.test.mjs",
+    "ci:windows": "powershell -ExecutionPolicy Bypass -File scripts/ci_windows.ps1",
+    "setup:windows": "powershell -ExecutionPolicy Bypass -File scripts/build_windows_setup.ps1"
   },
   "dependencies": {
     "@tauri-apps/api": "^2.0.0",
