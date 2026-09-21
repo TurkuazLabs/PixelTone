@@ -2,7 +2,7 @@
 # 📌 Amac: PixelTone Windows NSIS Setup.exe paketini self-hosted runner uzerinde uretmek
 # 📌 Config - YAML
 # Version: 1.0.0
-# Aciklama: Manuel tetiklemede Windows runner ile PixelTone Setup.exe ve SHA256 artifacti olusturur
+# Aciklama: Manuel tetiklemede GitHub-hosted Windows runner ile PixelTone Setup.exe ve SHA256 artifacti olusturur
 #
 # Bagimli Oldugu Katman: Config
 
@@ -21,11 +21,7 @@ concurrency:
 jobs:
   build-setup:
     name: Build PixelTone Setup.exe
-    runs-on:
-      - self-hosted
-      - windows
-      - x64
-      - pixeltone
+    runs-on: windows-latest
 
     steps:
       - name: Checkout
