@@ -21,7 +21,8 @@
     "check:release-context": "node tools/check_release_context.mjs",
     "check:release-lockfiles": "node tools/check_release_lockfiles.mjs",
     "preflight": "node tools/preflight.mjs",
-    "preflight:release": "node tools/preflight.mjs --release"
+    "preflight:release": "node tools/preflight.mjs --release",
+    "test:tools": "node --test tests/*.test.mjs"
   },
   "dependencies": {
     "@tauri-apps/api": "^2.0.0",
