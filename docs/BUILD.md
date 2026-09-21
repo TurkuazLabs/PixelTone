@@ -146,3 +146,26 @@ npm run ci:windows
 ```
 
 GitHub self-hosted runner kurulumu ve hosted runner blocker ayrintilari icin `docs/CI.md` kullanilir.
+
+
+## Updater Signing Hazirligi
+
+Ilk signed Setup/Release oncesi:
+
+```powershell
+gh auth login
+npm install
+npm run configure:updater
+```
+
+Ardindan Windows setup:
+
+```powershell
+npm run setup:windows
+```
+
+Kurulum hedefi:
+
+`%LOCALAPPDATA%\TurkuazLabs\PixelTone`
+
+Updater ayrintilari `docs/UPDATER.md` dosyasindadir.
