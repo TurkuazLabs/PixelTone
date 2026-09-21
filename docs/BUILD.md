@@ -102,3 +102,47 @@ Tauri'de `show_menu_on_left_click(false)` Linux tray backendinde desteklenmez. B
 Normal CI `.github/workflows/ci.yml` ile Windows/Linux/macOS uzerinde frontend build, Rust format ve cargo check hedeflenir.
 
 GitHub hosted runner tahsis edilmeden `runner_id: 0` ve bos step listesiyle biten run'lar uygulama build hatasi degildir; runner altyapisi calismamistir.
+
+
+## Tek Komut Windows Setup
+
+Windows PowerShell:
+
+```powershell
+npm run setup:windows
+```
+
+Bu komut:
+
+1. Eksik package-lock.json dosyasini uretir.
+2. Eksik src-tauri/Cargo.lock dosyasini uretir.
+3. npm ci calistirir.
+4. Windows CI dogrulamasini calistirir.
+5. Platform ikonlarini uretir.
+6. Tauri NSIS bundle olusturur.
+7. Setup.exe dosyasini dist-installer altina kopyalar.
+8. SHA256 dosyasini uretir.
+
+Cikti:
+
+```text
+dist-installer/PixelTone-Setup-v1.0.0.exe
+dist-installer/PixelTone-Setup-v1.0.0.exe.sha256
+```
+
+NSIS ayarlari:
+
+- current-user install
+- Turkish + English
+- language selector
+- LZMA compression
+- downgrade engeli
+- WebView2 bootstrapper embed
+
+## Windows Yerel CI
+
+```powershell
+npm run ci:windows
+```
+
+GitHub self-hosted runner kurulumu ve hosted runner blocker ayrintilari icin `docs/CI.md` kullanilir.
