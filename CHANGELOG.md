@@ -26,6 +26,13 @@ Bagimli Oldugu Katman: View
 - Release workflow platform ikonlarini Tauri CLI ile kaynak PNG'den uretiyor.
 - macOS sertifikasiz CI buildleri icin ad-hoc signing identity tanimlandi.
 - package.json, Cargo.toml ve Tauri config surumleri 1.0.0 olarak senkronlandi.
+- Stable Desktop CSP etkinlestirildi; production webview yalniz Tauri IPC ve GitHub Release API baglantisina izin veriyor.
+- CI duplicate feature/pull-request runlari kaldirildi ve eski runlari iptal eden concurrency eklendi.
+- Release workflow yalniz main manuel calistirma veya tam eslesen v<version> tagi ile yayin yapabiliyor.
+- Stable release icin package-lock.json ve src-tauri/Cargo.lock zorunlu hale getirildi.
+- Paralel platform bundle'lari taslak release'e yukleniyor; release yalniz tum platformlar basarili oldugunda final job ile yayinlaniyor.
+- Global shortcut degisimi non-destructive hale getirildi ve gecersiz persisted shortcut acilista varsayilana onariliyor.
+- Tray Tool yalniz native adaptor olarak birakildi; tray davranis kurallari DesktopService katmanina tasindi.
 
 ## 0.4.0
 
