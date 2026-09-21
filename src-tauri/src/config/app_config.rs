@@ -28,6 +28,8 @@ pub const DEFAULT_CHECK_UPDATES_ON_START: bool = true;
 pub const DEFAULT_PICKER_SHORTCUT: &str = "CommandOrControl+Shift+P";
 pub const COPY_FORMAT_HEX: &str = "hex";
 pub const COPY_FORMAT_RGB: &str = "rgb";
+pub const UPDATER_ENDPOINT: &str = "https://github.com/TurkuazLabs/PixelTone/releases/latest/download/latest.json";
+pub const UPDATER_PUBLIC_KEY_PLACEHOLDER: &str = "PIXELTONE_UPDATER_NOT_CONFIGURED";
 
 pub const TRAY_ID: &str = "pixeltone-main-tray";
 pub const TRAY_MENU_SHOW_ID: &str = "tray-show";
