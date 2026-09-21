@@ -7,8 +7,7 @@
 // Bagimli Oldugu Katman: Service
 
 use crate::config::app_config::{
-    COPY_FORMAT_HEX, COPY_FORMAT_RGB, ERROR_COPY_FORMAT_INVALID,
-    ERROR_PICKER_SHORTCUT_EMPTY,
+    COPY_FORMAT_HEX, COPY_FORMAT_RGB, ERROR_COPY_FORMAT_INVALID, ERROR_PICKER_SHORTCUT_EMPTY,
 };
 use crate::models::settings::AppSettings;
 use crate::repositories::settings_repository::SettingsRepository;
@@ -34,10 +33,7 @@ impl SettingsService {
 
     fn validate(mut settings: AppSettings) -> Result<AppSettings, String> {
         settings.picker_shortcut = settings.picker_shortcut.trim().to_string();
-        settings.default_copy_format = settings
-            .default_copy_format
-            .trim()
-            .to_ascii_lowercase();
+        settings.default_copy_format = settings.default_copy_format.trim().to_ascii_lowercase();
 
         if settings.picker_shortcut.is_empty() {
             return Err(ERROR_PICKER_SHORTCUT_EMPTY.to_string());
@@ -69,9 +65,8 @@ mod tests {
 
     #[test]
     fn validate_trims_shortcut_and_normalizes_copy_format() {
-        let result =
-            SettingsService::validate(settings("  CommandOrControl+Shift+P  ", "RGB"))
-                .expect("Settings normalize edilmeliydi");
+        let result = SettingsService::validate(settings("  CommandOrControl+Shift+P  ", "RGB"))
+            .expect("Settings normalize edilmeliydi");
 
         assert_eq!(result.picker_shortcut, "CommandOrControl+Shift+P");
         assert_eq!(result.default_copy_format, "rgb");
