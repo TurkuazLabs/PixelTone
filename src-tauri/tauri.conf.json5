@@ -63,6 +63,17 @@
       }
     }
   },
+  "plugins": {
+    "updater": {
+      "pubkey": "PIXELTONE_UPDATER_NOT_CONFIGURED",
+      "endpoints": [
+        "https://github.com/TurkuazLabs/PixelTone/releases/latest/download/latest.json"
+      ],
+      "windows": {
+        "installMode": "passive"
+      }
+    }
+  },
   "bundle": {
     "active": true,
     "targets": "all",
