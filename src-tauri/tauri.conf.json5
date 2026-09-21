@@ -95,7 +95,7 @@
           "English"
         ],
         "displayLanguageSelector": true,
-        "startMenuFolder": "PixelTone",
+        "startMenuFolder": "TurkuazLabs\\PixelTone",
         "template": "./windows/installer.nsi"
       }
     }
