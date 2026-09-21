@@ -65,7 +65,7 @@ jobs:
             xdg-utils
 
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: lts/*
 
@@ -77,17 +77,17 @@ jobs:
         with:
           workspaces: ./src-tauri -> target
 
-      - name: Install frontend dependencies
-        run: npm install
-
       - name: Check application version consistency
         run: npm run check:version
 
       - name: Check release context
         run: npm run check:release-context
 
-      - name: Check release lockfiles
+      - name: Check committed release lockfiles
         run: npm run check:release-lockfiles
+
+      - name: Install locked frontend dependencies
+        run: npm ci
 
       - name: Generate platform icons
         run: npm run tauri icon src-tauri/icons/icon.png
