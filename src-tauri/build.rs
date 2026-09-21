@@ -1,8 +1,8 @@
 // # 📄 Dosya Yolu: pixeltone/src-tauri/build.rs
 // # 📌 Amac: Platform build hazirligini yapip Tauri build adimini baslatmak
 // # 📌 Tool - Rust
-// # Version: 0.3.0
-// # Aciklama: Windows icin PNG kaynaktan modern coklu boyutlu ICO uretir ve Tauri build sistemini cagirir
+// # Version: 1.0.0
+// # Aciklama: Stable Desktop build oncesi Windows ICO kaynagini hazirlar ve Tauri build sistemini cagirir
 //
 // Bagimli Oldugu Katman: Tool
 
