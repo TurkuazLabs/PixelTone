@@ -10,9 +10,7 @@ use tauri::{AppHandle, Manager};
 use tauri_plugin_updater::UpdaterExt;
 use url::Url;
 
-use crate::config::app_config::{
-    UPDATER_ENDPOINT, UPDATER_PUBLIC_KEY_PLACEHOLDER,
-};
+use crate::config::app_config::{UPDATER_ENDPOINT, UPDATER_PUBLIC_KEY_PLACEHOLDER};
 use crate::models::update::UpdateResult;
 
 const UPDATER_PUBLIC_KEY: &str = include_str!("../../updater.pubkey");
@@ -58,10 +56,7 @@ impl UpdateService {
         let latest_version = update.version.clone();
 
         update
-            .download_and_install(
-                |_chunk_length, _content_length| {},
-                || {},
-            )
+            .download_and_install(|_chunk_length, _content_length| {}, || {})
             .await
             .map_err(|error| error.to_string())?;
 
