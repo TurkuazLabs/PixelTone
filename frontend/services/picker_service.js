@@ -160,32 +160,47 @@ async function cancelSession() {
 }
 
 export const pickerService = Object.freeze({
-  async configure(settings) {
+  async configure(settings, options = {}) {
     const nextShortcut =
       String(settings.picker_shortcut || "").trim() ||
       APP_CONFIG.defaults.settings.pickerShortcut;
     const nextDefaultCopyFormat = normalizeCopyFormat(
       settings.default_copy_format,
     );
-
-    if (registeredShortcut !== nextShortcut) {
-      await shortcutTool.register(nextShortcut, () => {
-        void openPicker().catch(notifyError);
-      });
-
-      if (registeredShortcut) {
-        await shortcutTool.unregister(registeredShortcut);
-      }
-
-      registeredShortcut = nextShortcut;
-    }
+    const allowShortcutFailure = Boolean(options.allowShortcutFailure);
+    let shortcutError = null;
 
     configuredShortcut = nextShortcut;
     configuredDefaultCopyFormat = nextDefaultCopyFormat;
 
+    if (registeredShortcut !== nextShortcut) {
+      try {
+        await shortcutTool.register(nextShortcut, () => {
+          void openPicker().catch(notifyError);
+        });
+
+        if (registeredShortcut) {
+          await shortcutTool.unregister(registeredShortcut);
+        }
+
+        registeredShortcut = nextShortcut;
+      } catch (error) {
+        shortcutError = error;
+
+        if (!allowShortcutFailure) {
+          throw error;
+        }
+      }
+    }
+
     return {
       shortcut: configuredShortcut,
       defaultCopyFormat: configuredDefaultCopyFormat,
+      shortcutRegistered: registeredShortcut === nextShortcut,
+      shortcutError:
+        typeof shortcutError === "string"
+          ? shortcutError
+          : shortcutError?.message || null,
     };
   },
 
