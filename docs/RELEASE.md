@@ -29,12 +29,30 @@ Tetikleyiciler:
 - `v*` Git tag push
 - Manuel `workflow_dispatch`
 
+Guvenlik kurallari:
+
+- Manuel release yalniz `main` branch uzerinden calisabilir.
+- Tag release icin tag degeri tam olarak `v<package.version>` olmalidir.
+- `package-lock.json` ve `src-tauri/Cargo.lock` olmadan Stable Desktop release baslamaz.
+- package.json, Cargo.toml ve tauri.conf.json5 surumleri birebir ayni olmalidir.
+
 Ornek tag:
 
 ```bash
 git tag v1.0.0
 git push origin v1.0.0
 ```
+
+## Dependency Lockfile Gereksinimi
+
+Stable release tekrar uretilebilir olmalidir.
+
+Bu nedenle release oncesi su dosyalar repoya commit edilmelidir:
+
+- `package-lock.json`
+- `src-tauri/Cargo.lock`
+
+CI ortami lockfile uretse bile release workflow yalniz repoya commit edilmis lockfile'lari kabul eder.
 
 ## Uretilen Paketler
 
