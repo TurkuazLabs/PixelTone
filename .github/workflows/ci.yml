@@ -2,21 +2,24 @@
 # 📌 Amac: PixelTone kodunu Windows, Linux ve macOS uzerinde otomatik dogrulamak
 # 📌 Config - YAML
 # Version: 1.0.0
-# Aciklama: Main, feature ve fix branchlerinde frontend build, Rust format ve Tauri cargo check islemlerini platform matrisi ile calistirir
+# Aciklama: Main push, pull request ve manuel tetiklemede frontend build, Rust format, cargo check ve unit testleri platform matrisi ile calistirir
 #
 # Bagimli Oldugu Katman: Config
 
 name: PixelTone CI
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
-      - "feature/**"
-      - "fix/**"
   pull_request:
     branches:
       - main
+
+concurrency:
+  group: pixeltone-ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
