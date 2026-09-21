@@ -1,0 +1,55 @@
+# 📄 Dosya Yolu: pixeltone/.github/workflows/windows-setup.yml
+# 📌 Amac: PixelTone Windows NSIS Setup.exe paketini self-hosted runner uzerinde uretmek
+# 📌 Config - YAML
+# Version: 1.0.0
+# Aciklama: Manuel tetiklemede Windows runner ile PixelTone Setup.exe ve SHA256 artifacti olusturur
+#
+# Bagimli Oldugu Katman: Config
+
+name: PixelTone Windows Setup
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pixeltone-windows-setup
+  cancel-in-progress: true
+
+jobs:
+  build-setup:
+    name: Build PixelTone Setup.exe
+    runs-on:
+      - self-hosted
+      - windows
+      - x64
+      - pixeltone
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: lts/*
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt
+
+      - name: Build PixelTone Setup.exe
+        shell: powershell
+        run: powershell -ExecutionPolicy Bypass -File scripts/build_windows_setup.ps1 -Clean
+
+      - name: Upload Setup artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: PixelTone-Windows-Setup
+          path: |
+            dist-installer/PixelTone-Setup-v*.exe
+            dist-installer/PixelTone-Setup-v*.exe.sha256
+          if-no-files-found: error
