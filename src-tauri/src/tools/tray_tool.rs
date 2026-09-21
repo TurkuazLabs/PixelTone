@@ -41,6 +41,7 @@ impl TrayTool {
 
         let mut tray = TrayIconBuilder::with_id(TRAY_ID)
             .menu(&menu)
+            .show_menu_on_left_click(false)
             .tooltip(labels.tooltip)
             .on_menu_event(|app, event| match event.id().as_ref() {
                 TRAY_MENU_SHOW_ID => {
