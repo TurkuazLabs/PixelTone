@@ -1,8 +1,8 @@
 // # 📄 Dosya Yolu: pixeltone/frontend/controllers/settings_controller.js
 // # 📌 Amac: Ayarlar ekranindaki kullanici olaylarini SettingsService katmanina aktarmak
 // # 📌 Controller - JavaScript
-// # Version: 1.0.0
-// # Aciklama: Ayar yukleme/kaydetme ve surum kontrol olaylarini Service sonucuyla View katmanina iletir
+// # Version: 1.0.1
+// # Aciklama: Ayarlari update network kontrolunu beklemeden render eder ve Service sonucunu View katmanina iletir
 //
 // Bagimli Oldugu Katman: Controller
 
@@ -55,8 +55,10 @@ async function boot() {
   try {
     const state = await settingsService.initialize();
     settingsView.renderSettings(state.settings);
-    settingsView.renderVersionStatus(state.versionCheck);
     renderRuntimeStatus(state.runtime, TR_LABELS.status.settingsLoaded);
+
+    const versionCheck = await state.versionCheckPromise;
+    settingsView.renderVersionStatus(versionCheck);
   } catch (error) {
     settingsView.setStatus(
       errorMessage(error, TR_LABELS.status.settingsLoadFailed),
