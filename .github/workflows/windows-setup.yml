@@ -1,5 +1,5 @@
 # 📄 Dosya Yolu: pixeltone/.github/workflows/windows-setup.yml
-# 📌 Amac: PixelTone Windows NSIS Setup.exe paketini self-hosted runner uzerinde uretmek
+# 📌 Amac: PixelTone Windows NSIS Setup.exe paketini GitHub-hosted Windows runner uzerinde uretmek
 # 📌 Config - YAML
 # Version: 1.0.0
 # Aciklama: Manuel tetiklemede GitHub-hosted Windows runner ile PixelTone Setup.exe ve SHA256 artifacti olusturur
@@ -39,6 +39,12 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
         with:
           components: rustfmt
+
+      - name: Verify updater signing secrets
+        shell: powershell
+        run: |
+          if ([string]::IsNullOrWhiteSpace($env:TAURI_SIGNING_PRIVATE_KEY)) { throw "TAURI_SIGNING_PRIVATE_KEY secret eksik." }
+          if ([string]::IsNullOrWhiteSpace($env:TAURI_SIGNING_PRIVATE_KEY_PASSWORD)) { throw "TAURI_SIGNING_PRIVATE_KEY_PASSWORD secret eksik." }
 
       - name: Build PixelTone Setup.exe
         shell: powershell
