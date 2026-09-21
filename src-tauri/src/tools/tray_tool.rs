@@ -24,12 +24,10 @@ pub struct TrayTool;
 
 impl TrayTool {
     pub fn setup(app: &mut tauri::App, labels: TrayLabels<'_>) -> tauri::Result<()> {
-        let show_item =
-            MenuItemBuilder::with_id(TRAY_MENU_SHOW_ID, labels.show).build(app)?;
+        let show_item = MenuItemBuilder::with_id(TRAY_MENU_SHOW_ID, labels.show).build(app)?;
         let picker_item =
             MenuItemBuilder::with_id(TRAY_MENU_PICKER_ID, labels.picker).build(app)?;
-        let quit_item =
-            MenuItemBuilder::with_id(TRAY_MENU_QUIT_ID, labels.quit).build(app)?;
+        let quit_item = MenuItemBuilder::with_id(TRAY_MENU_QUIT_ID, labels.quit).build(app)?;
         let menu = MenuBuilder::new(app)
             .items(&[&show_item, &picker_item, &quit_item])
             .build()?;
