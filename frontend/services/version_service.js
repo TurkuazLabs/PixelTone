@@ -1,44 +1,37 @@
 // # 📄 Dosya Yolu: pixeltone/frontend/services/version_service.js
-// # 📌 Amac: PixelTone kurulu surumu ile son public release surumunu karsilastirmak
+// # 📌 Amac: PixelTone imzali updater komutunu frontend Settings akisina uyarlamak
 // # 📌 Service - JavaScript
 // # Version: 1.0.0
-// # Aciklama: Version Tool sonucunu kullanir ve private/public release endpoint hatalarini guvenli sonuc modeline cevirir
+// # Aciklama: Rust UpdateService sonucunu UI'nin surum durum modeline cevirir; update varsa imzali paketi kurar
 //
 // Bagimli Oldugu Katman: Service
 
-import { appTool } from "../tools/app_tool.js";
-import { releaseTool } from "../tools/release_tool.js";
-import {
-  compareVersions,
-  normalizeVersion,
-} from "../tools/version_compare_tool.js";
+import { APP_CONFIG } from "../config/app_config.js";
+import { tauriBridge } from "../tools/tauri_bridge.js";
 
 export const versionService = Object.freeze({
   async checkLatest() {
-    let currentVersion = "";
-
     try {
-      currentVersion = await appTool.getVersion();
-      const release = await releaseTool.getLatestRelease();
-      const latestVersion = normalizeVersion(release.tagName);
+      const result = await tauriBridge.invokeCommand(
+        APP_CONFIG.commands.checkAndInstallUpdate,
+      );
 
       return {
-        available: true,
-        currentVersion,
-        latestVersion,
-        updateAvailable:
-          compareVersions(currentVersion, latestVersion) < 0,
-        releaseUrl: release.releaseUrl,
-        publishedAt: release.publishedAt,
+        available: Boolean(result.configured),
+        currentVersion: result.current_version || "",
+        latestVersion: result.latest_version || "",
+        updateAvailable: Boolean(result.update_available),
+        installed: Boolean(result.installed),
+        message: result.message || "",
       };
     } catch (error) {
       return {
         available: false,
-        currentVersion,
+        currentVersion: "",
         latestVersion: "",
         updateAvailable: false,
-        releaseUrl: "",
-        publishedAt: "",
+        installed: false,
+        message: "",
         error: error?.message || String(error),
       };
     }
