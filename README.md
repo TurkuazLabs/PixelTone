@@ -93,6 +93,18 @@ Kurulu surum Tauri App API ile okunur. VersionService GitHub Releases latest end
 
 Repository private oldugu surece anonim GitHub Releases endpointi 404 donebilir. Bu durumda PixelTone hata vermeden "surum bilgisi kullanilamiyor" durumuna gecer. Gercek private-repo otomatik update icin ileride public update manifest servisi veya guvenli imzali updater endpointi gerekir.
 
+## Windows Kurulum Standardi
+
+Program kurulum dizini:
+
+`%LOCALAPPDATA%\TurkuazLabs\PixelTone`
+
+Start Menu klasoru:
+
+`TurkuazLabs\PixelTone`
+
+PixelTone signed Tauri updater ile public GitHub Releases kanalini kullanir. Ayrinti: `docs/UPDATER.md`.
+
 ## Release Paketleri
 
 GitHub Actions `.github/workflows/release.yml` dosyasi su paketleri uretir:
