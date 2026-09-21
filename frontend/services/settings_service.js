@@ -1,8 +1,8 @@
 // # 📄 Dosya Yolu: pixeltone/frontend/services/settings_service.js
 // # 📌 Amac: Masaustu ayarlarini backend ile senkronlamak ve runtime servislere uygulamak
 // # 📌 Service - JavaScript
-// # Version: 1.0.0
-// # Aciklama: Rust settings komutlarini, PickerService runtime ayarlarini ve opsiyonel baslangic surum kontrolunu koordine eder
+// # Version: 1.0.1
+// # Aciklama: Ayarlari update network kontrolunden bagimsiz yukler ve runtime shortcut degisikliklerini transactional rollback ile uygular
 //
 // Bagimli Oldugu Katman: Service
 
@@ -69,16 +69,25 @@ async function loadSettings() {
   );
 }
 
+async function restoreRuntime(previousSettings) {
+  const restoredRuntime = await pickerService.configure(
+    previousSettings,
+    { allowShortcutFailure: true },
+  );
+  currentSettings = previousSettings;
+  currentRuntime = restoredRuntime;
+}
+
 export const settingsService = Object.freeze({
   async initialize() {
     const state = await loadSettings();
-    const versionCheck = state.settings.check_updates_on_start
-      ? await versionService.checkLatest()
-      : null;
+    const versionCheckPromise = state.settings.check_updates_on_start
+      ? versionService.checkLatest()
+      : Promise.resolve(null);
 
     return {
       ...state,
-      versionCheck,
+      versionCheckPromise,
     };
   },
 
@@ -89,9 +98,9 @@ export const settingsService = Object.freeze({
   async save(settings) {
     const normalized = normalizeSettings(settings);
     const previousSettings = currentSettings || fallbackSettings();
-    const runtime = await pickerService.configure(normalized);
 
     try {
+      const runtime = await pickerService.configure(normalized);
       const saved = await tauriBridge.invokeCommand(
         APP_CONFIG.commands.saveSettings,
         { settings: normalized },
@@ -105,12 +114,7 @@ export const settingsService = Object.freeze({
         runtime: currentRuntime,
       };
     } catch (error) {
-      const restoredRuntime = await pickerService.configure(
-        previousSettings,
-        { allowShortcutFailure: true },
-      );
-      currentSettings = previousSettings;
-      currentRuntime = restoredRuntime;
+      await restoreRuntime(previousSettings);
       throw error;
     }
   },
