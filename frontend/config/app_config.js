@@ -33,6 +33,7 @@ export const APP_CONFIG = Object.freeze({
     importPalette: "import_palette",
     getSettings: "get_settings",
     saveSettings: "save_settings",
+    checkAndInstallUpdate: "check_and_install_update",
   }),
   exportFormats: Object.freeze({
     yaml: "yaml",
