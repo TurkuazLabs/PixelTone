@@ -107,3 +107,21 @@ PixelTone UI, GitHub Releases `latest` endpointini kontrol eder.
 Repository private ise anonim istemci bu endpointi okuyamayabilir. Uygulama bu durumda surum kontrolunu bloklamaz ve "surum bilgisi kullanilamiyor" durumunu gosterir.
 
 Private repo icin token uygulamaya gomulmez. Gelecekte public update manifest veya imzali updater servisi kullanilmalidir.
+
+
+## Signed Updater Release
+
+Release workflow su GitHub Secrets degerlerini zorunlu tutar:
+
+- `TAURI_SIGNING_PRIVATE_KEY`
+- `TAURI_SIGNING_PRIVATE_KEY_PASSWORD`
+
+Tauri Action NSIS updater bundle imzasini ve `latest.json` dosyasini release assetlerine ekler.
+
+Ilk signing yapilandirmasi:
+
+```powershell
+npm run configure:updater
+```
+
+Ayrinti: `docs/UPDATER.md`.
