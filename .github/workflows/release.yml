@@ -86,6 +86,9 @@ jobs:
       - name: Check release context
         run: npm run check:release-context
 
+      - name: Check release lockfiles
+        run: npm run check:release-lockfiles
+
       - name: Generate platform icons
         run: npm run tauri icon src-tauri/icons/icon.png
 
