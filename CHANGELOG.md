@@ -1,12 +1,31 @@
 # 📄 Dosya Yolu: pixeltone/CHANGELOG.md
 # 📌 Amac: PixelTone surum degisikliklerini kaydetmek
 # 📌 Docs - Markdown
-# Version: 0.4.0
-# Aciklama: Proje degisiklik gecmisi ve v0.4.0 Picker Experience kaydi
+# Version: 1.0.0
+# Aciklama: Proje degisiklik gecmisi ve v1.0.0 Stable Desktop kaydi
 
 Bagimli Oldugu Katman: View
 
 # Changelog
+
+## 1.0.0
+
+- Stable Desktop ayarlar modeli, SettingsService ve JSON SettingsRepository eklendi.
+- Kapatma dugmesinde tray'e gizleme davranisi ayarlanabilir hale getirildi.
+- Close-to-tray kapaliyken uygulamanin gercekten sonlanmasi saglandi.
+- Native Tauri system tray ikonu ve Ac / Canli Picker / Cikis menusu eklendi.
+- Tray sol tik ana pencereyi geri getiriyor.
+- Global picker kisayolu ayarlardan degistirilebilir hale getirildi.
+- Kisayol degisiminde eski global shortcut kaydi temizleniyor.
+- Varsayilan picker kopyalama formati HEX veya RGB olarak secilebilir hale getirildi.
+- Ayar kaydi runtime shortcut uygulamasi ile transactional hale getirildi.
+- Kurulu uygulama surumu Tauri App API ile okunuyor.
+- GitHub Releases endpointi uzerinden baslangicta veya manuel surum kontrolu eklendi.
+- Private repository release endpointi erisilemezse surum kontrolu guvenli uyari durumuna geciyor.
+- Windows icin NSIS ve MSI, Linux icin AppImage/DEB/RPM, macOS icin APP/DMG release workflow'u eklendi.
+- Release workflow platform ikonlarini Tauri CLI ile kaynak PNG'den uretiyor.
+- macOS sertifikasiz CI buildleri icin ad-hoc signing identity tanimlandi.
+- package.json, Cargo.toml ve Tauri config surumleri 1.0.0 olarak senkronlandi.
 
 ## 0.4.0
 
