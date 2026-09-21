@@ -6,7 +6,7 @@
 //
 // Bagimli Oldugu Katman: Service
 
-use tauri::WindowEvent;
+use tauri::{Manager, WindowEvent};
 
 use crate::config::app_config::MAIN_WINDOW_LABEL;
 use crate::language::tr;
