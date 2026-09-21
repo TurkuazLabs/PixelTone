@@ -18,7 +18,8 @@
     "preview": "vite preview --host 127.0.0.1 --port 1421",
     "tauri": "tauri",
     "check:version": "node tools/check_version_consistency.mjs",
-    "check:release-context": "node tools/check_release_context.mjs"
+    "check:release-context": "node tools/check_release_context.mjs",
+    "check:release-lockfiles": "node tools/check_release_lockfiles.mjs"
   },
   "dependencies": {
     "@tauri-apps/api": "^2.0.0",
