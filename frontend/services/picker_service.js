@@ -21,6 +21,7 @@ let sampleIntervalId = null;
 let currentSample = null;
 let copyFormat = APP_CONFIG.defaults.settings.defaultCopyFormat;
 let configuredShortcut = APP_CONFIG.defaults.settings.pickerShortcut;
+let registeredShortcut = null;
 let configuredDefaultCopyFormat = APP_CONFIG.defaults.settings.defaultCopyFormat;
 let sampleHandler = null;
 let errorHandler = null;
@@ -163,19 +164,24 @@ export const pickerService = Object.freeze({
     const nextShortcut =
       String(settings.picker_shortcut || "").trim() ||
       APP_CONFIG.defaults.settings.pickerShortcut;
-    configuredDefaultCopyFormat = normalizeCopyFormat(
+    const nextDefaultCopyFormat = normalizeCopyFormat(
       settings.default_copy_format,
     );
 
-    if (configuredShortcut && configuredShortcut !== nextShortcut) {
-      await shortcutTool.unregister(configuredShortcut);
+    if (registeredShortcut !== nextShortcut) {
+      await shortcutTool.register(nextShortcut, () => {
+        void openPicker().catch(notifyError);
+      });
+
+      if (registeredShortcut) {
+        await shortcutTool.unregister(registeredShortcut);
+      }
+
+      registeredShortcut = nextShortcut;
     }
 
     configuredShortcut = nextShortcut;
-
-    await shortcutTool.replace(configuredShortcut, () => {
-      void openPicker().catch(notifyError);
-    });
+    configuredDefaultCopyFormat = nextDefaultCopyFormat;
 
     return {
       shortcut: configuredShortcut,
