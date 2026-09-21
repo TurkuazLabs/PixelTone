@@ -6,7 +6,7 @@
 //
 // Bagimli Oldugu Katman: Service
 
-use tauri::AppHandle;
+use tauri::{AppHandle, Manager};
 use tauri_plugin_updater::UpdaterExt;
 use url::Url;
 
