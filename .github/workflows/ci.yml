@@ -1,8 +1,8 @@
 # 📄 Dosya Yolu: pixeltone/.github/workflows/ci.yml
-# 📌 Amac: PixelTone ana CI dogrulamasini Windows self-hosted runner uzerinde calistirmak
+# 📌 Amac: PixelTone kodunu public repository icin GitHub-hosted Windows, Linux ve macOS runnerlarinda dogrulamak
 # 📌 Config - YAML
 # Version: 1.0.0
-# Aciklama: GitHub hosted runner kota/billing bagimliligini kaldirir ve PR/main kontrollerini PixelTone Windows runner ile calistirir
+# Aciklama: PR/main akisinda preflight, frontend build, Rust format/check ve unit testlerini platform matrisi ile calistirir
 #
 # Bagimli Oldugu Katman: Config
 
@@ -25,17 +25,42 @@ permissions:
   contents: read
 
 jobs:
-  validate-windows:
-    name: Validate - Windows Self Hosted
-    runs-on:
-      - self-hosted
-      - windows
-      - x64
-      - pixeltone
+  validate:
+    name: Validate - ${{ matrix.platform }}
+    runs-on: ${{ matrix.platform }}
+    strategy:
+      fail-fast: false
+      matrix:
+        platform:
+          - ubuntu-22.04
+          - windows-latest
+          - macos-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@v7
+
+      - name: Install Linux system dependencies
+        if: matrix.platform == 'ubuntu-22.04'
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            pkg-config \
+            libclang-dev \
+            libssl-dev \
+            libgtk-3-dev \
+            libwebkit2gtk-4.1-dev \
+            libayatana-appindicator3-dev \
+            librsvg2-dev \
+            libxdo-dev \
+            libxcb1-dev \
+            libxrandr-dev \
+            libdbus-1-dev \
+            libpipewire-0.3-dev \
+            libwayland-dev \
+            libegl-dev
 
       - name: Setup Node.js
         uses: actions/setup-node@v7
@@ -47,19 +72,31 @@ jobs:
         with:
           components: rustfmt
 
-      - name: Run PixelTone Windows CI
-        shell: powershell
-        run: powershell -ExecutionPolicy Bypass -File scripts/ci_windows.ps1
-
-      - name: Build validated PixelTone Setup.exe
-        shell: powershell
-        run: powershell -ExecutionPolicy Bypass -File scripts/build_windows_setup.ps1 -SkipValidation -Clean
-
-      - name: Upload validated Setup artifact
-        uses: actions/upload-artifact@v4
+      - name: Cache Rust
+        uses: swatinem/rust-cache@v2
         with:
-          name: PixelTone-Windows-Setup-${{ github.sha }}
-          path: |
-            dist-installer/PixelTone-Setup-v*.exe
-            dist-installer/PixelTone-Setup-v*.exe.sha256
-          if-no-files-found: error
+          workspaces: ./src-tauri -> target
+
+      - name: Install frontend dependencies
+        run: npm install
+
+      - name: Run Stable Desktop preflight
+        run: npm run preflight
+
+      - name: Run dependency-free tool tests
+        run: npm run test:tools
+
+      - name: Build frontend
+        run: npm run build
+
+      - name: Check Rust formatting
+        working-directory: src-tauri
+        run: cargo fmt --all -- --check
+
+      - name: Check Rust/Tauri backend
+        working-directory: src-tauri
+        run: cargo check
+
+      - name: Run Rust unit tests
+        working-directory: src-tauri
+        run: cargo test --lib
