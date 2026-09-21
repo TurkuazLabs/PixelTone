@@ -50,3 +50,16 @@ jobs:
       - name: Run PixelTone Windows CI
         shell: powershell
         run: powershell -ExecutionPolicy Bypass -File scripts/ci_windows.ps1
+
+      - name: Build validated PixelTone Setup.exe
+        shell: powershell
+        run: powershell -ExecutionPolicy Bypass -File scripts/build_windows_setup.ps1 -SkipValidation -Clean
+
+      - name: Upload validated Setup artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: PixelTone-Windows-Setup-${{ github.sha }}
+          path: |
+            dist-installer/PixelTone-Setup-v*.exe
+            dist-installer/PixelTone-Setup-v*.exe.sha256
+          if-no-files-found: error
