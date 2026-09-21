@@ -60,15 +60,29 @@ GitHub repository ekraninda:
 5. Windows
 6. x64
 
-GitHub burada bir saat gecerliligi olan registration token gosterir.
+En kolay yol GitHub CLI ile tek komuttur.
 
-Yonetici PowerShell acin ve PixelTone repository'sinde:
+Once:
+
+```powershell
+gh auth login
+```
+
+Ardindan Yonetici PowerShell acin ve PixelTone repository'sinde:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\enable_ci_runner.ps1
+```
+
+Bu script repository admin yetkisiyle gecici registration token'i otomatik alir ve runner kurulumunu baslatir.
+
+GitHub CLI kullanmak istemezseniz GitHub burada bir saat gecerliligi olan registration token gosterir. Bu token ile alternatif komut:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\scripts\setup_self_hosted_runner.ps1 -Token "GITHUB_REGISTRATION_TOKEN"
 ```
 
-Script:
+Runner bootstrap scripti:
 
 - son Windows x64 Actions Runner paketini indirir
 - `C:\actions-runner` altina kurar
