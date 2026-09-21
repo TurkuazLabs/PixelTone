@@ -63,6 +63,7 @@ async function main() {
   if (releaseMode) {
     await run("node", ["tools/check_release_context.mjs"]);
     await run("node", ["tools/check_release_lockfiles.mjs"]);
+    await run("node", ["tools/check_updater_config.mjs"]);
   }
 
   process.stdout.write(
