@@ -24,6 +24,7 @@ async function saveSettings() {
     settingsView.renderSettings(settings);
     settingsView.setStatus(TR_LABELS.status.settingsSaved);
   } catch (error) {
+    settingsView.renderSettings(settingsService.getCurrent());
     settingsView.setStatus(
       errorMessage(error, TR_LABELS.status.settingsSaveFailed),
     );
