@@ -20,7 +20,7 @@ buttons:
   move_color_up: "Yukari"
   move_color_down: "Asagi"
   save_settings: "Ayarlari Kaydet"
-  check_updates: "Surum Kontrol Et"
+  check_updates: "Guncellemeyi Kontrol Et"
 
 labels:
   picker_shortcut: "Kisayol"
@@ -48,4 +48,4 @@ messages:
   picker_shortcut_unavailable: "Global picker kisayolu su anda kullanilamiyor. Canli Picker butonu ve tray menusu kullanilabilir."
   update_check_running: "Surum kontrol ediliyor."
   update_check_completed: "Surum kontrolu tamamlandi."
-  version_unavailable: "Surum bilgisi alinamadi. Private repo icin public release endpoint gerekir."
+  version_unavailable: "Imzali updater henuz yapilandirilmadi veya guncelleme servisine ulasilamadi."
