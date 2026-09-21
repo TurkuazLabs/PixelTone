@@ -907,8 +907,15 @@ SectionEnd
 
 Function RestorePreviousInstallLocation
   ReadRegStr $4 SHCTX "${MANUPRODUCTKEY}" ""
-  StrCmp $4 "" +2 0
+  StrCmp $4 "" restore_previous_done 0
+  StrCmp $4 "$LOCALAPPDATA\${PRODUCTNAME}" migrate_legacy_install 0
     StrCpy $INSTDIR $4
+    Goto restore_previous_done
+
+migrate_legacy_install:
+  StrCpy $INSTDIR "$LOCALAPPDATA\TurkuazLabs\${PRODUCTNAME}"
+
+restore_previous_done:
 FunctionEnd
 
 Function Skip
