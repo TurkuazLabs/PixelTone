@@ -1,8 +1,8 @@
 # 📄 Dosya Yolu: pixeltone/.github/workflows/ci.yml
 # 📌 Amac: PixelTone kodunu public repository icin GitHub-hosted Windows, Linux ve macOS runnerlarinda dogrulamak
 # 📌 Config - YAML
-# Version: 1.0.0
-# Aciklama: PR/main akisinda preflight, frontend build, Rust format/check ve unit testlerini platform matrisi ile calistirir
+# Version: 1.0.1
+# Aciklama: PR/main akisinda preflight, frontend build, Rust format/check ve unit testlerini platform matrisi ile temiz target uzerinde calistirir
 #
 # Bagimli Oldugu Katman: Config
 
@@ -72,10 +72,11 @@ jobs:
         with:
           components: rustfmt
 
-      - name: Cache Rust
+      - name: Cache Rust dependencies
         uses: swatinem/rust-cache@v2
         with:
           workspaces: ./src-tauri -> target
+          cache-targets: false
 
       - name: Install frontend dependencies
         run: npm install
