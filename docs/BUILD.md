@@ -95,6 +95,8 @@ sudo apt-get install -y \
 - Linux Wayland: compositor uyumlulugu ve portal fallback ihtiyaci
 - macOS: Screen Recording izni, Retina olcekleme, tray, APP/DMG
 
+Tauri'de `show_menu_on_left_click(false)` Linux tray backendinde desteklenmez. Bu nedenle Linux tray UX testi Windows/macOS davranisiyla birebir ayni kabul edilmemelidir.
+
 ## CI Notu
 
 Normal CI `.github/workflows/ci.yml` ile Windows/Linux/macOS uzerinde frontend build, Rust format ve cargo check hedeflenir.
