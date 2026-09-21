@@ -95,12 +95,16 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           APPLE_SIGNING_IDENTITY: ${{ matrix.apple_signing_identity }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
         with:
           tagName: "v__VERSION__"
           releaseName: "PixelTone v__VERSION__"
           releaseBody: "PixelTone Stable Desktop release. Platform installer paketleri bu release altindadir."
           releaseDraft: true
           prerelease: false
+          updaterJsonPreferNsis: true
+          uploadUpdaterJson: true
           args: "--bundles ${{ matrix.bundles }}"
 
 
