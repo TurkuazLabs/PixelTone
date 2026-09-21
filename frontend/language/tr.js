@@ -18,6 +18,7 @@ export const TR_LABELS = Object.freeze({
     pickerStarted: "Canli picker acildi.",
     pickerStartFailed: "Canli picker acilamadi.",
     pickerShortcutFailed: "Global picker kisayolu kaydedilemedi.",
+    pickerShortcutUnavailable: "Global picker kisayolu su anda kullanilamiyor. Canli Picker butonu ve tray menusu kullanilabilir.",
     pickerSelected: "Picker rengi panoya kopyalandi.",
     pickerSampleFailed: "Canli picker rengi okunamadi.",
     pickerCopyFailed: "Secilen renk panoya kopyalanamadi.",
