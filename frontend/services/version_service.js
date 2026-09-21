@@ -2,46 +2,16 @@
 // # 📌 Amac: PixelTone kurulu surumu ile son public release surumunu karsilastirmak
 // # 📌 Service - JavaScript
 // # Version: 1.0.0
-// # Aciklama: Semver karsilastirmasi yapar ve private/public release endpoint hatalarini guvenli sonuc modeline cevirir
+// # Aciklama: Version Tool sonucunu kullanir ve private/public release endpoint hatalarini guvenli sonuc modeline cevirir
 //
 // Bagimli Oldugu Katman: Service
 
 import { appTool } from "../tools/app_tool.js";
 import { releaseTool } from "../tools/release_tool.js";
-
-function normalizeVersion(value) {
-  return String(value || "")
-    .trim()
-    .replace(/^v/i, "")
-    .split("-")[0];
-}
-
-function versionParts(value) {
-  return normalizeVersion(value)
-    .split(".")
-    .map((part) => Number.parseInt(part, 10) || 0);
-}
-
-function compareVersions(left, right) {
-  const leftParts = versionParts(left);
-  const rightParts = versionParts(right);
-  const maxLength = Math.max(leftParts.length, rightParts.length);
-
-  for (let index = 0; index < maxLength; index += 1) {
-    const leftValue = leftParts[index] || 0;
-    const rightValue = rightParts[index] || 0;
-
-    if (leftValue > rightValue) {
-      return 1;
-    }
-
-    if (leftValue < rightValue) {
-      return -1;
-    }
-  }
-
-  return 0;
-}
+import {
+  compareVersions,
+  normalizeVersion,
+} from "../tools/version_compare_tool.js";
 
 export const versionService = Object.freeze({
   async checkLatest() {
