@@ -14,6 +14,22 @@ param(
 $ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
 
+function Convert-SecureStringToPlainText {
+    param(
+        [Parameter(Mandatory = $true)]
+        [Security.SecureString]$SecureValue
+    )
+
+    $Pointer = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($SecureValue)
+
+    try {
+        return [Runtime.InteropServices.Marshal]::PtrToStringBSTR($Pointer)
+    }
+    finally {
+        [Runtime.InteropServices.Marshal]::ZeroFreeBSTR($Pointer)
+    }
+}
+
 function Invoke-Step {
     param(
         [Parameter(Mandatory = $true)]
@@ -30,6 +46,8 @@ function Invoke-Step {
 $Root = Split-Path -Parent $PSScriptRoot
 $OutputDir = Join-Path $Root "dist-installer"
 $PackagePath = Join-Path $Root "package.json"
+$ManagedSigningKey = $false
+$ManagedSigningPassword = $false
 
 Push-Location $Root
 
@@ -75,11 +93,34 @@ try {
         }
     }
 
+    Invoke-Step -Name "Check updater signing configuration" -Action {
+        npm run check:updater
+    }
+
+    Invoke-Step -Name "Configure updater signing environment" -Action {
+        if ([string]::IsNullOrWhiteSpace($env:TAURI_SIGNING_PRIVATE_KEY)) {
+            $DefaultKeyPath = Join-Path $env:USERPROFILE ".tauri\pixeltone-updater.key"
+
+            if (-not (Test-Path $DefaultKeyPath)) {
+                throw "Updater private key bulunamadi. Once npm run configure:updater calistirin."
+            }
+
+            $env:TAURI_SIGNING_PRIVATE_KEY = $DefaultKeyPath
+            $script:ManagedSigningKey = $true
+        }
+
+        if ([string]::IsNullOrWhiteSpace($env:TAURI_SIGNING_PRIVATE_KEY_PASSWORD)) {
+            $SecurePassword = Read-Host "Updater signing key sifresi" -AsSecureString
+            $env:TAURI_SIGNING_PRIVATE_KEY_PASSWORD = Convert-SecureStringToPlainText -SecureValue $SecurePassword
+            $script:ManagedSigningPassword = $true
+        }
+    }
+
     Invoke-Step -Name "Generate platform icons" -Action {
         npm run tauri icon "src-tauri/icons/icon.png"
     }
 
-    Invoke-Step -Name "Build NSIS Setup.exe" -Action {
+    Invoke-Step -Name "Build signed NSIS Setup.exe" -Action {
         npm run tauri build -- --bundles nsis
     }
 
@@ -112,5 +153,13 @@ try {
     }
 }
 finally {
+    if ($ManagedSigningPassword) {
+        Remove-Item Env:TAURI_SIGNING_PRIVATE_KEY_PASSWORD -ErrorAction SilentlyContinue
+    }
+
+    if ($ManagedSigningKey) {
+        Remove-Item Env:TAURI_SIGNING_PRIVATE_KEY -ErrorAction SilentlyContinue
+    }
+
     Pop-Location
 }
