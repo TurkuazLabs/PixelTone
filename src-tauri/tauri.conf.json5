@@ -1,15 +1,15 @@
 // # 📄 Dosya Yolu: pixeltone/src-tauri/tauri.conf.json5
 // # 📌 Amac: Tauri uygulama ve picker overlay ayarlarini tanimlamak
 // # 📌 Config - JSON5
-// # Version: 0.4.0
-// # Aciklama: Ana pencere, seffaf picker overlay, build ve bundle ayarlarini tanimlar
+// # Version: 1.0.0
+// # Aciklama: Stable Desktop ana pencere, picker overlay, tray uyumlu build ve bundle ayarlarini tanimlar
 //
 // Bagimli Oldugu Katman: Config
 
 {
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "PixelTone",
-  "version": "0.4.0",
+  "version": "1.0.0",
   "identifier": "com.pixeltone.app",
   "build": {
     "beforeDevCommand": "npm run dev",
