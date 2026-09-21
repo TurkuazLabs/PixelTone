@@ -1,0 +1,97 @@
+# 📄 Dosya Yolu: pixeltone/.github/workflows/release.yml
+# 📌 Amac: PixelTone v1.x surumlerini Windows, Linux ve macOS installer paketleri olarak yayinlamak
+# 📌 Config - YAML
+# Version: 1.0.0
+# Aciklama: Tag veya manuel tetiklemede platform ikonlarini uretir, Tauri bundle paketlerini build eder ve GitHub Release'e yukler
+#
+# Bagimli Oldugu Katman: Config
+
+name: PixelTone Release
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build-release:
+    name: Release - ${{ matrix.platform }}
+    runs-on: ${{ matrix.platform }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: windows-latest
+            bundles: "nsis,msi"
+            apple_signing_identity: ""
+          - platform: ubuntu-22.04
+            bundles: "appimage,deb,rpm"
+            apple_signing_identity: ""
+          - platform: macos-latest
+            bundles: "app,dmg"
+            apple_signing_identity: "-"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Install Linux system dependencies
+        if: matrix.platform == 'ubuntu-22.04'
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            pkg-config \
+            libclang-dev \
+            libssl-dev \
+            libgtk-3-dev \
+            libwebkit2gtk-4.1-dev \
+            libayatana-appindicator3-dev \
+            librsvg2-dev \
+            libxdo-dev \
+            libxcb1-dev \
+            libxrandr-dev \
+            libdbus-1-dev \
+            libpipewire-0.3-dev \
+            libwayland-dev \
+            libegl-dev \
+            patchelf \
+            xdg-utils
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: lts/*
+          cache: npm
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache Rust
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: ./src-tauri -> target
+
+      - name: Install frontend dependencies
+        run: npm install
+
+      - name: Generate platform icons
+        run: npm run tauri icon src-tauri/icons/icon.png
+
+      - name: Build and publish Tauri bundles
+        uses: tauri-apps/tauri-action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          APPLE_SIGNING_IDENTITY: ${{ matrix.apple_signing_identity }}
+        with:
+          tagName: "v__VERSION__"
+          releaseName: "PixelTone v__VERSION__"
+          releaseBody: "PixelTone Stable Desktop release. Platform installer paketleri bu release altindadir."
+          releaseDraft: false
+          prerelease: false
+          args: "--bundles ${{ matrix.bundles }}"
