@@ -116,4 +116,18 @@ npm run tauri dev
 npm run tauri build
 ```
 
-Detaylar `docs/BUILD.md`, `docs/INSTALL.md`, `docs/RELEASE.md` ve `docs/WAYLAND_PICKER.md` dosyalarindadir.
+Windows Setup.exe:
+
+```powershell
+npm run setup:windows
+```
+
+Windows local CI:
+
+```powershell
+npm run ci:windows
+```
+
+Ana GitHub CI, private-repo hosted runner kota/billing sorunundan bagimsiz olmak icin `self-hosted + windows + x64 + pixeltone` runner kullanir.
+
+Detaylar `docs/BUILD.md`, `docs/INSTALL.md`, `docs/CI.md`, `docs/RELEASE.md` ve `docs/WAYLAND_PICKER.md` dosyalarindadir.
