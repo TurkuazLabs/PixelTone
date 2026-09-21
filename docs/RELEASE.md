@@ -1,0 +1,83 @@
+# 📄 Dosya Yolu: pixeltone/docs/RELEASE.md
+# 📌 Amac: PixelTone Stable Desktop release ve installer yayin prosedurunu tanimlamak
+# 📌 Docs - Markdown
+# Version: 1.0.0
+# Aciklama: Surum senkronu, Git tag, GitHub Actions release workflow ve installer ciktilarini aciklar
+
+Bagimli Oldugu Katman: Config
+
+# PixelTone Release Proseduru
+
+## Surum Kaynaklari
+
+Release oncesi su uc kaynak ayni semver degerini tasimalidir:
+
+- `package.json -> version`
+- `src-tauri/Cargo.toml -> package.version`
+- `src-tauri/tauri.conf.json5 -> version`
+
+v1.0.0 icin uc deger de `1.0.0` olmalidir.
+
+## Otomatik Release Workflow
+
+Workflow:
+
+`.github/workflows/release.yml`
+
+Tetikleyiciler:
+
+- `v*` Git tag push
+- Manuel `workflow_dispatch`
+
+Ornek tag:
+
+```bash
+git tag v1.0.0
+git push origin v1.0.0
+```
+
+## Uretilen Paketler
+
+Windows:
+
+- NSIS Setup EXE
+- MSI
+
+Linux:
+
+- AppImage
+- DEB
+- RPM
+
+macOS:
+
+- APP
+- DMG
+
+## Ikonlar
+
+Workflow, build oncesi su komutu calistirir:
+
+```bash
+npm run tauri icon src-tauri/icons/icon.png
+```
+
+Boylece platforma ozel icon setleri build ortaminda kaynak PNG'den yeniden uretilir.
+
+## macOS Imzalama
+
+Sertifika tanimli degilken release workflow ad-hoc signing identity `-` kullanir.
+
+Bu build test ve dogrudan indirme icin paket uretebilir ancak Apple Developer ID notarization yerine gecmez.
+
+## Windows Imzalama
+
+v1.0.0 workflow'u code-signing sertifikasi zorunlu tutmaz. Windows SmartScreen itibari icin ileride imzali release pipeline eklenmelidir.
+
+## Surum Kontrolu
+
+PixelTone UI, GitHub Releases `latest` endpointini kontrol eder.
+
+Repository private ise anonim istemci bu endpointi okuyamayabilir. Uygulama bu durumda surum kontrolunu bloklamaz ve "surum bilgisi kullanilamiyor" durumunu gosterir.
+
+Private repo icin token uygulamaya gomulmez. Gelecekte public update manifest veya imzali updater servisi kullanilmalidir.
