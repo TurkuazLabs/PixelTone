@@ -17,6 +17,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: pixeltone-release-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   build-release:
     name: Release - ${{ matrix.platform }}
