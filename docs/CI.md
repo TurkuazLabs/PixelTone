@@ -41,6 +41,16 @@ Ana CI su durumlarda calisir:
 - main hedefli pull request
 - manuel workflow_dispatch
 
+## Ana CI Setup Artifact
+
+Ana Windows CI dogrulamasi basarili olursa ayni run icinde:
+
+1. NSIS Setup.exe build edilir.
+2. SHA256 dosyasi olusturulur.
+3. `PixelTone-Windows-Setup-<commit-sha>` artifacti yuklenir.
+
+Bu nedenle self-hosted runner baglandiginda mevcut queued PR run'i ayrica manuel workflow gerektirmeden Setup.exe uretebilir.
+
 ## Cross-Platform Hosted CI
 
 Workflow:
