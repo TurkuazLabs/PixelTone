@@ -1,8 +1,8 @@
 # 📄 Dosya Yolu: pixeltone/docs/BUILD.md
 # 📌 Amac: PixelTone build ve dagitim komutlarini aciklamak
 # 📌 Docs - Markdown
-# Version: 0.2.0
-# Aciklama: Gelistirme, native capture bagimliliklari ve paketleme komutlari
+# Version: 1.0.0
+# Aciklama: Gelistirme, native capture bagimliliklari, tray ve platform installer build komutlarini tanimlar
 
 Bagimli Oldugu Katman: View
 
@@ -15,39 +15,88 @@ npm install
 npm run tauri dev
 ```
 
+## Frontend Build
+
+```bash
+npm run build
+```
+
+Frontend-only calisma Tauri native capture, global shortcut, tray ve settings repository davranislarini test etmez.
+
 ## Production Build
 
 ```bash
 npm run tauri build
 ```
 
-## Frontend Only Preview
+## Platform Bundle Hedefleri
+
+Windows:
 
 ```bash
-npm run dev
+npm run tauri build -- --bundles nsis,msi
 ```
 
-Frontend only preview Tauri native capture komutlarini calistirmaz. Ekran rengi yakalama testi `npm run tauri dev` ile yapilmalidir.
+Linux:
 
-## Linux Capture Build Bagimliliklari
+```bash
+npm run tauri build -- --bundles appimage,deb,rpm
+```
 
-xcap Linux buildi icin sistem paketleri gerekir.
+macOS:
+
+```bash
+npm run tauri build -- --bundles app,dmg
+```
+
+## Platform Icon Uretimi
+
+Kaynak ikon:
+
+`src-tauri/icons/icon.png`
+
+Tum Tauri desktop ikonlarini yeniden uretmek icin:
+
+```bash
+npm run tauri icon src-tauri/icons/icon.png
+```
+
+Bu komut macOS icin `icon.icns`, Windows icin `icon.ico` ve Linux icin gereken PNG setini uretir.
+
+## Linux Build Bagimliliklari
 
 Ubuntu/Debian ornegi:
 
 ```bash
-sudo apt-get install pkg-config libclang-dev libxcb1-dev libxrandr-dev libdbus-1-dev libpipewire-0.3-dev libwayland-dev libegl-dev
+sudo apt-get install -y \
+  build-essential \
+  pkg-config \
+  libclang-dev \
+  libssl-dev \
+  libgtk-3-dev \
+  libwebkit2gtk-4.1-dev \
+  libayatana-appindicator3-dev \
+  librsvg2-dev \
+  libxdo-dev \
+  libxcb1-dev \
+  libxrandr-dev \
+  libdbus-1-dev \
+  libpipewire-0.3-dev \
+  libwayland-dev \
+  libegl-dev \
+  patchelf \
+  xdg-utils
 ```
-
-Tauri icin ayrica dagitima uygun WebKitGTK gelistirme paketleri kurulmalidir.
 
 ## Platform Testleri
 
-- Windows: capture + coklu monitor + pencere kucult/geri getir
-- Linux X11: capture + cursor konumu
-- Linux Wayland: compositor uyumlulugu ve portal ihtiyaci
-- macOS: Screen Recording izni ve Retina olcekleme
+- Windows: capture, coklu monitor, tray, global shortcut, NSIS ve MSI
+- Linux X11: capture, cursor konumu, tray, AppImage/DEB/RPM
+- Linux Wayland: compositor uyumlulugu ve portal fallback ihtiyaci
+- macOS: Screen Recording izni, Retina olcekleme, tray, APP/DMG
 
-## Not
+## CI Notu
 
-v0.2.0 capture islemi her tiklamada cursorun bulundugu monitorun goruntusunu alir ve hedef pikseli Rust tarafinda ornekler. Canli surekli capture v0.4.0 kapsamindadir.
+Normal CI `.github/workflows/ci.yml` ile Windows/Linux/macOS uzerinde frontend build, Rust format ve cargo check hedeflenir.
+
+GitHub hosted runner tahsis edilmeden `runner_id: 0` ve bos step listesiyle biten run'lar uygulama build hatasi degildir; runner altyapisi calismamistir.
