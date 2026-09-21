@@ -81,14 +81,8 @@ jobs:
         with:
           workspaces: ./src-tauri -> target
 
-      - name: Check application version consistency
-        run: npm run check:version
-
-      - name: Check release context
-        run: npm run check:release-context
-
-      - name: Check committed release lockfiles
-        run: npm run check:release-lockfiles
+      - name: Run Stable Desktop release preflight
+        run: npm run preflight:release
 
       - name: Install locked frontend dependencies
         run: npm ci
