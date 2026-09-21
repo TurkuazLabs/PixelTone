@@ -37,8 +37,7 @@ impl SettingsRepository {
             fs::create_dir_all(parent).map_err(|error| error.to_string())?;
         }
 
-        let content =
-            serde_json::to_string_pretty(settings).map_err(|error| error.to_string())?;
+        let content = serde_json::to_string_pretty(settings).map_err(|error| error.to_string())?;
         fs::write(path, content).map_err(|error| error.to_string())?;
 
         Ok(settings.clone())
