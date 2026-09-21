@@ -39,7 +39,8 @@ impl TrayTool {
             .items(&[&show_item, &picker_item, &quit_item])
             .build()?;
 
-        let mut tray = TrayIconBuilder::with_id(TRAY_ID)
+        let tray = TrayIconBuilder::with_id(TRAY_ID)
+            .icon(tauri::include_image!("./icons/icon.png"))
             .menu(&menu)
             .show_menu_on_left_click(false)
             .tooltip(labels.tooltip)
@@ -65,10 +66,6 @@ impl TrayTool {
                     Self::show_main_window(tray.app_handle());
                 }
             });
-
-        if let Some(icon) = app.default_window_icon() {
-            tray = tray.icon(icon.clone());
-        }
 
         tray.build(app)?;
         Ok(())
