@@ -9,8 +9,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::config::app_config::{
-    COPY_FORMAT_HEX, DEFAULT_CHECK_UPDATES_ON_START, DEFAULT_CLOSE_TO_TRAY,
-    DEFAULT_PICKER_SHORTCUT,
+    COPY_FORMAT_HEX, DEFAULT_CHECK_UPDATES_ON_START, DEFAULT_CLOSE_TO_TRAY, DEFAULT_PICKER_SHORTCUT,
 };
 
 fn default_close_to_tray() -> bool {
