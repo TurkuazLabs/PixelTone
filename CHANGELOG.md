@@ -10,6 +10,15 @@ Bagimli Oldugu Katman: View
 
 ## 1.0.0
 
+- Windows current-user kurulum yolu `%LOCALAPPDATA%\TurkuazLabs\PixelTone` standardina tasindi.
+- Start Menu klasoru `TurkuazLabs\PixelTone` olarak standardize edildi.
+- Tauri v2 signed updater backend'i eklendi.
+- Public GitHub Releases `latest.json` updater kanali eklendi.
+- Baslangicta otomatik signed update kontrolu ve kurulum akisi eklendi.
+- Tauri updater artifact ve signature uretimi etkinlestirildi.
+- Release workflow NSIS updater'i tercih edecek ve `latest.json` yayinlayacak sekilde guncellendi.
+- Vite `TAURI_` env prefixi kaldirilarak updater private key'in frontend bundle'a sizma riski kapatildi.
+
 - Stable Desktop ayarlar modeli, SettingsService ve JSON SettingsRepository eklendi.
 - Kapatma dugmesinde tray'e gizleme davranisi ayarlanabilir hale getirildi.
 - Close-to-tray kapaliyken uygulamanin gercekten sonlanmasi saglandi.
