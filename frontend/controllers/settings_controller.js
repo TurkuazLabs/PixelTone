@@ -18,11 +18,20 @@ function errorMessage(error, fallback) {
   return error?.message || fallback;
 }
 
+function renderRuntimeStatus(runtime, successMessage) {
+  if (runtime?.shortcutRegistered === false) {
+    settingsView.setStatus(TR_LABELS.status.pickerShortcutUnavailable);
+    return;
+  }
+
+  settingsView.setStatus(successMessage);
+}
+
 async function saveSettings() {
   try {
-    const settings = await settingsService.save(settingsView.getSettings());
-    settingsView.renderSettings(settings);
-    settingsView.setStatus(TR_LABELS.status.settingsSaved);
+    const state = await settingsService.save(settingsView.getSettings());
+    settingsView.renderSettings(state.settings);
+    renderRuntimeStatus(state.runtime, TR_LABELS.status.settingsSaved);
   } catch (error) {
     settingsView.renderSettings(settingsService.getCurrent());
     settingsView.setStatus(
@@ -47,7 +56,7 @@ async function boot() {
     const state = await settingsService.initialize();
     settingsView.renderSettings(state.settings);
     settingsView.renderVersionStatus(state.versionCheck);
-    settingsView.setStatus(TR_LABELS.status.settingsLoaded);
+    renderRuntimeStatus(state.runtime, TR_LABELS.status.settingsLoaded);
   } catch (error) {
     settingsView.setStatus(
       errorMessage(error, TR_LABELS.status.settingsLoadFailed),
