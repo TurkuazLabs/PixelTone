@@ -1,7 +1,7 @@
 // # 📄 Dosya Yolu: pixeltone/frontend/config/app_config.js
 // # 📌 Amac: PixelTone frontend sabitlerini merkezi tutmak
 // # 📌 Config - JavaScript
-// # Version: 1.1.0
+// # Version: 1.1.1
 // # Aciklama: Splash, storage, Tauri komutlari, settings, picker, Tailwind ve capture ayarlarini merkezi tutar
 //
 // Bagimli Oldugu Katman: Config
@@ -38,7 +38,7 @@ export const APP_CONFIG = Object.freeze({
     completeStartup: "complete_startup",
   }),
   splash: Object.freeze({
-    minimumVisibleMs: 900,
+    minimumVisibleMs: 1500,
   }),
   exportFormats: Object.freeze({
     yaml: "yaml",
