@@ -1,13 +1,14 @@
 // # 📄 Dosya Yolu: pixeltone/src-tauri/src/config/app_config.rs
 // # 📌 Amac: Rust tarafinda magic string kullanilmasini azaltmak
 // # 📌 Config - Rust
-// # Version: 1.0.0
-// # Aciklama: Storage, capture, palette, settings, tray ve stable desktop sabitlerini merkezi tutar
+// # Version: 1.1.0
+// # Aciklama: Splash, storage, capture, palette, settings, tray ve Stable Desktop sabitlerini merkezi tutar
 //
 // Bagimli Oldugu Katman: Config
 
 pub const APP_FOLDER_NAME: &str = "pixeltone";
 pub const MAIN_WINDOW_LABEL: &str = "main";
+pub const SPLASH_WINDOW_LABEL: &str = "splashscreen";
 pub const PROJECT_FOLDER_NAME: &str = "projects";
 pub const PALETTE_FOLDER_NAME: &str = "palettes";
 pub const PALETTE_FILE_EXTENSION: &str = "json";

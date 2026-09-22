@@ -1,0 +1,40 @@
+<!--
+# 📄 Dosya Yolu: pixeltone/frontend/splash.html
+# 📌 Amac: PixelTone acilis splash ekranini gostermek
+# 📌 View - HTML
+# Version: 1.1.0
+# Aciklama: Ana pencere hazirlanirken marka, surum, renk animasyonu ve acilis durumunu gosterir
+
+Bagimli Oldugu Katman: View
+-->
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PixelTone</title>
+    <link rel="stylesheet" href="/views/splash.css" />
+  </head>
+  <body>
+    <main class="pt-splash-shell" aria-live="polite">
+      <div class="pt-splash-glow pt-splash-glow-one"></div>
+      <div class="pt-splash-glow pt-splash-glow-two"></div>
+      <section class="pt-splash-card">
+        <div class="pt-splash-mark" aria-hidden="true">
+          <span class="pt-splash-pixel pt-splash-pixel-one"></span>
+          <span class="pt-splash-pixel pt-splash-pixel-two"></span>
+          <span class="pt-splash-pixel pt-splash-pixel-three"></span>
+          <span class="pt-splash-pixel pt-splash-pixel-four"></span>
+        </div>
+        <p class="pt-splash-eyebrow">TurkuazLabs</p>
+        <h1 id="splash-app-name">PixelTone</h1>
+        <p class="pt-splash-subtitle">Color Picker & Palette Studio</p>
+        <div class="pt-splash-footer">
+          <span id="splash-status"></span>
+          <span id="splash-version"></span>
+        </div>
+      </section>
+    </main>
+    <script type="module" src="/controllers/splash_controller.js"></script>
+  </body>
+</html>

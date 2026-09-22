@@ -1,13 +1,14 @@
 // # 📄 Dosya Yolu: pixeltone/frontend/config/app_config.js
 // # 📌 Amac: PixelTone frontend sabitlerini merkezi tutmak
 // # 📌 Config - JavaScript
-// # Version: 1.0.0
-// # Aciklama: Storage, Tauri komutlari, settings, picker, Tailwind ve capture ayarlarini merkezi tutar
+// # Version: 1.1.0
+// # Aciklama: Splash, storage, Tauri komutlari, settings, picker, Tailwind ve capture ayarlarini merkezi tutar
 //
 // Bagimli Oldugu Katman: Config
 
 export const APP_CONFIG = Object.freeze({
   appName: "PixelTone",
+  version: "1.1.0",
   defaults: Object.freeze({
     projectName: "Genel",
     settings: Object.freeze({
@@ -34,6 +35,10 @@ export const APP_CONFIG = Object.freeze({
     getSettings: "get_settings",
     saveSettings: "save_settings",
     checkAndInstallUpdate: "check_and_install_update",
+    completeStartup: "complete_startup",
+  }),
+  splash: Object.freeze({
+    minimumVisibleMs: 900,
   }),
   exportFormats: Object.freeze({
     yaml: "yaml",

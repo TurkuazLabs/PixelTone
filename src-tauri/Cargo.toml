@@ -1,14 +1,14 @@
 # 📄 Dosya Yolu: pixeltone/src-tauri/Cargo.toml
 # 📌 Amac: PixelTone Rust/Tauri paket bagimliliklarini tanimlamak
 # 📌 Config - TOML
-# Version: 1.0.3
-# Aciklama: Tauri v2, tray, capture, picker shortcut/clipboard, macOS private API ve storage bagimliliklarini yonetir
+# Version: 1.1.0
+# Aciklama: Tauri v2, splash lifecycle, tray, capture, picker shortcut/clipboard, updater ve storage bagimliliklarini yonetir
 
 # Bagimli Oldugu Katman: Config
 
 [package]
 name = "pixeltone"
-version = "1.0.0"
+version = "1.1.0"
 description = "PixelTone platform independent color picker and palette manager"
 authors = ["PixelTone"]
 edition = "2021"

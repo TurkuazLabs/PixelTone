@@ -1,12 +1,23 @@
 # 📄 Dosya Yolu: pixeltone/CHANGELOG.md
 # 📌 Amac: PixelTone surum degisikliklerini kaydetmek
 # 📌 Docs - Markdown
-# Version: 1.0.0
-# Aciklama: Proje degisiklik gecmisi ve v1.0.0 Stable Desktop kaydi
+# Version: 1.1.0
+# Aciklama: Proje degisiklik gecmisi, splash lifecycle ve otomatik updater hazirliklarini kaydeder
 
 Bagimli Oldugu Katman: View
 
 # Changelog
+
+## 1.1.0
+
+- Native splash-first acilis akisi eklendi.
+- Ana pencere baslangicta gizli yukleniyor; splash tamamlaninca gorunur ve odakli hale geliyor.
+- Splash icin ayri Vite entry, Controller, Service ve View katmanlari eklendi.
+- Splash minimum gorunme suresi merkezi Config katmanina alindi.
+- Baslangicta signed updater kontrol ve otomatik kurulum tercihi daha acik UI metinleriyle gosteriliyor.
+- Manuel updater aksiyonu kontrol et ve kur davranisini acikca ifade edecek sekilde guncellendi.
+- package.json, Cargo.toml ve Tauri config surumleri 1.1.0 olarak senkronlandi.
+- Signed updater release kanali latest.json, signature ve public key dogrulamasi ile devam ediyor.
 
 ## 1.0.0
 
