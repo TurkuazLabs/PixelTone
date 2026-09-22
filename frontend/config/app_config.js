@@ -1,8 +1,8 @@
 // # 📄 Dosya Yolu: pixeltone/frontend/config/app_config.js
 // # 📌 Amac: PixelTone frontend sabitlerini merkezi tutmak
 // # 📌 Config - JavaScript
-// # Version: 0.4.0
-// # Aciklama: Storage, Tauri komutlari, Palette Studio, live picker, Tailwind ve capture ayarlarini merkezi tutar
+// # Version: 1.0.0
+// # Aciklama: Storage, Tauri komutlari, settings, picker, Tailwind ve capture ayarlarini merkezi tutar
 //
 // Bagimli Oldugu Katman: Config
 
@@ -10,6 +10,12 @@ export const APP_CONFIG = Object.freeze({
   appName: "PixelTone",
   defaults: Object.freeze({
     projectName: "Genel",
+    settings: Object.freeze({
+      closeToTray: true,
+      checkUpdatesOnStart: true,
+      pickerShortcut: "CommandOrControl+Shift+P",
+      defaultCopyFormat: "hex",
+    }),
   }),
   storageKeys: Object.freeze({
     history: "pixeltone.history.v0.1.0",
@@ -25,6 +31,9 @@ export const APP_CONFIG = Object.freeze({
     listPalettes: "list_palettes",
     exportPalette: "export_palette",
     importPalette: "import_palette",
+    getSettings: "get_settings",
+    saveSettings: "save_settings",
+    checkAndInstallUpdate: "check_and_install_update",
   }),
   exportFormats: Object.freeze({
     yaml: "yaml",
@@ -38,6 +47,14 @@ export const APP_CONFIG = Object.freeze({
     pickerWindowMissing: "Picker overlay penceresi bulunamadi.",
     pickerMonitorMissing: "Cursorun bulundugu monitor bulunamadi.",
   }),
+  desktop: Object.freeze({
+    trayPickerEvent: "pixeltone://tray-picker",
+  }),
+  update: Object.freeze({
+    releaseApiUrl: "https://api.github.com/repos/TurkuazLabs/PixelTone/releases/latest",
+    acceptHeaderName: "Accept",
+    acceptHeaderValue: "application/vnd.github+json",
+  }),
   historyMove: Object.freeze({
     up: -1,
     down: 1,
@@ -45,7 +62,6 @@ export const APP_CONFIG = Object.freeze({
   picker: Object.freeze({
     windowLabel: "picker",
     mainWindowLabel: "main",
-    shortcut: "CommandOrControl+Shift+P",
     shortcutPressedState: "Pressed",
     activationEvent: "pixeltone://picker-open",
     selectionEvent: "pixeltone://picker-selected",
@@ -63,7 +79,6 @@ export const APP_CONFIG = Object.freeze({
       separator: ", ",
       suffix: ")",
     }),
-    defaultCopyFormat: "hex",
     keys: Object.freeze({
       cancel: "Escape",
       hex: "KeyH",

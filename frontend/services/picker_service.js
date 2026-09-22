@@ -1,8 +1,8 @@
 // # 📄 Dosya Yolu: pixeltone/frontend/services/picker_service.js
 // # 📌 Amac: Global shortcut, live capture, kopyalama ve overlay is kurallarini yonetmek
 // # 📌 Service - JavaScript
-// # Version: 0.4.0
-// # Aciklama: Picker oturumu, sample dongusu, HEX/RGB modu, secim ve ana pencereye aktarim kurallarini koordine eder
+// # Version: 1.0.0
+// # Aciklama: Picker oturumu, runtime shortcut, varsayilan format, sample dongusu ve secim kurallarini koordine eder
 //
 // Bagimli Oldugu Katman: Service
 
@@ -19,9 +19,18 @@ let visible = false;
 let sampleBusy = false;
 let sampleIntervalId = null;
 let currentSample = null;
-let copyFormat = APP_CONFIG.picker.defaultCopyFormat;
+let copyFormat = APP_CONFIG.defaults.settings.defaultCopyFormat;
+let configuredShortcut = APP_CONFIG.defaults.settings.pickerShortcut;
+let registeredShortcut = null;
+let configuredDefaultCopyFormat = APP_CONFIG.defaults.settings.defaultCopyFormat;
 let sampleHandler = null;
 let errorHandler = null;
+
+function normalizeCopyFormat(format) {
+  return format === APP_CONFIG.picker.copyFormats.rgb
+    ? APP_CONFIG.picker.copyFormats.rgb
+    : APP_CONFIG.picker.copyFormats.hex;
+}
 
 function formatRgb(colorInfo) {
   return [
@@ -40,7 +49,9 @@ async function openPicker() {
   await eventTool.emitToWindow(
     APP_CONFIG.picker.windowLabel,
     APP_CONFIG.picker.activationEvent,
-    {},
+    {
+      defaultCopyFormat: configuredDefaultCopyFormat,
+    },
   );
 }
 
@@ -105,7 +116,7 @@ function startSampling() {
 }
 
 function setCopyFormat(format) {
-  copyFormat = format;
+  copyFormat = normalizeCopyFormat(format);
   notifySample();
 }
 
@@ -114,10 +125,7 @@ async function copyCurrentSelection() {
     return null;
   }
 
-  const normalizedFormat =
-    copyFormat === APP_CONFIG.picker.copyFormats.rgb
-      ? APP_CONFIG.picker.copyFormats.rgb
-      : APP_CONFIG.picker.copyFormats.hex;
+  const normalizedFormat = normalizeCopyFormat(copyFormat);
   const text =
     normalizedFormat === APP_CONFIG.picker.copyFormats.rgb
       ? formatRgb(currentSample.colorInfo)
@@ -152,21 +160,61 @@ async function cancelSession() {
 }
 
 export const pickerService = Object.freeze({
-  async initializeGlobalShortcut() {
-    await shortcutTool.replace(APP_CONFIG.picker.shortcut, () => {
-      void openPicker().catch(notifyError);
-    });
+  async configure(settings, options = {}) {
+    const nextShortcut =
+      String(settings.picker_shortcut || "").trim() ||
+      APP_CONFIG.defaults.settings.pickerShortcut;
+    const nextDefaultCopyFormat = normalizeCopyFormat(
+      settings.default_copy_format,
+    );
+    const allowShortcutFailure = Boolean(options.allowShortcutFailure);
+    let shortcutError = null;
+
+    configuredShortcut = nextShortcut;
+    configuredDefaultCopyFormat = nextDefaultCopyFormat;
+
+    if (registeredShortcut !== nextShortcut) {
+      try {
+        await shortcutTool.register(nextShortcut, () => {
+          void openPicker().catch(notifyError);
+        });
+
+        if (registeredShortcut) {
+          await shortcutTool.unregister(registeredShortcut);
+        }
+
+        registeredShortcut = nextShortcut;
+      } catch (error) {
+        shortcutError = error;
+
+        if (!allowShortcutFailure) {
+          throw error;
+        }
+      }
+    }
+
+    return {
+      shortcut: configuredShortcut,
+      defaultCopyFormat: configuredDefaultCopyFormat,
+      shortcutRegistered: registeredShortcut === nextShortcut,
+      shortcutError:
+        typeof shortcutError === "string"
+          ? shortcutError
+          : shortcutError?.message || null,
+    };
   },
 
   async openPicker() {
     await openPicker();
   },
 
-  startSession(onSample, onError) {
+  startSession(options, onSample, onError) {
     active = true;
     visible = true;
     currentSample = null;
-    copyFormat = APP_CONFIG.picker.defaultCopyFormat;
+    copyFormat = normalizeCopyFormat(
+      options?.defaultCopyFormat || configuredDefaultCopyFormat,
+    );
     sampleHandler = onSample;
     errorHandler = onError;
     startSampling();

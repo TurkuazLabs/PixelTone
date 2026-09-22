@@ -1,20 +1,25 @@
 # 📄 Dosya Yolu: pixeltone/.github/workflows/ci.yml
-# 📌 Amac: PixelTone kodunu Windows, Linux ve macOS uzerinde otomatik dogrulamak
+# 📌 Amac: PixelTone kodunu public repository icin GitHub-hosted Windows, Linux ve macOS runnerlarinda dogrulamak
 # 📌 Config - YAML
-# Version: 0.2.1
-# Aciklama: Frontend build, Rust format ve Tauri cargo check islemlerini platform matrisi ile calistirir
+# Version: 1.0.3
+# Aciklama: PR/main akisinda preflight, frontend build, Rust format/check ve unit testlerini platform matrisi ile temiz target uzerinde calistirir
 #
 # Bagimli Oldugu Katman: Config
 
 name: PixelTone CI
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
   pull_request:
     branches:
       - main
+
+concurrency:
+  group: pixeltone-ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
@@ -27,7 +32,7 @@ jobs:
       fail-fast: false
       matrix:
         platform:
-          - ubuntu-latest
+          - ubuntu-24.04
           - windows-latest
           - macos-latest
 
@@ -36,7 +41,7 @@ jobs:
         uses: actions/checkout@v7
 
       - name: Install Linux system dependencies
-        if: matrix.platform == 'ubuntu-latest'
+        if: matrix.platform == 'ubuntu-24.04'
         shell: bash
         run: |
           sudo apt-get update
@@ -55,10 +60,11 @@ jobs:
             libdbus-1-dev \
             libpipewire-0.3-dev \
             libwayland-dev \
-            libegl-dev
+            libegl-dev \
+            libgbm-dev
 
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: lts/*
 
@@ -67,16 +73,27 @@ jobs:
         with:
           components: rustfmt
 
-      - name: Cache Rust
+      - name: Cache Rust dependencies
         uses: swatinem/rust-cache@v2
         with:
           workspaces: ./src-tauri -> target
+          cache-targets: false
 
       - name: Install frontend dependencies
         run: npm install
 
+      - name: Run Stable Desktop preflight
+        run: npm run preflight
+
+      - name: Run dependency-free tool tests
+        run: npm run test:tools
+
       - name: Build frontend
         run: npm run build
+
+      - name: Generate Windows icon from canonical SVG
+        if: matrix.platform == 'windows-latest'
+        run: npm run tauri icon src-tauri/icons/app-icon.svg
 
       - name: Check Rust formatting
         working-directory: src-tauri
@@ -85,3 +102,7 @@ jobs:
       - name: Check Rust/Tauri backend
         working-directory: src-tauri
         run: cargo check
+
+      - name: Run Rust unit tests
+        working-directory: src-tauri
+        run: cargo test --lib

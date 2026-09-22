@@ -1,15 +1,15 @@
 // # 📄 Dosya Yolu: pixeltone/src-tauri/tauri.conf.json5
 // # 📌 Amac: Tauri uygulama ve picker overlay ayarlarini tanimlamak
 // # 📌 Config - JSON5
-// # Version: 0.4.0
-// # Aciklama: Ana pencere, seffaf picker overlay, build ve bundle ayarlarini tanimlar
+// # Version: 1.0.1
+// # Aciklama: Stable Desktop ana pencere, picker overlay, tray uyumlu build ve bundle ayarlarini tanimlar
 //
 // Bagimli Oldugu Katman: Config
 
 {
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "PixelTone",
-  "version": "0.4.0",
+  "version": "1.0.0",
   "identifier": "com.pixeltone.app",
   "build": {
     "beforeDevCommand": "npm run dev",
@@ -44,12 +44,33 @@
         "visible": false,
         "focus": true,
         "skipTaskbar": true,
-        "shadow": false,
-        "noRedirectionBitmap": true
+        "shadow": false
       }
     ],
     "security": {
-      "csp": null
+      "csp": {
+        "default-src": "'self' customprotocol: asset:",
+        "connect-src": "ipc: http://ipc.localhost https://api.github.com",
+        "img-src": "'self' asset: http://asset.localhost blob: data:",
+        "style-src": "'self' 'unsafe-inline'"
+      },
+      "devCsp": {
+        "default-src": "'self' http://127.0.0.1:1420",
+        "connect-src": "ipc: http://ipc.localhost https://api.github.com http://127.0.0.1:1420 ws://127.0.0.1:1420",
+        "img-src": "'self' asset: http://asset.localhost blob: data:",
+        "style-src": "'self' 'unsafe-inline'"
+      }
+    }
+  },
+  "plugins": {
+    "updater": {
+      "pubkey": "PIXELTONE_UPDATER_NOT_CONFIGURED",
+      "endpoints": [
+        "https://github.com/TurkuazLabs/PixelTone/releases/latest/download/latest.json"
+      ],
+      "windows": {
+        "installMode": "passive"
+      }
     }
   },
   "bundle": {
@@ -57,6 +78,25 @@
     "targets": "all",
     "category": "DeveloperTool",
     "shortDescription": "Platform independent color picker",
-    "longDescription": "PixelTone is a platform independent color picker and palette manager built with Tauri, Rust and HTML UI."
+    "longDescription": "PixelTone is a platform independent color picker and palette manager built with Tauri, Rust and HTML UI.",
+    "createUpdaterArtifacts": true,
+    "windows": {
+      "allowDowngrades": false,
+      "webviewInstallMode": {
+        "type": "embedBootstrapper",
+        "silent": true
+      },
+      "nsis": {
+        "compression": "lzma",
+        "installMode": "currentUser",
+        "languages": [
+          "Turkish",
+          "English"
+        ],
+        "displayLanguageSelector": true,
+        "startMenuFolder": "TurkuazLabs\\PixelTone",
+        "template": "./windows/installer.nsi"
+      }
+    }
   }
 }

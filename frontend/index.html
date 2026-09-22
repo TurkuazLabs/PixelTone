@@ -2,8 +2,8 @@
 # 📄 Dosya Yolu: pixeltone/frontend/index.html
 # 📌 Amac: PixelTone ana arayuz sayfasi
 # 📌 View - HTML
-# Version: 0.4.0
-# Aciklama: Live Picker, capture, renk donusumu, Tailwind ve Palette Studio kontrollerini gosterir
+# Version: 1.0.0
+# Aciklama: Stable Desktop ayarlari, Live Picker, capture, Tailwind ve Palette Studio kontrollerini gosterir
 
 Bagimli Oldugu Katman: View
 -->
@@ -19,7 +19,7 @@ Bagimli Oldugu Katman: View
     <main class="pt-shell">
       <section class="pt-hero">
         <div>
-          <p class="pt-eyebrow">PixelTone v0.4.0</p>
+          <p class="pt-eyebrow">PixelTone v1.0.0</p>
           <h1>Platform bagimsiz renk secici</h1>
           <p class="pt-lead">Windows, Linux ve macOS icin canli picker, ekran rengi yakalama, proje ve palet yonetim araci.</p>
         </div>
@@ -102,9 +102,49 @@ Bagimli Oldugu Katman: View
           <input id="import-yaml-input" type="file" hidden />
           <div id="palette-list" class="pt-palette-list"></div>
         </article>
+
+        <article class="pt-card pt-settings-card">
+          <div class="pt-card-heading">
+            <div>
+              <p class="pt-eyebrow">Stable Desktop</p>
+              <h2 id="settings-title"></h2>
+            </div>
+          </div>
+
+          <div class="pt-settings-grid">
+            <label class="pt-settings-toggle">
+              <input id="settings-close-to-tray" type="checkbox" />
+              <span id="settings-close-to-tray-label"></span>
+            </label>
+
+            <label class="pt-settings-toggle">
+              <input id="settings-check-updates" type="checkbox" />
+              <span id="settings-check-updates-label"></span>
+            </label>
+
+            <div class="pt-settings-field">
+              <label id="settings-shortcut-label" class="pt-label" for="settings-shortcut"></label>
+              <input id="settings-shortcut" class="pt-input" type="text" autocomplete="off" />
+            </div>
+
+            <div class="pt-settings-field">
+              <label id="settings-copy-format-label" class="pt-label" for="settings-copy-format"></label>
+              <select id="settings-copy-format" class="pt-input"></select>
+            </div>
+          </div>
+
+          <div class="pt-settings-actions">
+            <button id="settings-save-button" class="pt-button" type="button"></button>
+            <button id="settings-update-button" class="pt-button pt-button-secondary" type="button"></button>
+          </div>
+          <p id="settings-version-status" class="pt-version-status"></p>
+          <p id="settings-status" class="pt-status"></p>
+        </article>
       </section>
     </main>
 
     <script type="module" src="/controllers/ui_controller.js"></script>
+    <script type="module" src="/controllers/settings_controller.js"></script>
+    <script type="module" src="/controllers/desktop_controller.js"></script>
   </body>
 </html>

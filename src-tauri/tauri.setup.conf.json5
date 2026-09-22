@@ -1,0 +1,16 @@
+// # 📄 Dosya Yolu: pixeltone/src-tauri/tauri.setup.conf.json5
+// # 📌 Amac: PixelTone Windows test/setup build'ini updater signing ve release artifactlerinden ayirmak
+// # 📌 Config - JSON5
+// Version: 1.0.0
+// Aciklama: Local ve CI setup build'lerinde yalniz NSIS uretir, updater artifact signing gerektirmez
+//
+// Bagimli Oldugu Katman: Config
+
+{
+  "bundle": {
+    "createUpdaterArtifacts": false,
+    "targets": [
+      "nsis"
+    ]
+  }
+}

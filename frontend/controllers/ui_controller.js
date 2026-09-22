@@ -1,8 +1,8 @@
 // # 📄 Dosya Yolu: pixeltone/frontend/controllers/ui_controller.js
 // # 📌 Amac: PixelTone arayuz olaylarini almak ve servisleri cagirmak
 // # 📌 Controller - JavaScript
-// # Version: 0.4.0
-// # Aciklama: Live Picker, capture, Tailwind ve Palette Studio olaylarini Service katmanina aktarir
+// # Version: 1.0.0
+// # Aciklama: Live Picker secimi, capture, Tailwind ve Palette Studio olaylarini Service katmanina aktarir
 //
 // Bagimli Oldugu Katman: Controller
 
@@ -232,15 +232,11 @@ function exportCss() {
 }
 
 async function initializePicker() {
-  uiView.initializePickerControls(APP_CONFIG.picker.shortcut);
+  uiView.initializePickerControls(
+    APP_CONFIG.defaults.settings.pickerShortcut,
+  );
   uiView.bindLivePicker(() => void openLivePicker());
   await pickerService.onSelection(acceptPickerSelection);
-
-  try {
-    await pickerService.initializeGlobalShortcut();
-  } catch (error) {
-    uiView.setStatus(errorMessage(error, TR_LABELS.status.pickerShortcutFailed));
-  }
 }
 
 async function boot() {

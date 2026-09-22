@@ -1,14 +1,14 @@
 {
   "_pixeltone_header": {
     "dosya_yolu": "pixeltone/package.json",
-    "amac": "Node, Vite, Tauri CLI, picker pluginleri ve Tailwind renk kaynagini tanimlamak",
+    "amac": "Node, Vite, Tauri CLI, Stable Desktop picker, updater ve Tailwind bagimliliklarini tanimlamak",
     "modul_filetype": "Config - JSON",
-    "version": "0.4.0",
+    "version": "1.0.0",
     "aciklama": "JSON yorum desteklemedigi icin header ilk nesne alani olarak tutulur",
     "bagimli_oldugu_katman": "Config"
   },
   "name": "pixeltone",
-  "version": "0.4.0",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
   "description": "PixelTone platform independent color picker and palette manager.",
@@ -16,7 +16,17 @@
     "dev": "vite --host 127.0.0.1 --port 1420",
     "build": "vite build",
     "preview": "vite preview --host 127.0.0.1 --port 1421",
-    "tauri": "tauri"
+    "tauri": "tauri",
+    "check:version": "node tools/check_version_consistency.mjs",
+    "check:release-context": "node tools/check_release_context.mjs",
+    "check:release-lockfiles": "node tools/check_release_lockfiles.mjs",
+    "preflight": "node tools/preflight.mjs",
+    "preflight:release": "node tools/preflight.mjs --release",
+    "test:tools": "node --test tests/*.test.mjs",
+    "ci:windows": "powershell -ExecutionPolicy Bypass -File scripts/ci_windows.ps1",
+    "setup:windows": "powershell -ExecutionPolicy Bypass -File scripts/build_windows_setup.ps1",
+    "check:updater": "node tools/check_updater_config.mjs",
+    "configure:updater": "powershell -ExecutionPolicy Bypass -File scripts/configure_updater_signing.ps1"
   },
   "dependencies": {
     "@tauri-apps/api": "^2.0.0",
@@ -25,7 +35,7 @@
     "tailwindcss": "4.3.3"
   },
   "devDependencies": {
-    "@tauri-apps/cli": "^2.0.0",
+    "@tauri-apps/cli": "^2.10.1",
     "vite": "^6.0.0"
   }
 }

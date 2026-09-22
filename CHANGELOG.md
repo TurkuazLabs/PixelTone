@@ -1,12 +1,47 @@
 # 📄 Dosya Yolu: pixeltone/CHANGELOG.md
 # 📌 Amac: PixelTone surum degisikliklerini kaydetmek
 # 📌 Docs - Markdown
-# Version: 0.4.0
-# Aciklama: Proje degisiklik gecmisi ve v0.4.0 Picker Experience kaydi
+# Version: 1.0.0
+# Aciklama: Proje degisiklik gecmisi ve v1.0.0 Stable Desktop kaydi
 
 Bagimli Oldugu Katman: View
 
 # Changelog
+
+## 1.0.0
+
+- Windows current-user kurulum yolu `%LOCALAPPDATA%\TurkuazLabs\PixelTone` standardina tasindi.
+- Start Menu klasoru `TurkuazLabs\PixelTone` olarak standardize edildi.
+- Tauri v2 signed updater backend'i eklendi.
+- Public GitHub Releases `latest.json` updater kanali eklendi.
+- Baslangicta otomatik signed update kontrolu ve kurulum akisi eklendi.
+- Tauri updater artifact ve signature uretimi etkinlestirildi.
+- Release workflow NSIS updater'i tercih edecek ve `latest.json` yayinlayacak sekilde guncellendi.
+- Vite `TAURI_` env prefixi kaldirilarak updater private key'in frontend bundle'a sizma riski kapatildi.
+
+- Stable Desktop ayarlar modeli, SettingsService ve JSON SettingsRepository eklendi.
+- Kapatma dugmesinde tray'e gizleme davranisi ayarlanabilir hale getirildi.
+- Close-to-tray kapaliyken uygulamanin gercekten sonlanmasi saglandi.
+- Native Tauri system tray ikonu ve Ac / Canli Picker / Cikis menusu eklendi.
+- Tray sol tik ana pencereyi geri getiriyor.
+- Global picker kisayolu ayarlardan degistirilebilir hale getirildi.
+- Kisayol degisiminde eski global shortcut kaydi temizleniyor.
+- Varsayilan picker kopyalama formati HEX veya RGB olarak secilebilir hale getirildi.
+- Ayar kaydi runtime shortcut uygulamasi ile transactional hale getirildi.
+- Kurulu uygulama surumu Tauri App API ile okunuyor.
+- GitHub Releases endpointi uzerinden baslangicta veya manuel surum kontrolu eklendi.
+- Private repository release endpointi erisilemezse surum kontrolu guvenli uyari durumuna geciyor.
+- Windows icin NSIS ve MSI, Linux icin AppImage/DEB/RPM, macOS icin APP/DMG release workflow'u eklendi.
+- Release workflow platform ikonlarini Tauri CLI ile kaynak PNG'den uretiyor.
+- macOS sertifikasiz CI buildleri icin ad-hoc signing identity tanimlandi.
+- package.json, Cargo.toml ve Tauri config surumleri 1.0.0 olarak senkronlandi.
+- Stable Desktop CSP etkinlestirildi; production webview yalniz Tauri IPC ve GitHub Release API baglantisina izin veriyor.
+- CI duplicate feature/pull-request runlari kaldirildi ve eski runlari iptal eden concurrency eklendi.
+- Release workflow yalniz main manuel calistirma veya tam eslesen v<version> tagi ile yayin yapabiliyor.
+- Stable release icin package-lock.json ve src-tauri/Cargo.lock zorunlu hale getirildi.
+- Paralel platform bundle'lari taslak release'e yukleniyor; release yalniz tum platformlar basarili oldugunda final job ile yayinlaniyor.
+- Global shortcut degisimi non-destructive hale getirildi ve gecersiz persisted shortcut acilista varsayilana onariliyor.
+- Tray Tool yalniz native adaptor olarak birakildi; tray davranis kurallari DesktopService katmanina tasindi.
 
 ## 0.4.0
 

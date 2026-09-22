@@ -1,8 +1,8 @@
 // # 📄 Dosya Yolu: pixeltone/frontend/language/tr.js
 // # 📌 Amac: PixelTone frontend Turkce runtime etiketlerini merkezi tutmak
 // # 📌 Language - JavaScript
-// # Version: 0.4.0
-// # Aciklama: Capture, Palette Studio, live picker, aktarim ve Tailwind mesajlarini merkezi tutar
+// # Version: 1.0.0
+// # Aciklama: Stable Desktop, settings, capture, Palette Studio, live picker ve Tailwind mesajlarini merkezi tutar
 //
 // Bagimli Oldugu Katman: Language
 
@@ -18,6 +18,7 @@ export const TR_LABELS = Object.freeze({
     pickerStarted: "Canli picker acildi.",
     pickerStartFailed: "Canli picker acilamadi.",
     pickerShortcutFailed: "Global picker kisayolu kaydedilemedi.",
+    pickerShortcutUnavailable: "Global picker kisayolu su anda kullanilamiyor. Canli Picker butonu ve tray menusu kullanilabilir.",
     pickerSelected: "Picker rengi panoya kopyalandi.",
     pickerSampleFailed: "Canli picker rengi okunamadi.",
     pickerCopyFailed: "Secilen renk panoya kopyalanamadi.",
@@ -35,6 +36,12 @@ export const TR_LABELS = Object.freeze({
     importFailed: "YAML paleti iceri aktarilamadi.",
     tailwindMatched: "En yakin Tailwind renkleri hesaplandi.",
     tailwindMatchFailed: "Tailwind renkleri hesaplanamadi.",
+    settingsLoaded: "Ayarlar yuklendi.",
+    settingsLoadFailed: "Ayarlar yuklenemedi.",
+    settingsSaved: "Ayarlar kaydedildi ve uygulandi.",
+    settingsSaveFailed: "Ayarlar kaydedilemedi.",
+    updateCheckRunning: "Surum kontrol ediliyor.",
+    updateCheckCompleted: "Guncelleme kontrolu tamamlandi.",
   }),
   empty: Object.freeze({
     history: "Henuz renk gecmisi yok.",
@@ -67,6 +74,21 @@ export const TR_LABELS = Object.freeze({
     instruction: "H: HEX | R: RGB | Sol tik: Kopyala | Esc: Iptal",
     copyModeHex: "Kopyalama: HEX",
     copyModeRgb: "Kopyalama: RGB",
+  }),
+  settings: Object.freeze({
+    title: "Ayarlar",
+    closeToTray: "Kapatma dugmesinde sistem tepsisine gizle",
+    checkUpdatesOnStart: "Baslangicta yeni surum kontrol et",
+    pickerShortcut: "Global picker kisayolu",
+    defaultCopyFormat: "Varsayilan picker kopyalama formati",
+    copyHex: "HEX",
+    copyRgb: "RGB",
+    saveAction: "Ayarlari Kaydet",
+    checkUpdateAction: "Guncellemeyi Kontrol Et",
+    versionUnavailable: "Imzali updater henuz yapilandirilmadi veya guncelleme servisine ulasilamadi.",
+    updateAvailablePrefix: "Yeni surum:",
+    currentVersionPrefix: "kurulu:",
+    upToDatePrefix: "PixelTone guncel:",
   }),
   tailwind: Object.freeze({
     title: "Tailwind Yakin Renkler",

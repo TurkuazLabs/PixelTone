@@ -1,8 +1,8 @@
 // # 📄 Dosya Yolu: pixeltone/src-tauri/src/models/mod.rs
 // # 📌 Amac: PixelTone model modullerini disa acmak
 // # 📌 Model - Rust
-// # Version: 0.3.0
-// # Aciklama: Color, palette, transfer ve capture DTO modullerini baglar
+// # Version: 1.0.0
+// # Aciklama: Color, palette, transfer, capture, settings ve update DTO modullerini baglar
 //
 // Bagimli Oldugu Katman: Repo
 
@@ -10,3 +10,5 @@ pub mod capture;
 pub mod color;
 pub mod palette;
 pub mod palette_transfer;
+pub mod settings;
+pub mod update;

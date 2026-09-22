@@ -1,0 +1,152 @@
+# 📄 Dosya Yolu: pixeltone/.github/workflows/release.yml
+# 📌 Amac: PixelTone v1.x surumlerini Windows, Linux ve macOS installer paketleri olarak yayinlamak
+# 📌 Config - YAML
+# Version: 1.0.2
+# Aciklama: Tag veya manuel tetiklemede signed Tauri bundle paketlerini build eder; Linux build Ubuntu 24.04 kullanir
+#
+# Bagimli Oldugu Katman: Config
+
+name: PixelTone Release
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pixeltone-release
+  cancel-in-progress: false
+
+jobs:
+  build-release:
+    name: Release - ${{ matrix.platform }}
+    if: startsWith(github.ref, 'refs/tags/v') || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')
+    runs-on: ${{ matrix.platform }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: windows-latest
+            bundles: "nsis,msi"
+            apple_signing_identity: ""
+          - platform: ubuntu-24.04
+            bundles: "appimage,deb,rpm"
+            apple_signing_identity: ""
+          - platform: macos-latest
+            bundles: "app,dmg"
+            apple_signing_identity: "-"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Install Linux system dependencies
+        if: matrix.platform == 'ubuntu-24.04'
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            pkg-config \
+            libclang-dev \
+            libssl-dev \
+            libgtk-3-dev \
+            libwebkit2gtk-4.1-dev \
+            libayatana-appindicator3-dev \
+            librsvg2-dev \
+            libxdo-dev \
+            libxcb1-dev \
+            libxrandr-dev \
+            libdbus-1-dev \
+            libpipewire-0.3-dev \
+            libwayland-dev \
+            libegl-dev \
+            patchelf \
+            xdg-utils
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: lts/*
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache Rust
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: ./src-tauri -> target
+
+      - name: Verify updater signing secrets
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        shell: bash
+        run: |
+          test -n "$TAURI_SIGNING_PRIVATE_KEY" || { echo "TAURI_SIGNING_PRIVATE_KEY secret eksik."; exit 1; }
+          test -n "$TAURI_SIGNING_PRIVATE_KEY_PASSWORD" || { echo "TAURI_SIGNING_PRIVATE_KEY_PASSWORD secret eksik."; exit 1; }
+
+      - name: Prepare frontend lockfile
+        run: npm install --package-lock-only
+
+      - name: Prepare Rust lockfile
+        working-directory: src-tauri
+        run: cargo generate-lockfile
+
+      - name: Run Stable Desktop release preflight
+        run: npm run preflight:release
+
+      - name: Install locked frontend dependencies
+        run: npm ci
+
+      - name: Generate platform icons
+        run: npm run tauri icon src-tauri/icons/app-icon.svg
+
+      - name: Build and publish Tauri bundles
+        uses: tauri-apps/tauri-action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          APPLE_SIGNING_IDENTITY: ${{ matrix.apple_signing_identity }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        with:
+          tagName: "v__VERSION__"
+          releaseName: "PixelTone v__VERSION__"
+          releaseBody: "PixelTone Stable Desktop release. Platform installer paketleri bu release altindadir."
+          releaseDraft: true
+          prerelease: false
+          updaterJsonPreferNsis: true
+          uploadUpdaterJson: true
+          args: "--bundles ${{ matrix.bundles }}"
+
+
+  publish-release:
+    name: Publish Release
+    needs:
+      - build-release
+    if: startsWith(github.ref, 'refs/tags/v') || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: lts/*
+
+      - name: Resolve application version
+        id: version
+        shell: bash
+        run: echo "value=$(node -p \"require('./package.json').version\")" >> "$GITHUB_OUTPUT"
+
+      - name: Publish completed GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_TAG: v${{ steps.version.outputs.value }}
+        shell: bash
+        run: gh release edit "$RELEASE_TAG" --draft=false

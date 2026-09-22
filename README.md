@@ -1,12 +1,12 @@
 # 📄 Dosya Yolu: pixeltone/README.md
 # 📌 Amac: PixelTone projesinin genel aciklamasini ve calisma durumunu tanimlamak
 # 📌 Docs - Markdown
-# Version: 0.4.0
-# Aciklama: Tauri + Rust + HTML UI tabanli canli picker, renk yakalama, Tailwind eslestirme ve Palette Studio uygulama girisi
+# Version: 1.0.0
+# Aciklama: Tauri + Rust + HTML UI tabanli Stable Desktop renk secici, picker, palet ve dagitim uygulama girisi
 
 Bagimli Oldugu Katman: View
 
-# PixelTone v0.4.0
+# PixelTone v1.0.0
 
 PixelTone, ColorPic alternatifi olarak gelistirilen platform bagimsiz renk secici, renk analiz ve palet yonetim uygulamasidir.
 
@@ -24,39 +24,50 @@ PixelTone, ColorPic alternatifi olarak gelistirilen platform bagimsiz renk secic
 - xcap ekran yakalama adaptoru
 - Tauri Global Shortcut plugin
 - Tauri Clipboard Manager plugin
-- Local JSON proje/palet storage
+- Native Tauri system tray
+- Local JSON proje/palet/settings storage
 - YAML palet aktarimi
 - Tailwind CSS 4.3.3 resmi renk paleti
 - OKLab tabanli renk yakinlik hesabi
+- GitHub Releases tabanli surum kontrolu ve release pipeline
 
-## v0.4.0 Picker Experience
+## v1.0.0 Stable Desktop
 
-- `CommandOrControl+Shift+P` global kisayolu
+- Sistem tepsisi ikonu
+- Tray menusu: PixelTone'u Ac, Canli Picker, Cikis
+- Kapatma dugmesinde tray'e gizleme ayari
+- Tray gizleme kapaliysa gercek uygulama cikisi
+- Degistirilebilir global picker kisayolu
+- Varsayilan HEX veya RGB picker kopyalama tercihi
+- Ayarlarin Rust SettingsService ve SettingsRepository ile local JSON saklanmasi
+- Baslangicta otomatik veya manuel surum kontrolu
+- Windows NSIS ve MSI release build
+- Linux AppImage, DEB ve RPM release build
+- macOS APP ve DMG release build
+- Git tag veya manuel workflow ile GitHub Release olusturma
+
+## Picker Experience
+
+- Global picker kisayolu
 - Ana penceredeki Canli Picker butonu
 - Cursorun bulundugu monitoru kaplayan seffaf picker overlay
 - Canli 9x9 cursor buyuteci
 - Cursor takipli renk bilgi karti
-- H tusuyla HEX kopyalama modu
-- R tusuyla RGB kopyalama modu
+- H tusuyla HEX, R tusuyla RGB kopyalama
 - Sol tikla rengi panoya kopyalama
 - Esc ile picker iptali
-- Secilen rengin ana pencere, gecmis, buyutec ve Tailwind eslesmesine aktarilmasi
 - Coklu monitor gecisinde picker penceresinin yeni monitore tasinmasi
-- Gizli picker penceresinde gereksiz capture dongusunun engellenmesi
+- Gizli picker penceresinde capture dongusunun durdurulmasi
 - Wayland portal/overlay fallback stratejisi
 
-## v0.3.0 Palette Studio
+## Palette Studio
 
 - Proje bazli palet yonetimi
-- Paletlerin `projects/<proje>/palettes/` mantigiyla ayrilmasi
-- v0.2.x paletleri icin `Genel` proje legacy fallback destegi
 - Palet yukleme, duzenleme, yeniden adlandirma ve silme
 - Palet renklerini adlandirma ve yukari/asagi siralama
 - YAML palet import ve export
 - CSS custom property export
-- Import ve edit sirasinda renklerin Rust ColorService ile yeniden dogrulanmasi
-- Resmi `tailwindcss/colors` kaynagindan Tailwind renk paleti okuma
-- Secili HEX renge OKLab uzayinda en yakin 5 Tailwind rengini hesaplama
+- Tailwind resmi renklerine OKLab yakinlik eslestirmesi
 
 ## Mimari
 
@@ -64,31 +75,45 @@ PixelTone katman akisi:
 
 `Controller -> Service -> Repo/Model -> Tool -> View -> Language`
 
-Controller sadece arayuz veya Tauri istegini alir ve Service katmanina aktarir. Is kurallari Service katmaninda, storage Repository katmaninda, dis format/platform adaptorleri Tool katmaninda tutulur.
+Controller yalniz request/event alir ve Service katmanina aktarir. Is kurallari Service katmaninda, storage Repository katmaninda, platform ve dis dunya entegrasyonlari Tool katmaninda tutulur.
 
-## Live Picker Akisi
+## Settings Akisi
 
-Global kisayol veya Canli Picker butonu PickerService katmanini cagirir. Service picker Tool ile seffaf pencereyi cursorun bulundugu monitore tasir ve aktivasyon eventini gonderir. Picker Controller yalnizca input olaylarini Service katmanina aktarir.
+Frontend Settings Controller kullanici olaylarini SettingsService'e aktarir. SettingsService Rust `get_settings` ve `save_settings` komutlarini kullanir. Rust SettingsService dogrulamayi, SettingsRepository ise local `settings.json` storage islemini yapar.
 
-Canli ornekleme mevcut CaptureService uzerinden yapilir. Secim tamamlandiginda PickerService HEX veya RGB metnini Clipboard Tool ile sistem panosuna yazar ve pencere eventiyle ana UI tarafina aktarir.
+Global shortcut veya varsayilan picker formati degistiginde PickerService runtime davranisini yeniden uygular. Kisayol kaydi basarisiz olursa yeni ayar kalici storage'a yazilmaz.
 
-Picker penceresi gizliyken canli capture dongusu calismaz.
+## Tray Akisi
 
-## Palette Studio Akisi
+Rust Desktop Controller lifecycle olaylarini DesktopService'e aktarir. DesktopService tray kurulumunu TrayTool ile yapar. Close-to-tray aciksa ana pencere yok edilmez, gizlenir. Kapaliysa uygulama sonlandirilir.
 
-Paletler proje adi ile kaydedilir. Kullanici calisma listesindeki her renge ad verebilir ve renklerin sirasini degistirebilir. Kayitli palet `get_palette` ile yuklenir; duzenleme/yeniden adlandirma `update_palette`, silme ise `delete_palette` komutuyla Service ve Repository katmanlarindan gecerek yapilir.
+## Surum Kontrolu
 
-## Capture Akisi
+Kurulu surum Tauri App API ile okunur. VersionService GitHub Releases latest endpointinden son release tagini alip semver olarak karsilastirir.
 
-`Ekrandan Renk Al` butonuna basildiginda PixelTone gecici olarak kuculur. Kisa gecikme sirasinda cursor hedef renge tasinir. Rust CaptureService cursorun bulundugu monitoru yakalar, merkez pikseli okur ve 9x9 buyutec verisini UI tarafina dondurur.
+Repository private oldugu surece anonim GitHub Releases endpointi 404 donebilir. Bu durumda PixelTone hata vermeden "surum bilgisi kullanilamiyor" durumuna gecer. Gercek private-repo otomatik update icin ileride public update manifest servisi veya guvenli imzali updater endpointi gerekir.
 
-## Platform Notlari
+## Windows Kurulum Standardi
 
-Windows ana test platformudur. Windows resource ikonu build sirasinda `src-tauri/icons/icon.png` kaynagindan uretilir.
+Program kurulum dizini:
 
-Linux X11 ve global capture erisimi veren masaustu ortamlarinda canli picker mevcut capture akisini kullanir. Wayland compositorleri global cursor veya ekran yakalamayi kisitlayabilir. Bu durumda hedef fallback XDG Desktop Portal Screenshot arayuzundeki `PickColor` metodudur. Portal fallback stratejisi `docs/WAYLAND_PICKER.md` dosyasinda tanimlanmistir; portal adaptorunun kendisi v0.4.0 kapsaminda uygulanmis sayilmaz.
+`%LOCALAPPDATA%\TurkuazLabs\PixelTone`
 
-macOS ekran yakalama icin kullanicinin Screen Recording izni vermesi gerekebilir. Seffaf picker penceresi icin Tauri `macOSPrivateApi` etkinlestirilmistir; bu tercih Mac App Store dagitimiyla uyumlu degildir ve PixelTone masaustu installer dagitimini hedefler.
+Start Menu klasoru:
+
+`TurkuazLabs\PixelTone`
+
+PixelTone signed Tauri updater ile public GitHub Releases kanalini kullanir. Ayrinti: `docs/UPDATER.md`.
+
+## Release Paketleri
+
+GitHub Actions `.github/workflows/release.yml` dosyasi su paketleri uretir:
+
+- Windows: NSIS Setup EXE + MSI
+- Linux: AppImage + DEB + RPM
+- macOS: APP + DMG
+
+Release akisi version tag push ile veya manuel workflow dispatch ile calistirilabilir. Detaylar `docs/RELEASE.md` dosyasindadir.
 
 ## Kurulum
 
@@ -103,4 +128,18 @@ npm run tauri dev
 npm run tauri build
 ```
 
-Detaylar `docs/BUILD.md`, `docs/INSTALL.md` ve `docs/WAYLAND_PICKER.md` dosyalarindadir.
+Windows Setup.exe:
+
+```powershell
+npm run setup:windows
+```
+
+Windows local CI:
+
+```powershell
+npm run ci:windows
+```
+
+Ana GitHub CI, private-repo hosted runner kota/billing sorunundan bagimsiz olmak icin `self-hosted + windows + x64 + pixeltone` runner kullanir.
+
+Detaylar `docs/BUILD.md`, `docs/INSTALL.md`, `docs/CI.md`, `docs/RELEASE.md` ve `docs/WAYLAND_PICKER.md` dosyalarindadir.
