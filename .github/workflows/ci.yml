@@ -1,7 +1,7 @@
 # 📄 Dosya Yolu: pixeltone/.github/workflows/ci.yml
 # 📌 Amac: PixelTone kodunu public repository icin GitHub-hosted Windows, Linux ve macOS runnerlarinda dogrulamak
 # 📌 Config - YAML
-# Version: 1.0.2
+# Version: 1.0.3
 # Aciklama: PR/main akisinda preflight, frontend build, Rust format/check ve unit testlerini platform matrisi ile temiz target uzerinde calistirir
 #
 # Bagimli Oldugu Katman: Config
@@ -60,7 +60,8 @@ jobs:
             libdbus-1-dev \
             libpipewire-0.3-dev \
             libwayland-dev \
-            libegl-dev
+            libegl-dev \
+            libgbm-dev
 
       - name: Setup Node.js
         uses: actions/setup-node@v7
