@@ -1,8 +1,8 @@
 # 📄 Dosya Yolu: pixeltone/.github/workflows/windows-test-release.yml
 # 📌 Amac: PixelTone v1.1.0 unsigned Windows test paketini GitHub prerelease olarak yayinlamak
 # 📌 Config - YAML
-# Version: 1.0.0
-# Aciklama: release/v1.1.0-test branch pushunda NSIS setup uretir, artifact yukler ve v1.1.0-test.1 prerelease olusturur
+# Version: 1.0.1
+# Aciklama: release/v1.1.0-test branch pushunda CI sonrasi dogrudan NSIS setup uretir, artifact yukler ve v1.1.0-test.1 prerelease olusturur
 #
 # Bagimli Oldugu Katman: Config
 
@@ -20,7 +20,7 @@ permissions:
 
 concurrency:
   group: pixeltone-windows-test-release-v1.1.0
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   publish-test-release:
@@ -44,7 +44,7 @@ jobs:
 
       - name: Build PixelTone Setup.exe
         shell: powershell
-        run: powershell -ExecutionPolicy Bypass -File scripts/build_windows_setup.ps1 -Clean
+        run: powershell -ExecutionPolicy Bypass -File scripts/build_windows_setup.ps1 -Clean -SkipValidation
 
       - name: Upload Setup artifact
         uses: actions/upload-artifact@v4
