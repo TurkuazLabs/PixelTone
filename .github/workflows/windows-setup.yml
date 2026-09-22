@@ -1,8 +1,8 @@
 # 📄 Dosya Yolu: pixeltone/.github/workflows/windows-setup.yml
 # 📌 Amac: PixelTone Windows NSIS Setup.exe paketini GitHub-hosted Windows runner uzerinde uretmek
 # 📌 Config - YAML
-# Version: 1.0.0
-# Aciklama: Manuel tetiklemede GitHub-hosted Windows runner ile PixelTone Setup.exe ve SHA256 artifacti olusturur
+# Version: 1.1.0
+# Aciklama: Manuel tetiklemede release/tag olusturmadan unsigned Setup.exe, SHA256 ve metadata artifacti uretir
 #
 # Bagimli Oldugu Katman: Config
 
@@ -22,9 +22,7 @@ jobs:
   build-setup:
     name: Build PixelTone Setup.exe
     runs-on: windows-latest
-    env:
-      TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
-      TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+    timeout-minutes: 45
 
     steps:
       - name: Checkout
@@ -40,15 +38,6 @@ jobs:
         with:
           components: rustfmt
 
-      - name: Check updater public key configuration
-        run: npm run check:updater
-
-      - name: Verify updater signing secrets
-        shell: powershell
-        run: |
-          if ([string]::IsNullOrWhiteSpace($env:TAURI_SIGNING_PRIVATE_KEY)) { throw "TAURI_SIGNING_PRIVATE_KEY secret eksik." }
-          if ([string]::IsNullOrWhiteSpace($env:TAURI_SIGNING_PRIVATE_KEY_PASSWORD)) { throw "TAURI_SIGNING_PRIVATE_KEY_PASSWORD secret eksik." }
-
       - name: Build PixelTone Setup.exe
         shell: powershell
         run: powershell -ExecutionPolicy Bypass -File scripts/build_windows_setup.ps1 -Clean
@@ -60,4 +49,6 @@ jobs:
           path: |
             dist-installer/PixelTone-Setup-v*.exe
             dist-installer/PixelTone-Setup-v*.exe.sha256
+            dist-installer/PixelTone-Setup-v*.json
           if-no-files-found: error
+          retention-days: 14
