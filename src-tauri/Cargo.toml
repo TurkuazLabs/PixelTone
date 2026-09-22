@@ -1,8 +1,8 @@
 # 📄 Dosya Yolu: pixeltone/src-tauri/Cargo.toml
 # 📌 Amac: PixelTone Rust/Tauri paket bagimliliklarini tanimlamak
 # 📌 Config - TOML
-# Version: 1.0.0
-# Aciklama: Tauri v2, tray, capture, picker shortcut/clipboard, storage ve Windows icon bagimliliklarini yonetir
+# Version: 1.0.1
+# Aciklama: Tauri v2, tray, capture, picker shortcut/clipboard ve storage bagimliliklarini yonetir
 
 # Bagimli Oldugu Katman: Config
 
@@ -19,10 +19,6 @@ crate-type = ["staticlib", "cdylib", "rlib"]
 
 [build-dependencies]
 tauri-build = { version = "2", features = ["config-json5"] }
-
-[target.'cfg(windows)'.build-dependencies]
-ico = "0.5"
-image = { version = "0.25", default-features = false, features = ["png"] }
 
 [dependencies]
 tauri = { version = "2", features = ["config-json5", "tray-icon", "image-png"] }
