@@ -1,12 +1,22 @@
 # 📄 Dosya Yolu: pixeltone/CHANGELOG.md
 # 📌 Amac: PixelTone surum degisikliklerini kaydetmek
 # 📌 Docs - Markdown
-# Version: 1.1.0
-# Aciklama: Proje degisiklik gecmisi, splash lifecycle ve otomatik updater hazirliklarini kaydeder
+# Version: 1.1.1
+# Aciklama: Proje degisiklik gecmisi, splash suresi ve Windows kurulum kapsami duzeltmelerini kaydeder
 
 Bagimli Oldugu Katman: View
 
 # Changelog
+
+## 1.1.1
+
+- Splash minimum gorunme suresi 900 ms'den 1500 ms'ye cikarildi.
+- Windows NSIS installer installMode currentUser yerine both olarak ayarlandi.
+- Kurulumda sadece mevcut kullanici veya tum kullanicilar icin kurulum secimi etkinlestirildi.
+- Tum kullanicilar kurulumu Program Files altinda TurkuazLabs\PixelTone yolunu kullanacak sekilde standardize edildi.
+- Mevcut kullanici kurulumu LocalAppData altinda TurkuazLabs\PixelTone standardini koruyor.
+- Updater passive kurulumunda onceki install scope registry bilgisinin korunmasi icin Tauri MultiUser akisi kullaniliyor.
+- package.json, Cargo.toml ve Tauri config surumleri 1.1.1 olarak senkronlandi.
 
 ## 1.1.0
 
