@@ -1,7 +1,7 @@
 # 📄 Dosya Yolu: pixeltone/scripts/ci_windows.ps1
 # 📌 Amac: GitHub hosted runner kullanmadan PixelTone Windows CI kontrollerini yerelde calistirmak
 # 📌 Tool - PowerShell
-# Version: 1.0.0
+# Version: 1.0.1
 # Aciklama: Preflight, Node testleri, frontend build, Rust format, cargo check ve unit testleri calistirir
 #
 # Bagimli Oldugu Katman: Tool
@@ -31,7 +31,7 @@ Push-Location $Root
 
 try {
     Invoke-Step -Name "Check Windows" -Action {
-        if (-not $IsWindows) {
+        if ($env:OS -ne "Windows_NT") {
             throw "Bu script Windows uzerinde calistirilmalidir."
         }
     }
