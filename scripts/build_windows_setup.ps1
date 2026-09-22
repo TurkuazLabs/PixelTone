@@ -1,7 +1,7 @@
 # 📄 Dosya Yolu: pixeltone/scripts/build_windows_setup.ps1
 # 📌 Amac: PixelTone Windows NSIS Setup.exe paketini tek komutla uretmek
 # 📌 Tool - PowerShell
-# Version: 1.1.0
+# Version: 1.1.1
 # Aciklama: Ikonlari kaynak SVG'den yeniler, CI kontrollerini calistirir ve unsigned test NSIS setup artifactleri uretir
 #
 # Bagimli Oldugu Katman: Tool
@@ -41,7 +41,7 @@ $IconSourcePath = Join-Path $Root $IconSourceRelativePath
 Push-Location $Root
 
 try {
-    if (-not $IsWindows) {
+    if ($env:OS -ne "Windows_NT") {
         throw "$ProductName Setup.exe build Windows uzerinde calistirilmalidir."
     }
 
