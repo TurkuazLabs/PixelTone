@@ -1,0 +1,74 @@
+# 📄 Dosya Yolu: pixeltone/.github/workflows/windows-test-release.yml
+# 📌 Amac: PixelTone v1.1.1 unsigned Windows test paketini GitHub prerelease olarak yayinlamak
+# 📌 Config - YAML
+# Version: 1.1.1
+# Aciklama: release/v1.1.1-test branch pushunda NSIS setup uretir, artifact yukler ve v1.1.1-test.1 prerelease olusturur
+#
+# Bagimli Oldugu Katman: Config
+
+name: PixelTone Windows Test Release
+
+on:
+  push:
+    branches:
+      - "release/v1.1.1-test"
+    paths:
+      - ".github/workflows/windows-test-release.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pixeltone-windows-test-release-v1.1.1
+  cancel-in-progress: true
+
+jobs:
+  publish-test-release:
+    name: Build and Publish v1.1.1 Test
+    runs-on: windows-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: lts/*
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt
+
+      - name: Build PixelTone Setup.exe
+        shell: powershell
+        run: powershell -ExecutionPolicy Bypass -File scripts/build_windows_setup.ps1 -Clean -SkipValidation
+
+      - name: Upload Setup artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: PixelTone-v1.1.1-Test-Setup
+          path: |
+            dist-installer/PixelTone-Setup-v1.1.1.exe
+            dist-installer/PixelTone-Setup-v1.1.1.exe.sha256
+            dist-installer/PixelTone-Setup-v1.1.1.json
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Publish GitHub prerelease
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_TAG: v1.1.1-test.1
+        run: |
+          gh release create "$RELEASE_TAG" \
+            dist-installer/PixelTone-Setup-v1.1.1.exe \
+            dist-installer/PixelTone-Setup-v1.1.1.exe.sha256 \
+            dist-installer/PixelTone-Setup-v1.1.1.json \
+            --repo "${{ github.repository }}" \
+            --target "$GITHUB_SHA" \
+            --title "PixelTone v1.1.1 Test 1" \
+            --notes "Windows test prerelease. Includes 1.5 second TurkuazLabs branded splash, TurkuazLabs site promotion, hidden release console, and selectable current-user or all-users Program Files installation. This installer is intentionally unsigned and is not an updater artifact." \
+            --prerelease
