@@ -1,12 +1,17 @@
 // # 📄 Dosya Yolu: pixeltone/frontend/language/tr.js
 // # 📌 Amac: PixelTone frontend Turkce runtime etiketlerini merkezi tutmak
 // # 📌 Language - JavaScript
-// # Version: 1.0.0
-// # Aciklama: Stable Desktop, settings, capture, Palette Studio, live picker ve Tailwind mesajlarini merkezi tutar
+// # Version: 1.1.0
+// # Aciklama: Splash, Stable Desktop, settings, capture, Palette Studio, live picker ve Tailwind mesajlarini merkezi tutar
 //
 // Bagimli Oldugu Katman: Language
 
 export const TR_LABELS = Object.freeze({
+  splash: Object.freeze({
+    loading: "PixelTone hazirlaniyor...",
+    ready: "Hazir.",
+    failed: "Acilis tamamlanamadi.",
+  }),
   status: Object.freeze({
     ready: "Hazir.",
     converted: "Renk donusturuldu.",
@@ -78,13 +83,13 @@ export const TR_LABELS = Object.freeze({
   settings: Object.freeze({
     title: "Ayarlar",
     closeToTray: "Kapatma dugmesinde sistem tepsisine gizle",
-    checkUpdatesOnStart: "Baslangicta yeni surum kontrol et",
+    checkUpdatesOnStart: "Baslangicta guncellemeleri otomatik kontrol et ve kur",
     pickerShortcut: "Global picker kisayolu",
     defaultCopyFormat: "Varsayilan picker kopyalama formati",
     copyHex: "HEX",
     copyRgb: "RGB",
     saveAction: "Ayarlari Kaydet",
-    checkUpdateAction: "Guncellemeyi Kontrol Et",
+    checkUpdateAction: "Guncellemeyi Kontrol Et ve Kur",
     versionUnavailable: "Imzali updater henuz yapilandirilmadi veya guncelleme servisine ulasilamadi.",
     updateAvailablePrefix: "Yeni surum:",
     currentVersionPrefix: "kurulu:",

@@ -1,8 +1,8 @@
 # 📄 Dosya Yolu: pixeltone/scripts/configure_updater_signing.ps1
 # 📌 Amac: PixelTone imzali updater anahtarlarini guvenli sekilde olusturmak ve GitHub Secrets ile yapilandirmak
 # 📌 Tool - PowerShell
-# Version: 1.0.0
-# Aciklama: Private key'i kullanici profilinde tutar, GitHub Secret'a aktarir ve public key'i repo updater config ile senkronlar
+# Version: 1.0.1
+# Aciklama: Windows PowerShell 5.1 ve PowerShell Core ile keypair uretir, GitHub Secrets'a aktarir ve public key'i repo config ile senkronlar
 #
 # Bagimli Oldugu Katman: Tool
 
@@ -31,7 +31,7 @@ function Convert-SecureStringToPlainText {
     }
 }
 
-if (-not $IsWindows) {
+if ($env:OS -ne "Windows_NT") {
     throw "Bu script Windows uzerinde calistirilmalidir."
 }
 
@@ -40,6 +40,10 @@ if (-not (Get-Command gh -ErrorAction SilentlyContinue)) {
 }
 
 gh auth status
+
+if ($LASTEXITCODE -ne 0) {
+    throw "GitHub CLI oturumu aktif degil. Once gh auth login calistirin."
+}
 
 $Root = Split-Path -Parent $PSScriptRoot
 Push-Location $Root

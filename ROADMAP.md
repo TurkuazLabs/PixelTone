@@ -1,7 +1,7 @@
 # 📄 Dosya Yolu: pixeltone/ROADMAP.md
 # 📌 Amac: PixelTone gelistirme yol haritasini tanimlamak
 # 📌 Docs - Markdown
-# Version: 1.0.0
+# Version: 1.1.0
 # Aciklama: Tamamlanan masaustu surumleri ve sonraki gelisim alanlarini tanimlar
 
 Bagimli Oldugu Katman: View
@@ -56,6 +56,16 @@ Bagimli Oldugu Katman: View
 - Varsayilan HEX/RGB kopyalama tercihi
 - Baslangicta veya manuel surum kontrolu
 - GitHub Release tabanli dagitim akisi
+
+## v1.1.0 - Splash & Auto Update - GELISTIRILIYOR
+
+- Native splash-first acilis
+- Ana pencerenin splash arkasinda gizli yuklenmesi
+- Signed updater ile baslangicta otomatik kontrol ve kurulum
+- Manuel kontrol et ve kur aksiyonu
+- GitHub Releases latest.json kanali
+- Windows NSIS updater paketi tercihi
+- Signing key ve release secret konfigurasyonu son release kapisi
 
 ## Sonraki Gelisim Alanlari
 
