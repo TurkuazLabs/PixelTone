@@ -1,8 +1,8 @@
 # 📄 Dosya Yolu: pixeltone/.github/workflows/release.yml
 # 📌 Amac: PixelTone v1.x surumlerini Windows, Linux ve macOS installer paketleri olarak yayinlamak
 # 📌 Config - YAML
-# Version: 1.0.0
-# Aciklama: Tag veya manuel tetiklemede platform ikonlarini uretir, Tauri bundle paketlerini build eder ve GitHub Release'e yukler
+# Version: 1.0.1
+# Aciklama: Tag veya manuel tetiklemede signed Tauri bundle paketlerini build eder; Linux build Ubuntu 24.04 kullanir
 #
 # Bagimli Oldugu Katman: Config
 
@@ -33,7 +33,7 @@ jobs:
           - platform: windows-latest
             bundles: "nsis,msi"
             apple_signing_identity: ""
-          - platform: ubuntu-22.04
+          - platform: ubuntu-24.04
             bundles: "appimage,deb,rpm"
             apple_signing_identity: ""
           - platform: macos-latest
@@ -45,7 +45,7 @@ jobs:
         uses: actions/checkout@v7
 
       - name: Install Linux system dependencies
-        if: matrix.platform == 'ubuntu-22.04'
+        if: matrix.platform == 'ubuntu-24.04'
         shell: bash
         run: |
           sudo apt-get update
@@ -129,7 +129,7 @@ jobs:
     needs:
       - build-release
     if: startsWith(github.ref, 'refs/tags/v') || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v7
