@@ -10,6 +10,9 @@ Bagimli Oldugu Katman: View
 
 ## 1.1.1
 
+- Splash ekranina resmi TurkuazLabs teknoloji logosu, A TurkuazLabs Product marka mesaji ve turkuazlabs.com tanitimi eklendi.
+- Ana PixelTone arayuzuna TurkuazLabs gelistirici ve site footer alani eklendi.
+
 - Splash minimum gorunme suresi 900 ms'den 1500 ms'ye cikarildi.
 - Windows NSIS installer installMode currentUser yerine both olarak ayarlandi.
 - Kurulumda sadece mevcut kullanici veya tum kullanicilar icin kurulum secimi etkinlestirildi.
