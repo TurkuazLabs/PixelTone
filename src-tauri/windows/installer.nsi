@@ -1,12 +1,12 @@
 ; # 📄 Dosya Yolu: pixeltone/src-tauri/windows/installer.nsi
 ; # 📌 Amac: Tauri NSIS installer sablonunu TurkuazLabs kurulum dizini standardina uyarlamak
 ; # 📌 Config - NSIS
-; # Version: 1.0.0
-; # Aciklama: Current-user varsayilan kurulum yolunu %LOCALAPPDATA%\TurkuazLabs\PixelTone olarak ayarlar; Tauri upgrade/restore mantigini korur
+; # Version: 1.1.1
+; # Aciklama: Kullanici veya tum kullanicilar kurulumunu secilebilir yapar; TurkuazLabs\PixelTone yol standardini ve Tauri upgrade/restore mantigini korur
 ;
 ; Bagimli Oldugu Katman: Config
 ;
-; Kaynak: Tauri v2 upstream installer.nsi. PixelTone farki yalniz currentUser varsayilan INSTDIR standardidir.
+; Kaynak: Tauri v2 upstream installer.nsi. PixelTone farki user/machine kurulumlarinda TurkuazLabs\PixelTone yol standardidir.
 
 Unicode true
 ManifestDPIAware true
@@ -123,7 +123,7 @@ VIAddVersionKey "ProductVersion" "${VERSION}"
 
 !if "${INSTALLMODE}" == "both"
   !define MULTIUSER_MUI
-  !define MULTIUSER_INSTALLMODE_INSTDIR "${PRODUCTNAME}"
+  !define MULTIUSER_INSTALLMODE_INSTDIR "TurkuazLabs\${PRODUCTNAME}"
   !define MULTIUSER_INSTALLMODE_COMMANDLINE
   !if "${ARCH}" == "x64"
     !define MULTIUSER_USE_PROGRAMFILES64

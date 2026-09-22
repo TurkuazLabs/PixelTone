@@ -2,8 +2,8 @@
 # 📄 Dosya Yolu: pixeltone/frontend/index.html
 # 📌 Amac: PixelTone ana arayuz sayfasi
 # 📌 View - HTML
-# Version: 1.1.0
-# Aciklama: Stable Desktop ayarlari, Live Picker, capture, signed updater, Tailwind ve Palette Studio kontrollerini gosterir
+# Version: 1.1.1
+# Aciklama: Stable Desktop ayarlari, Live Picker, capture, signed updater, Tailwind, Palette Studio ve TurkuazLabs marka footerini gosterir
 
 Bagimli Oldugu Katman: View
 -->
@@ -19,7 +19,7 @@ Bagimli Oldugu Katman: View
     <main class="pt-shell">
       <section class="pt-hero">
         <div>
-          <p class="pt-eyebrow">PixelTone v1.1.0</p>
+          <p class="pt-eyebrow">PixelTone v1.1.1</p>
           <h1>Platform bagimsiz renk secici</h1>
           <p class="pt-lead">Windows, Linux ve macOS icin canli picker, ekran rengi yakalama, proje ve palet yonetim araci.</p>
         </div>
@@ -141,10 +141,19 @@ Bagimli Oldugu Katman: View
           <p id="settings-status" class="pt-status"></p>
         </article>
       </section>
+
+      <footer class="pt-brand-footer">
+        <img id="brand-footer-logo" class="pt-brand-footer-logo" alt="" />
+        <div>
+          <strong id="brand-footer-lead"></strong>
+          <span id="brand-footer-website"></span>
+        </div>
+      </footer>
     </main>
 
     <script type="module" src="/controllers/ui_controller.js"></script>
     <script type="module" src="/controllers/settings_controller.js"></script>
     <script type="module" src="/controllers/desktop_controller.js"></script>
+    <script type="module" src="/controllers/brand_controller.js"></script>
   </body>
 </html>

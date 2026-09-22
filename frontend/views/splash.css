@@ -1,9 +1,9 @@
 /*
 # 📄 Dosya Yolu: pixeltone/frontend/views/splash.css
-# 📌 Amac: PixelTone splash ekraninin gorsel stilini tanimlamak
+# 📌 Amac: PixelTone ve TurkuazLabs markali splash ekraninin gorsel stilini tanimlamak
 # 📌 View - CSS
-# Version: 1.1.0
-# Aciklama: Koyu cam yuzey, yumusak glow ve renk piksel animasyonunu olusturur
+# Version: 1.1.1
+# Aciklama: TurkuazLabs logosu, PixelTone urun alani, site tanitimi ve koyu cam splash yuzeyini olusturur
 
 Bagimli Oldugu Katman: View
 */
@@ -14,7 +14,9 @@ Bagimli Oldugu Katman: View
   background: #0a0f18;
 }
 
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
 
 html,
 body {
@@ -26,9 +28,9 @@ body {
 
 body {
   background:
-    radial-gradient(circle at 18% 18%, rgba(43, 196, 255, 0.18), transparent 32%),
-    radial-gradient(circle at 82% 82%, rgba(167, 94, 255, 0.16), transparent 34%),
-    linear-gradient(145deg, #0b111c 0%, #101724 52%, #090e17 100%);
+    radial-gradient(circle at 16% 18%, rgba(34, 211, 238, 0.2), transparent 34%),
+    radial-gradient(circle at 84% 82%, rgba(96, 165, 250, 0.15), transparent 36%),
+    linear-gradient(145deg, #07101d 0%, #101827 52%, #080e18 100%);
 }
 
 .pt-splash-shell {
@@ -43,41 +45,41 @@ body {
 .pt-splash-card {
   position: relative;
   z-index: 2;
-  width: calc(100% - 56px);
-  padding: 34px 38px 28px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  width: calc(100% - 44px);
+  padding: 24px 28px 20px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
   border-radius: 24px;
-  background: rgba(12, 19, 31, 0.74);
-  box-shadow: 0 26px 70px rgba(0, 0, 0, 0.38);
+  background: rgba(10, 18, 31, 0.8);
+  box-shadow: 0 26px 70px rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(20px);
 }
 
-.pt-splash-mark {
-  position: relative;
-  width: 58px;
-  height: 58px;
-  margin-bottom: 20px;
+.pt-splash-brand {
+  display: grid;
+  grid-template-columns: 112px minmax(0, 1fr);
+  align-items: center;
+  gap: 24px;
 }
 
-.pt-splash-pixel {
-  position: absolute;
-  width: 25px;
-  height: 25px;
-  border-radius: 8px;
-  animation: pt-pixel-pulse 1.4s ease-in-out infinite alternate;
+.pt-splash-brand-logo {
+  width: 112px;
+  height: 112px;
+  border: 1px solid rgba(74, 222, 255, 0.18);
+  border-radius: 22px;
+  object-fit: cover;
+  box-shadow: 0 16px 42px rgba(0, 199, 230, 0.16);
 }
 
-.pt-splash-pixel-one { top: 0; left: 0; background: #22d3ee; }
-.pt-splash-pixel-two { top: 0; right: 0; background: #60a5fa; animation-delay: 120ms; }
-.pt-splash-pixel-three { bottom: 0; left: 0; background: #a78bfa; animation-delay: 240ms; }
-.pt-splash-pixel-four { right: 0; bottom: 0; background: #f472b6; animation-delay: 360ms; }
+.pt-splash-content {
+  min-width: 0;
+}
 
-.pt-splash-eyebrow {
-  margin: 0 0 7px;
-  color: rgba(220, 236, 255, 0.58);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.24em;
+.pt-splash-product-label {
+  margin: 0 0 8px;
+  color: #67e8f9;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
 }
 
@@ -89,9 +91,23 @@ h1 {
 }
 
 .pt-splash-subtitle {
-  margin: 9px 0 28px;
-  color: rgba(230, 240, 255, 0.7);
-  font-size: 14px;
+  margin: 8px 0 16px;
+  color: rgba(230, 240, 255, 0.72);
+  font-size: 13px;
+}
+
+.pt-splash-promo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  color: rgba(224, 237, 255, 0.54);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.pt-splash-promo strong {
+  color: #67e8f9;
+  font-weight: 700;
 }
 
 .pt-splash-footer {
@@ -99,6 +115,9 @@ h1 {
   align-items: center;
   justify-content: space-between;
   min-height: 20px;
+  margin-top: 22px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
   color: rgba(224, 237, 255, 0.54);
   font-size: 11px;
 }
@@ -113,10 +132,14 @@ h1 {
   opacity: 0.34;
 }
 
-.pt-splash-glow-one { top: -80px; left: -50px; background: #14b8a6; }
-.pt-splash-glow-two { right: -60px; bottom: -90px; background: #7c3aed; }
+.pt-splash-glow-one {
+  top: -80px;
+  left: -50px;
+  background: #14b8a6;
+}
 
-@keyframes pt-pixel-pulse {
-  from { transform: translateY(0) scale(0.94); opacity: 0.72; }
-  to { transform: translateY(-3px) scale(1); opacity: 1; }
+.pt-splash-glow-two {
+  right: -60px;
+  bottom: -90px;
+  background: #2563eb;
 }

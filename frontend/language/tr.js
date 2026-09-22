@@ -1,13 +1,19 @@
 // # 📄 Dosya Yolu: pixeltone/frontend/language/tr.js
 // # 📌 Amac: PixelTone frontend Turkce runtime etiketlerini merkezi tutmak
 // # 📌 Language - JavaScript
-// # Version: 1.1.0
-// # Aciklama: Splash, Stable Desktop, settings, capture, Palette Studio, live picker ve Tailwind mesajlarini merkezi tutar
+// # Version: 1.1.1
+// # Aciklama: TurkuazLabs marka, splash, Stable Desktop, settings, capture, Palette Studio, live picker ve Tailwind mesajlarini merkezi tutar
 //
 // Bagimli Oldugu Katman: Language
 
 export const TR_LABELS = Object.freeze({
+  brand: Object.freeze({
+    productLabel: "A TurkuazLabs Product",
+    websiteLead: "Daha fazla proje ve yazilim:",
+    footerLead: "TurkuazLabs tarafindan gelistirildi",
+  }),
   splash: Object.freeze({
+    subtitle: "Color Picker & Palette Studio",
     loading: "PixelTone hazirlaniyor...",
     ready: "Hazir.",
     failed: "Acilis tamamlanamadi.",

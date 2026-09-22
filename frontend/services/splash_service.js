@@ -1,8 +1,8 @@
 // # 📄 Dosya Yolu: pixeltone/frontend/services/splash_service.js
-// # 📌 Amac: PixelTone splash acilis akisini ve ana pencereye gecisi yonetmek
+// # 📌 Amac: PixelTone splash acilis akisini, TurkuazLabs marka verisini ve ana pencereye gecisi yonetmek
 // # 📌 Service - JavaScript
-// # Version: 1.1.0
-// # Aciklama: Minimum splash suresini uygular ve hazir oldugunda Rust startup komutu ile ana pencereyi acar
+// # Version: 1.1.1
+// # Aciklama: Marka verisini View katmanina aktarir, minimum splash suresini uygular ve hazir oldugunda ana pencereyi acar
 //
 // Bagimli Oldugu Katman: Service
 
@@ -22,6 +22,12 @@ export const splashService = Object.freeze({
     splashView.initialize({
       appName: APP_CONFIG.appName,
       version: APP_CONFIG.version,
+      brandName: APP_CONFIG.brand.name,
+      brandLogo: APP_CONFIG.brand.logoPath,
+      website: APP_CONFIG.brand.website,
+      productLabel: TR_LABELS.brand.productLabel,
+      websiteLead: TR_LABELS.brand.websiteLead,
+      subtitle: TR_LABELS.splash.subtitle,
       status: TR_LABELS.splash.loading,
     });
 

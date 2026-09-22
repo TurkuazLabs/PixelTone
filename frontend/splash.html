@@ -1,9 +1,9 @@
 <!--
 # 📄 Dosya Yolu: pixeltone/frontend/splash.html
-# 📌 Amac: PixelTone acilis splash ekranini gostermek
+# 📌 Amac: PixelTone acilis splash ekraninda PixelTone ve TurkuazLabs markalarini gostermek
 # 📌 View - HTML
-# Version: 1.1.0
-# Aciklama: Ana pencere hazirlanirken marka, surum, renk animasyonu ve acilis durumunu gosterir
+# Version: 1.1.1
+# Aciklama: Ana pencere hazirlanirken TurkuazLabs logosu, PixelTone urun bilgisi, site tanitimi, surum ve acilis durumunu gosterir
 
 Bagimli Oldugu Katman: View
 -->
@@ -19,22 +19,28 @@ Bagimli Oldugu Katman: View
     <main class="pt-splash-shell" aria-live="polite">
       <div class="pt-splash-glow pt-splash-glow-one"></div>
       <div class="pt-splash-glow pt-splash-glow-two"></div>
+
       <section class="pt-splash-card">
-        <div class="pt-splash-mark" aria-hidden="true">
-          <span class="pt-splash-pixel pt-splash-pixel-one"></span>
-          <span class="pt-splash-pixel pt-splash-pixel-two"></span>
-          <span class="pt-splash-pixel pt-splash-pixel-three"></span>
-          <span class="pt-splash-pixel pt-splash-pixel-four"></span>
+        <div class="pt-splash-brand">
+          <img id="splash-brand-logo" class="pt-splash-brand-logo" alt="" />
+          <div class="pt-splash-content">
+            <p id="splash-product-label" class="pt-splash-product-label"></p>
+            <h1 id="splash-app-name"></h1>
+            <p id="splash-subtitle" class="pt-splash-subtitle"></p>
+            <div class="pt-splash-promo">
+              <span id="splash-website-label"></span>
+              <strong id="splash-website"></strong>
+            </div>
+          </div>
         </div>
-        <p class="pt-splash-eyebrow">TurkuazLabs</p>
-        <h1 id="splash-app-name">PixelTone</h1>
-        <p class="pt-splash-subtitle">Color Picker & Palette Studio</p>
+
         <div class="pt-splash-footer">
           <span id="splash-status"></span>
           <span id="splash-version"></span>
         </div>
       </section>
     </main>
+
     <script type="module" src="/controllers/splash_controller.js"></script>
   </body>
 </html>
