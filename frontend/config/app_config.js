@@ -8,7 +8,7 @@
 
 export const APP_CONFIG = Object.freeze({
   appName: "PixelTone",
-  version: "1.1.0",
+  version: "1.1.1",
   defaults: Object.freeze({
     projectName: "Genel",
     settings: Object.freeze({
