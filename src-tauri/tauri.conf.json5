@@ -1,7 +1,7 @@
 // # 📄 Dosya Yolu: pixeltone/src-tauri/tauri.conf.json5
 // # 📌 Amac: Tauri uygulama ve picker overlay ayarlarini tanimlamak
 // # 📌 Config - JSON5
-// # Version: 1.0.0
+// # Version: 1.0.1
 // # Aciklama: Stable Desktop ana pencere, picker overlay, tray uyumlu build ve bundle ayarlarini tanimlar
 //
 // Bagimli Oldugu Katman: Config
@@ -44,8 +44,7 @@
         "visible": false,
         "focus": true,
         "skipTaskbar": true,
-        "shadow": false,
-        "noRedirectionBitmap": true
+        "shadow": false
       }
     ],
     "security": {
