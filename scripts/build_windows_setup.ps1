@@ -1,8 +1,8 @@
 # 📄 Dosya Yolu: pixeltone/scripts/build_windows_setup.ps1
 # 📌 Amac: PixelTone Windows NSIS Setup.exe paketini tek komutla uretmek
 # 📌 Tool - PowerShell
-# Version: 1.0.0
-# Aciklama: Dependency lockfilelarini hazirlar, CI kontrollerini calistirir, NSIS setup build eder ve SHA256 dosyasi olusturur
+# Version: 1.1.0
+# Aciklama: Ikonlari kaynak SVG'den yeniler, CI kontrollerini calistirir ve unsigned test NSIS setup artifactleri uretir
 #
 # Bagimli Oldugu Katman: Tool
 
@@ -13,22 +13,6 @@ param(
 
 $ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
-
-function Convert-SecureStringToPlainText {
-    param(
-        [Parameter(Mandatory = $true)]
-        [Security.SecureString]$SecureValue
-    )
-
-    $Pointer = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($SecureValue)
-
-    try {
-        return [Runtime.InteropServices.Marshal]::PtrToStringBSTR($Pointer)
-    }
-    finally {
-        [Runtime.InteropServices.Marshal]::ZeroFreeBSTR($Pointer)
-    }
-}
 
 function Invoke-Step {
     param(
@@ -44,16 +28,29 @@ function Invoke-Step {
 }
 
 $Root = Split-Path -Parent $PSScriptRoot
-$OutputDir = Join-Path $Root "dist-installer"
+$ProductName = "PixelTone"
+$OutputDirName = "dist-installer"
+$SetupConfigRelativePath = "src-tauri/tauri.setup.conf.json5"
+$IconSourceRelativePath = "src-tauri/icons/app-icon.svg"
+$BundleRelativePath = "src-tauri/target/release/bundle/nsis"
 $PackagePath = Join-Path $Root "package.json"
-$ManagedSigningKey = $false
-$ManagedSigningPassword = $false
+$OutputDir = Join-Path $Root $OutputDirName
+$SetupConfigPath = Join-Path $Root $SetupConfigRelativePath
+$IconSourcePath = Join-Path $Root $IconSourceRelativePath
 
 Push-Location $Root
 
 try {
     if (-not $IsWindows) {
-        throw "PixelTone Setup.exe build Windows uzerinde calistirilmalidir."
+        throw "$ProductName Setup.exe build Windows uzerinde calistirilmalidir."
+    }
+
+    if (-not (Test-Path $SetupConfigPath)) {
+        throw "Setup config bulunamadi: $SetupConfigPath"
+    }
+
+    if (-not (Test-Path $IconSourcePath)) {
+        throw "Ikon kaynak dosyasi bulunamadi: $IconSourcePath"
     }
 
     $Package = Get-Content $PackagePath -Raw | ConvertFrom-Json
@@ -74,17 +71,37 @@ try {
     Invoke-Step -Name "Prepare package-lock.json" -Action {
         if (-not (Test-Path "package-lock.json")) {
             npm install --package-lock-only
+
+            if ($LASTEXITCODE -ne 0) {
+                throw "package-lock.json hazirlama basarisiz."
+            }
         }
     }
 
     Invoke-Step -Name "Prepare Cargo.lock" -Action {
         if (-not (Test-Path "src-tauri/Cargo.lock")) {
             cargo generate-lockfile --manifest-path "src-tauri/Cargo.toml"
+
+            if ($LASTEXITCODE -ne 0) {
+                throw "Cargo.lock hazirlama basarisiz."
+            }
         }
     }
 
     Invoke-Step -Name "Install locked frontend dependencies" -Action {
         npm ci
+
+        if ($LASTEXITCODE -ne 0) {
+            throw "npm ci basarisiz."
+        }
+    }
+
+    Invoke-Step -Name "Generate platform icons from canonical SVG" -Action {
+        npm run tauri icon $IconSourceRelativePath
+
+        if ($LASTEXITCODE -ne 0) {
+            throw "Tauri icon generation basarisiz."
+        }
     }
 
     if (-not $SkipValidation) {
@@ -93,39 +110,16 @@ try {
         }
     }
 
-    Invoke-Step -Name "Check updater signing configuration" -Action {
-        npm run check:updater
-    }
+    Invoke-Step -Name "Build unsigned NSIS Setup.exe" -Action {
+        npm run tauri build -- --config $SetupConfigRelativePath --bundles nsis
 
-    Invoke-Step -Name "Configure updater signing environment" -Action {
-        if ([string]::IsNullOrWhiteSpace($env:TAURI_SIGNING_PRIVATE_KEY)) {
-            $DefaultKeyPath = Join-Path $env:USERPROFILE ".tauri\pixeltone-updater.key"
-
-            if (-not (Test-Path $DefaultKeyPath)) {
-                throw "Updater private key bulunamadi. Once npm run configure:updater calistirin."
-            }
-
-            $env:TAURI_SIGNING_PRIVATE_KEY = $DefaultKeyPath
-            $script:ManagedSigningKey = $true
-        }
-
-        if ([string]::IsNullOrWhiteSpace($env:TAURI_SIGNING_PRIVATE_KEY_PASSWORD)) {
-            $SecurePassword = Read-Host "Updater signing key sifresi" -AsSecureString
-            $env:TAURI_SIGNING_PRIVATE_KEY_PASSWORD = Convert-SecureStringToPlainText -SecureValue $SecurePassword
-            $script:ManagedSigningPassword = $true
+        if ($LASTEXITCODE -ne 0) {
+            throw "NSIS Setup.exe build basarisiz."
         }
     }
 
-    Invoke-Step -Name "Generate platform icons" -Action {
-        npm run tauri icon "src-tauri/icons/icon.png"
-    }
-
-    Invoke-Step -Name "Build signed NSIS Setup.exe" -Action {
-        npm run tauri build -- --bundles nsis
-    }
-
-    Invoke-Step -Name "Collect Setup.exe" -Action {
-        $BundleDir = Join-Path $Root "src-tauri/target/release/bundle/nsis"
+    Invoke-Step -Name "Collect setup artifacts" -Action {
+        $BundleDir = Join-Path $Root $BundleRelativePath
         $Setup = Get-ChildItem -Path $BundleDir -Filter "*-setup.exe" -File |
             Sort-Object LastWriteTimeUtc -Descending |
             Select-Object -First 1
@@ -136,30 +130,38 @@ try {
 
         New-Item -ItemType Directory -Path $OutputDir -Force | Out-Null
 
-        $FinalName = "PixelTone-Setup-v$Version.exe"
+        $FinalName = "$ProductName-Setup-v$Version.exe"
         $FinalPath = Join-Path $OutputDir $FinalName
         Copy-Item $Setup.FullName $FinalPath -Force
 
         $Hash = Get-FileHash -Path $FinalPath -Algorithm SHA256
-        $HashLine = "$($Hash.Hash.ToLowerInvariant())  $FinalName"
+        $HashValue = $Hash.Hash.ToLowerInvariant()
+        $HashLine = "$HashValue  $FinalName"
         $HashPath = "$FinalPath.sha256"
         Set-Content -Path $HashPath -Value $HashLine -Encoding ascii
+
+        $MetadataPath = Join-Path $OutputDir "$ProductName-Setup-v$Version.json"
+        $Metadata = [ordered]@{
+            product = $ProductName
+            version = $Version
+            file = $FinalName
+            sha256 = $HashValue
+            package_type = "nsis"
+            updater_artifact = $false
+            code_signed = $false
+        }
+
+        $Metadata | ConvertTo-Json | Set-Content -Path $MetadataPath -Encoding utf8
 
         Write-Host ""
         Write-Host "Setup hazir:"
         Write-Host $FinalPath
         Write-Host "SHA256:"
         Write-Host $Hash.Hash
+        Write-Host "Metadata:"
+        Write-Host $MetadataPath
     }
 }
 finally {
-    if ($ManagedSigningPassword) {
-        Remove-Item Env:TAURI_SIGNING_PRIVATE_KEY_PASSWORD -ErrorAction SilentlyContinue
-    }
-
-    if ($ManagedSigningKey) {
-        Remove-Item Env:TAURI_SIGNING_PRIVATE_KEY -ErrorAction SilentlyContinue
-    }
-
     Pop-Location
 }
