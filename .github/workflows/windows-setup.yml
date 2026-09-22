@@ -1,7 +1,7 @@
 # 📄 Dosya Yolu: pixeltone/.github/workflows/windows-setup.yml
 # 📌 Amac: PixelTone Windows NSIS Setup.exe paketini GitHub-hosted Windows runner uzerinde uretmek
 # 📌 Config - YAML
-# Version: 1.1.0
+# Version: 1.1.1
 # Aciklama: Manuel tetiklemede release/tag olusturmadan unsigned Setup.exe, SHA256 ve metadata artifacti uretir
 #
 # Bagimli Oldugu Katman: Config
@@ -10,6 +10,15 @@ name: PixelTone Windows Setup
 
 on:
   workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "src-tauri/**"
+      - "scripts/build_windows_setup.ps1"
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/windows-setup.yml"
 
 permissions:
   contents: read
