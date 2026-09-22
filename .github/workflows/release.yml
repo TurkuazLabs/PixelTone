@@ -1,7 +1,7 @@
 # 📄 Dosya Yolu: pixeltone/.github/workflows/release.yml
 # 📌 Amac: PixelTone v1.x surumlerini Windows, Linux ve macOS installer paketleri olarak yayinlamak
 # 📌 Config - YAML
-# Version: 1.0.1
+# Version: 1.0.2
 # Aciklama: Tag veya manuel tetiklemede signed Tauri bundle paketlerini build eder; Linux build Ubuntu 24.04 kullanir
 #
 # Bagimli Oldugu Katman: Config
@@ -104,7 +104,7 @@ jobs:
         run: npm ci
 
       - name: Generate platform icons
-        run: npm run tauri icon src-tauri/icons/icon.png
+        run: npm run tauri icon src-tauri/icons/app-icon.svg
 
       - name: Build and publish Tauri bundles
         uses: tauri-apps/tauri-action@v1
