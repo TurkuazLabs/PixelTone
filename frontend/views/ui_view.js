@@ -7,7 +7,8 @@
 // Bagimli Oldugu Katman: View
 
 import { APP_CONFIG } from "../config/app_config.js";
-import { languageService } from "../services/language_service.js";
+
+let currentLabels = null;
 
 const dom = Object.freeze({
   hexInput: document.getElementById("hex-input"),
@@ -78,6 +79,7 @@ function createMiniButton(label, handler, isDisabled = false, extraClass = "") {
 
 export const uiView = Object.freeze({
   initializeLabels(labels) {
+    currentLabels = labels;
     dom.heroTitle.textContent = labels.app.heroTitle;
     dom.heroLead.textContent = labels.app.heroLead;
     dom.convertTitle.textContent = labels.app.convertTitle;
@@ -103,9 +105,9 @@ export const uiView = Object.freeze({
   },
 
   initializePickerControls(shortcut) {
-    dom.pickerLaunchButton.textContent = languageService.getLabels().picker.launchAction;
+    dom.pickerLaunchButton.textContent = currentLabels.picker.launchAction;
     dom.pickerShortcutHint.textContent =
-      `${languageService.getLabels().picker.shortcutPrefix}: ${shortcut}`;
+      `${currentLabels.picker.shortcutPrefix}: ${shortcut}`;
   },
 
   bindLivePicker(handler) {
@@ -195,18 +197,18 @@ export const uiView = Object.freeze({
     dom.colorOutput.innerHTML = "";
 
     const rows = [
-      [languageService.getLabels().output.hex, colorInfo.hex],
-      [languageService.getLabels().output.rgb, `${colorInfo.rgb.red}, ${colorInfo.rgb.green}, ${colorInfo.rgb.blue}`],
+      [currentLabels.output.hex, colorInfo.hex],
+      [currentLabels.output.rgb, `${colorInfo.rgb.red}, ${colorInfo.rgb.green}, ${colorInfo.rgb.blue}`],
       [
-        languageService.getLabels().output.hsl,
+        currentLabels.output.hsl,
         `${Number(colorInfo.hsl.hue).toFixed(2)}, ${formatPercent(colorInfo.hsl.saturation)}, ${formatPercent(colorInfo.hsl.lightness)}`,
       ],
       [
-        languageService.getLabels().output.hsv,
+        currentLabels.output.hsv,
         `${Number(colorInfo.hsv.hue).toFixed(2)}, ${formatPercent(colorInfo.hsv.saturation)}, ${formatPercent(colorInfo.hsv.value)}`,
       ],
       [
-        languageService.getLabels().output.cmyk,
+        currentLabels.output.cmyk,
         `${formatPercent(colorInfo.cmyk.cyan)}, ${formatPercent(colorInfo.cmyk.magenta)}, ${formatPercent(colorInfo.cmyk.yellow)}, ${formatPercent(colorInfo.cmyk.black)}`,
       ],
     ];
@@ -220,7 +222,7 @@ export const uiView = Object.freeze({
     if (!Array.isArray(matches) || matches.length === 0) {
       const empty = document.createElement("p");
       empty.className = "pt-status";
-      empty.textContent = languageService.getLabels().empty.tailwind;
+      empty.textContent = currentLabels.empty.tailwind;
       dom.tailwindColorList.appendChild(empty);
       return;
     }
@@ -240,7 +242,7 @@ export const uiView = Object.freeze({
       name.textContent = match.name;
       value.textContent = match.value;
       distance.className = "pt-tailwind-distance";
-      distance.textContent = `${languageService.getLabels().tailwind.distancePrefix}: ${Number(match.distance).toFixed(4)}`;
+      distance.textContent = `${currentLabels.tailwind.distancePrefix}: ${Number(match.distance).toFixed(4)}`;
       details.append(name, value);
       row.append(swatch, details, distance);
       dom.tailwindColorList.appendChild(row);
@@ -253,7 +255,7 @@ export const uiView = Object.freeze({
     if (historyItems.length === 0) {
       const empty = document.createElement("p");
       empty.className = "pt-status";
-      empty.textContent = languageService.getLabels().empty.history;
+      empty.textContent = currentLabels.empty.history;
       dom.historyList.appendChild(empty);
       return;
     }
@@ -280,18 +282,18 @@ export const uiView = Object.freeze({
       nameInput.className = "pt-history-name";
       nameInput.type = "text";
       nameInput.value = item.name || item.hex;
-      nameInput.placeholder = languageService.getLabels().history.namePlaceholder;
+      nameInput.placeholder = currentLabels.history.namePlaceholder;
       nameInput.addEventListener("change", () => onRename(index, nameInput.value));
 
       actions.className = "pt-history-actions";
       actions.append(
         createMiniButton(
-          languageService.getLabels().history.moveUp,
+          currentLabels.history.moveUp,
           () => onMove(index, APP_CONFIG.historyMove.up),
           index === 0,
         ),
         createMiniButton(
-          languageService.getLabels().history.moveDown,
+          currentLabels.history.moveDown,
           () => onMove(index, APP_CONFIG.historyMove.down),
           index === historyItems.length - 1,
         ),
@@ -309,7 +311,7 @@ export const uiView = Object.freeze({
     if (!Array.isArray(palettes) || palettes.length === 0) {
       const empty = document.createElement("p");
       empty.className = "pt-status";
-      empty.textContent = languageService.getLabels().empty.palettes;
+      empty.textContent = currentLabels.empty.palettes;
       dom.paletteList.appendChild(empty);
       return;
     }
@@ -325,15 +327,15 @@ export const uiView = Object.freeze({
       row.className = "pt-palette-item";
       details.className = "pt-palette-details";
       name.textContent = palette.name;
-      project.textContent = `${languageService.getLabels().palette.projectPrefix}: ${palette.project}`;
-      count.textContent = `${palette.color_count} ${languageService.getLabels().palette.colorCountSuffix}`;
+      project.textContent = `${currentLabels.palette.projectPrefix}: ${palette.project}`;
+      count.textContent = `${palette.color_count} ${currentLabels.palette.colorCountSuffix}`;
       actions.className = "pt-palette-actions";
       actions.append(
-        createMiniButton(languageService.getLabels().palette.editAction, () => onEdit(palette)),
+        createMiniButton(currentLabels.palette.editAction, () => onEdit(palette)),
         createMiniButton(
-          languageService.getLabels().palette.deleteAction,
+          currentLabels.palette.deleteAction,
           () => {
-            if (window.confirm(languageService.getLabels().palette.deleteConfirm)) {
+            if (window.confirm(currentLabels.palette.deleteConfirm)) {
               onDelete(palette);
             }
           },
@@ -354,7 +356,7 @@ export const uiView = Object.freeze({
     if (!captureResult || !Array.isArray(captureResult.magnifier_pixels)) {
       const empty = document.createElement("p");
       empty.className = "pt-status";
-      empty.textContent = languageService.getLabels().empty.magnifier;
+      empty.textContent = currentLabels.empty.magnifier;
       dom.magnifierGrid.appendChild(empty);
       return;
     }
@@ -374,7 +376,7 @@ export const uiView = Object.freeze({
       dom.magnifierGrid.appendChild(pixelElement);
     });
 
-    dom.capturePlatform.textContent = `${languageService.getLabels().capture.platformPrefix}: ${captureResult.platform}`;
-    dom.capturePosition.textContent = `${languageService.getLabels().capture.positionPrefix}: ${captureResult.cursor.x}, ${captureResult.cursor.y}`;
+    dom.capturePlatform.textContent = `${currentLabels.capture.platformPrefix}: ${captureResult.platform}`;
+    dom.capturePosition.textContent = `${currentLabels.capture.positionPrefix}: ${captureResult.cursor.x}, ${captureResult.cursor.y}`;
   },
 });
