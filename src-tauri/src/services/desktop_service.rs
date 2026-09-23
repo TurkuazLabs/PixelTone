@@ -12,8 +12,7 @@ use tauri::{Emitter, Manager, WindowEvent};
 
 use crate::config::app_config::{
     LANGUAGE_EN, LANGUAGE_SYSTEM, LANGUAGE_TR, MAIN_WINDOW_LABEL, SPLASH_WINDOW_LABEL,
-    TRAY_MENU_PICKER_ID,
-    TRAY_MENU_QUIT_ID, TRAY_MENU_SHOW_ID, TRAY_PICKER_EVENT,
+    TRAY_MENU_PICKER_ID, TRAY_MENU_QUIT_ID, TRAY_MENU_SHOW_ID, TRAY_PICKER_EVENT,
 };
 use crate::language::{en, tr};
 use crate::repositories::settings_repository::SettingsRepository;
