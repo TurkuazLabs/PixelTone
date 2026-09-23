@@ -47,6 +47,13 @@ export const APP_CONFIG = Object.freeze({
   splash: Object.freeze({
     minimumVisibleMs: 1500,
   }),
+  navigation: Object.freeze({
+    defaultPage: "home",
+    pages: Object.freeze({
+      home: "home",
+      settings: "settings",
+    }),
+  }),
   themes: Object.freeze({
     system: "system",
     light: "light",
