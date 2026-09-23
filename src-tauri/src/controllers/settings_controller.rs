@@ -17,10 +17,7 @@ pub fn get_settings() -> Result<AppSettings, String> {
 }
 
 #[tauri::command]
-pub fn save_settings(
-    app: tauri::AppHandle,
-    settings: AppSettings,
-) -> Result<AppSettings, String> {
+pub fn save_settings(app: tauri::AppHandle, settings: AppSettings) -> Result<AppSettings, String> {
     let saved = SettingsService::new(SettingsRepository::new()).save_settings(settings)?;
     let _ = DesktopService::refresh_tray(&app, &saved.language);
     Ok(saved)
