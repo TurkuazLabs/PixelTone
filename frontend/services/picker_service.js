@@ -44,9 +44,16 @@ function formatRgb(colorInfo) {
   ].join("");
 }
 
+async function restoreMainWindow() {
+  await tauriBridge.invokeCommand(APP_CONFIG.commands.showMainWindow);
+}
+
 async function openPicker() {
-  await pickerWindowTool.showAtCursor();
-  await eventTool.emitToWindow(
+  await tauriBridge.invokeCommand(APP_CONFIG.commands.hideMainWindow);
+
+  try {
+    await pickerWindowTool.showAtCursor();
+    await eventTool.emitToWindow(
     APP_CONFIG.picker.windowLabel,
     APP_CONFIG.picker.activationEvent,
     {
@@ -54,6 +61,10 @@ async function openPicker() {
       shortcut: configuredShortcut,
     },
   );
+  } catch (error) {
+    await restoreMainWindow().catch(() => {});
+    throw error;
+  }
 }
 
 async function colorInfoForCapture(captureResult) {
@@ -149,6 +160,7 @@ async function copyCurrentSelection() {
   );
   active = false;
   await pickerWindowTool.hide();
+  await restoreMainWindow();
 
   return selection;
 }
@@ -158,6 +170,7 @@ async function cancelSession() {
   currentSample = null;
   stopSampling();
   await pickerWindowTool.hide();
+  await restoreMainWindow();
 }
 
 export const pickerService = Object.freeze({
