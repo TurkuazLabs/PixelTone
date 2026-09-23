@@ -1,18 +1,22 @@
 // # 📄 Dosya Yolu: pixeltone/frontend/services/settings_service.js
 // # 📌 Amac: Masaustu ayarlarini backend ile senkronlamak ve runtime servislere uygulamak
 // # 📌 Service - JavaScript
-// # Version: 1.0.1
-// # Aciklama: Ayarlari update network kontrolunden bagimsiz yukler ve runtime shortcut degisikliklerini transactional rollback ile uygular
+// # Version: 1.2.0
+// # Aciklama: Picker, tema ve dil ayarlarini normalize eder; backend kaydi ile runtime uygulamasini transactional yonetir
 //
 // Bagimli Oldugu Katman: Service
 
 import { APP_CONFIG } from "../config/app_config.js";
 import { pickerService } from "./picker_service.js";
+import { preferenceService } from "./preference_service.js";
 import { versionService } from "./version_service.js";
 import { tauriBridge } from "../tools/tauri_bridge.js";
+import { languageService } from "./language_service.js";
+import { themeService } from "./theme_service.js";
 
 let currentSettings = null;
 let currentRuntime = null;
+let initializePromise = null;
 
 function fallbackSettings() {
   return {
@@ -20,6 +24,8 @@ function fallbackSettings() {
     check_updates_on_start: APP_CONFIG.defaults.settings.checkUpdatesOnStart,
     picker_shortcut: APP_CONFIG.defaults.settings.pickerShortcut,
     default_copy_format: APP_CONFIG.defaults.settings.defaultCopyFormat,
+    theme: APP_CONFIG.defaults.settings.theme,
+    language: APP_CONFIG.defaults.settings.language,
   };
 }
 
@@ -40,10 +46,13 @@ function normalizeSettings(settings) {
       settings?.default_copy_format === APP_CONFIG.picker.copyFormats.rgb
         ? APP_CONFIG.picker.copyFormats.rgb
         : APP_CONFIG.picker.copyFormats.hex,
+    theme: themeService.normalize(settings?.theme),
+    language: languageService.normalize(settings?.language),
   };
 }
 
 async function applyRuntime(settings, options = {}) {
+  preferenceService.apply(settings);
   const runtime = await pickerService.configure(settings, options);
   currentSettings = settings;
   currentRuntime = runtime;
@@ -70,6 +79,7 @@ async function loadSettings() {
 }
 
 async function restoreRuntime(previousSettings) {
+  preferenceService.apply(previousSettings);
   const restoredRuntime = await pickerService.configure(
     previousSettings,
     { allowShortcutFailure: true },
@@ -79,16 +89,21 @@ async function restoreRuntime(previousSettings) {
 }
 
 export const settingsService = Object.freeze({
-  async initialize() {
-    const state = await loadSettings();
-    const versionCheckPromise = state.settings.check_updates_on_start
-      ? versionService.checkLatest()
-      : Promise.resolve(null);
+  initialize() {
+    if (!initializePromise) {
+      initializePromise = loadSettings().then((state) => {
+        const versionCheckPromise = state.settings.check_updates_on_start
+          ? versionService.checkLatest()
+          : Promise.resolve(null);
 
-    return {
-      ...state,
-      versionCheckPromise,
-    };
+        return {
+          ...state,
+          versionCheckPromise,
+        };
+      });
+    }
+
+    return initializePromise;
   },
 
   async load() {
@@ -98,6 +113,7 @@ export const settingsService = Object.freeze({
   async save(settings) {
     const normalized = normalizeSettings(settings);
     const previousSettings = currentSettings || fallbackSettings();
+    const languageChanged = previousSettings.language !== normalized.language;
 
     try {
       const runtime = await pickerService.configure(normalized);
@@ -107,11 +123,13 @@ export const settingsService = Object.freeze({
       );
 
       currentSettings = normalizeSettings(saved);
+      preferenceService.apply(currentSettings);
       currentRuntime = runtime;
 
       return {
         settings: currentSettings,
         runtime: currentRuntime,
+        languageChanged,
       };
     } catch (error) {
       await restoreRuntime(previousSettings);
