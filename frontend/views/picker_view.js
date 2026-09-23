@@ -7,7 +7,8 @@
 // Bagimli Oldugu Katman: View
 
 import { APP_CONFIG } from "../config/app_config.js";
-import { languageService } from "../services/language_service.js";
+
+let currentLabels = null;
 
 const dom = Object.freeze({
   overlay: document.getElementById("picker-overlay"),
@@ -25,9 +26,10 @@ function formatRgb(colorInfo) {
 }
 
 export const pickerView = Object.freeze({
-  initializeLabels(shortcut) {
-    dom.instruction.textContent = languageService.getLabels().picker.instruction;
-    dom.status.textContent = `${languageService.getLabels().picker.shortcutPrefix}: ${shortcut}`;
+  initializeLabels(labels, shortcut) {
+    currentLabels = labels;
+    dom.instruction.textContent = currentLabels.picker.instruction;
+    dom.status.textContent = `${currentLabels.picker.shortcutPrefix}: ${shortcut}`;
   },
 
   bindPointerMove(handler) {
@@ -90,9 +92,9 @@ export const pickerView = Object.freeze({
     dom.rgb.textContent = formatRgb(colorInfo);
     dom.mode.textContent =
       format === APP_CONFIG.picker.copyFormats.rgb
-        ? languageService.getLabels().picker.copyModeRgb
-        : languageService.getLabels().picker.copyModeHex;
-    dom.status.textContent = `${languageService.getLabels().capture.positionPrefix}: ${captureResult.cursor.x}, ${captureResult.cursor.y}`;
+        ? currentLabels.picker.copyModeRgb
+        : currentLabels.picker.copyModeHex;
+    dom.status.textContent = `${currentLabels.capture.positionPrefix}: ${captureResult.cursor.x}, ${captureResult.cursor.y}`;
   },
 
   renderError(error, fallback) {
