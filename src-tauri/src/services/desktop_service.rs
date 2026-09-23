@@ -1,7 +1,7 @@
 // # 📄 Dosya Yolu: pixeltone/src-tauri/src/services/desktop_service.rs
 // # 📌 Amac: Tray, dil ve picker ana pencere lifecycle is kurallarini yonetmek
 // # 📌 Service - Rust
-// # Version: 1.2.1
+// # Version: 1.2.2
 // # Aciklama: Tray dilini yonetir, close-to-tray davranisini uygular ve picker sirasinda ana pencereyi gizleyip geri getirir
 //
 // Bagimli Oldugu Katman: Service
@@ -11,8 +11,8 @@ use tauri::tray::{MouseButton, MouseButtonState, TrayIconEvent};
 use tauri::{Emitter, Manager, WindowEvent};
 
 use crate::config::app_config::{
-    LANGUAGE_EN, LANGUAGE_SYSTEM, LANGUAGE_TR, MAIN_WINDOW_LABEL, TRAY_MENU_PICKER_ID,
-    TRAY_MENU_QUIT_ID, TRAY_MENU_SHOW_ID, TRAY_PICKER_EVENT,
+    LANGUAGE_EN, LANGUAGE_SYSTEM, LANGUAGE_TR, MAIN_WINDOW_LABEL, SPLASH_WINDOW_LABEL,
+    TRAY_MENU_PICKER_ID, TRAY_MENU_QUIT_ID, TRAY_MENU_SHOW_ID, TRAY_PICKER_EVENT,
 };
 use crate::language::{en, tr};
 use crate::repositories::settings_repository::SettingsRepository;
@@ -34,6 +34,17 @@ impl DesktopService {
 
     pub fn refresh_tray(app: &tauri::AppHandle, language: &str) -> tauri::Result<()> {
         TrayTool::update(app, Self::tray_labels(language))
+    }
+
+    pub fn focus_existing_instance(app: &tauri::AppHandle) {
+        if let Some(splash) = app.get_webview_window(SPLASH_WINDOW_LABEL) {
+            if splash.is_visible().unwrap_or(false) {
+                let _ = WindowTool::show_and_focus_webview(&splash);
+                return;
+            }
+        }
+
+        let _ = Self::show_main_window(app);
     }
 
     pub fn hide_main_window(app: &tauri::AppHandle) -> Result<(), String> {
