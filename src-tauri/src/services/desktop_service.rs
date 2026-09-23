@@ -1,7 +1,7 @@
 // # 📄 Dosya Yolu: pixeltone/src-tauri/src/services/desktop_service.rs
 // # 📌 Amac: Tray, dil ve pencere kapatma davranisi icin masaustu is kurallarini yonetmek
 // # 📌 Service - Rust
-// # Version: 1.2.0
+// # Version: 1.2.1
 // # Aciklama: Kayitli/system diline gore tray kurar ve yeniler; tray aksiyonlari ile close-to-tray davranisini yonetir
 //
 // Bagimli Oldugu Katman: Service
@@ -34,6 +34,14 @@ impl DesktopService {
 
     pub fn refresh_tray(app: &tauri::AppHandle, language: &str) -> tauri::Result<()> {
         TrayTool::update(app, Self::tray_labels(language))
+    }
+
+    pub fn hide_main_window(app: &tauri::AppHandle) -> Result<(), String> {
+        WindowTool::hide_by_label(app, MAIN_WINDOW_LABEL)
+    }
+
+    pub fn show_main_window(app: &tauri::AppHandle) -> Result<(), String> {
+        WindowTool::show_and_focus_by_label(app, MAIN_WINDOW_LABEL)
     }
 
     pub fn handle_window_event(window: &tauri::Window, event: &WindowEvent) {
@@ -92,7 +100,7 @@ impl DesktopService {
 
     fn handle_menu_event(app: &tauri::AppHandle, event: MenuEvent) {
         match event.id().as_ref() {
-            TRAY_MENU_SHOW_ID => Self::show_main_window(app),
+            TRAY_MENU_SHOW_ID => Self::show_main_window_from_tray(app),
             TRAY_MENU_PICKER_ID => {
                 let _ = app.emit_to(MAIN_WINDOW_LABEL, TRAY_PICKER_EVENT, ());
             }
@@ -108,13 +116,11 @@ impl DesktopService {
             ..
         } = event
         {
-            Self::show_main_window(app);
+            Self::show_main_window_from_tray(app);
         }
     }
 
-    fn show_main_window(app: &tauri::AppHandle) {
-        if let Some(window) = app.get_webview_window(MAIN_WINDOW_LABEL) {
-            let _ = WindowTool::show_and_focus_webview(&window);
-        }
+    fn show_main_window_from_tray(app: &tauri::AppHandle) {
+        let _ = Self::show_main_window_from_tray(app);
     }
 }
