@@ -1,7 +1,7 @@
 // # 📄 Dosya Yolu: pixeltone/src-tauri/src/lib.rs
 // # 📌 Amac: PixelTone Tauri runtime, plugin, splash, tray, lifecycle ve komut kayitlarini baslatmak
 // # 📌 Controller - Rust
-// # Version: 1.1.0
+// # Version: 1.2.1
 // # Aciklama: Splash-first acilis, Stable Desktop tray, capture, settings, signed updater ve picker altyapisini runtime'a kaydeder
 //
 // Bagimli Oldugu Katman: Controller
@@ -43,6 +43,8 @@ pub fn run() {
             controllers::palette_controller::import_palette,
             controllers::settings_controller::get_settings,
             controllers::settings_controller::save_settings,
+            controllers::desktop_controller::hide_main_window,
+            controllers::desktop_controller::show_main_window,
             controllers::startup_controller::complete_startup,
             controllers::update_controller::check_and_install_update
         ])
