@@ -26,7 +26,7 @@ function renderError(error) {
 
 async function boot() {
   await preferenceService.initialize();
-  pickerView.initializeLabels(APP_CONFIG.picker.shortcut);
+  pickerView.initializeLabels(languageService.getLabels(), APP_CONFIG.defaults.settings.pickerShortcut);
   pickerView.bindPointerMove((event) => {
     pickerView.positionCard(event.clientX, event.clientY);
   });
