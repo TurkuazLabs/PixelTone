@@ -1,14 +1,14 @@
 // # 📄 Dosya Yolu: pixeltone/src-tauri/src/services/desktop_service.rs
-// # 📌 Amac: Tray, dil ve pencere kapatma davranisi icin masaustu is kurallarini yonetmek
+// # 📌 Amac: Tray, dil ve picker ana pencere lifecycle is kurallarini yonetmek
 // # 📌 Service - Rust
 // # Version: 1.2.1
-// # Aciklama: Kayitli/system diline gore tray kurar ve yeniler; tray aksiyonlari ile close-to-tray davranisini yonetir
+// # Aciklama: Tray dilini yonetir, close-to-tray davranisini uygular ve picker sirasinda ana pencereyi gizleyip geri getirir
 //
 // Bagimli Oldugu Katman: Service
 
 use tauri::menu::MenuEvent;
 use tauri::tray::{MouseButton, MouseButtonState, TrayIconEvent};
-use tauri::{Emitter, Manager, WindowEvent};
+use tauri::{Emitter, WindowEvent};
 
 use crate::config::app_config::{
     LANGUAGE_EN, LANGUAGE_SYSTEM, LANGUAGE_TR, MAIN_WINDOW_LABEL, TRAY_MENU_PICKER_ID,
@@ -121,6 +121,6 @@ impl DesktopService {
     }
 
     fn show_main_window_from_tray(app: &tauri::AppHandle) {
-        let _ = Self::show_main_window_from_tray(app);
+        let _ = Self::show_main_window(app);
     }
 }
