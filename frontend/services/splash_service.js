@@ -1,13 +1,14 @@
 // # 📄 Dosya Yolu: pixeltone/frontend/services/splash_service.js
-// # 📌 Amac: PixelTone splash acilis akisini, TurkuazLabs marka verisini ve ana pencereye gecisi yonetmek
+// # 📌 Amac: PixelTone splash acilis akisini, tema/dil ve TurkuazLabs marka verisini yonetmek
 // # 📌 Service - JavaScript
-// # Version: 1.1.1
-// # Aciklama: Marka verisini View katmanina aktarir, minimum splash suresini uygular ve hazir oldugunda ana pencereyi acar
+// # Version: 1.2.0
+// # Aciklama: Kayitli tercihleri splash'e uygular, lokalize marka metinlerini gosterir ve ana pencereye gecisi yonetir
 //
 // Bagimli Oldugu Katman: Service
 
 import { APP_CONFIG } from "../config/app_config.js";
-import { TR_LABELS } from "../language/tr.js";
+import { languageService } from "./language_service.js";
+import { preferenceService } from "./preference_service.js";
 import { tauriBridge } from "../tools/tauri_bridge.js";
 import { splashView } from "../views/splash_view.js";
 
@@ -19,24 +20,27 @@ function wait(milliseconds) {
 
 export const splashService = Object.freeze({
   async initialize() {
+    await preferenceService.initialize();
+    const labels = languageService.getLabels();
+
     splashView.initialize({
       appName: APP_CONFIG.appName,
       version: APP_CONFIG.version,
       brandName: APP_CONFIG.brand.name,
       brandLogo: APP_CONFIG.brand.logoPath,
       website: APP_CONFIG.brand.website,
-      productLabel: TR_LABELS.brand.productLabel,
-      websiteLead: TR_LABELS.brand.websiteLead,
-      subtitle: TR_LABELS.splash.subtitle,
-      status: TR_LABELS.splash.loading,
+      productLabel: labels.brand.productLabel,
+      websiteLead: labels.brand.websiteLead,
+      subtitle: labels.splash.subtitle,
+      status: labels.splash.loading,
     });
 
     try {
       await wait(APP_CONFIG.splash.minimumVisibleMs);
-      splashView.setStatus(TR_LABELS.splash.ready);
+      splashView.setStatus(labels.splash.ready);
       await tauriBridge.invokeCommand(APP_CONFIG.commands.completeStartup);
     } catch (error) {
-      splashView.setStatus(TR_LABELS.splash.failed);
+      splashView.setStatus(labels.splash.failed);
       throw error;
     }
   },
