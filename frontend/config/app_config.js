@@ -1,14 +1,14 @@
 // # 📄 Dosya Yolu: pixeltone/frontend/config/app_config.js
 // # 📌 Amac: PixelTone frontend sabitlerini merkezi tutmak
 // # 📌 Config - JavaScript
-// # Version: 1.2.0
+// # Version: 1.2.1
 // # Aciklama: TurkuazLabs marka, splash, storage, Tauri komutlari, settings, picker, Tailwind ve capture ayarlarini merkezi tutar
 //
 // Bagimli Oldugu Katman: Config
 
 export const APP_CONFIG = Object.freeze({
   appName: "PixelTone",
-  version: "1.2.0",
+  version: "1.2.1",
   brand: Object.freeze({
     name: "TurkuazLabs",
     website: "turkuazlabs.com",
@@ -43,6 +43,8 @@ export const APP_CONFIG = Object.freeze({
     saveSettings: "save_settings",
     checkAndInstallUpdate: "check_and_install_update",
     completeStartup: "complete_startup",
+    hideMainWindow: "hide_main_window",
+    showMainWindow: "show_main_window",
   }),
   splash: Object.freeze({
     minimumVisibleMs: 1500,

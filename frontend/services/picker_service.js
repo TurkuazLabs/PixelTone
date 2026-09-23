@@ -44,16 +44,28 @@ function formatRgb(colorInfo) {
   ].join("");
 }
 
+async function restoreMainWindow() {
+  await tauriBridge.invokeCommand(APP_CONFIG.commands.showMainWindow);
+}
+
 async function openPicker() {
-  await pickerWindowTool.showAtCursor();
-  await eventTool.emitToWindow(
-    APP_CONFIG.picker.windowLabel,
-    APP_CONFIG.picker.activationEvent,
-    {
-      defaultCopyFormat: configuredDefaultCopyFormat,
-      shortcut: configuredShortcut,
-    },
-  );
+  await tauriBridge.invokeCommand(APP_CONFIG.commands.hideMainWindow);
+
+  try {
+    await pickerWindowTool.showAtCursor();
+    await eventTool.emitToWindow(
+      APP_CONFIG.picker.windowLabel,
+      APP_CONFIG.picker.activationEvent,
+      {
+        defaultCopyFormat: configuredDefaultCopyFormat,
+        shortcut: configuredShortcut,
+      },
+    );
+  } catch (error) {
+    await pickerWindowTool.hide().catch(() => {});
+    await restoreMainWindow().catch(() => {});
+    throw error;
+  }
 }
 
 async function colorInfoForCapture(captureResult) {
@@ -78,17 +90,11 @@ function notifyError(error) {
 }
 
 async function sampleOnce() {
-  if (!active || !visible || sampleBusy) {
-    return;
-  }
-
+  if (!active || !visible || sampleBusy) return;
   sampleBusy = true;
-
   try {
     await pickerWindowTool.syncToCursorMonitor();
-    const capture = await tauriBridge.invokeCommand(
-      APP_CONFIG.commands.captureScreenColor,
-    );
+    const capture = await tauriBridge.invokeCommand(APP_CONFIG.commands.captureScreenColor);
     const colorInfo = await colorInfoForCapture(capture);
     currentSample = { capture, colorInfo };
     notifySample();
@@ -105,15 +111,9 @@ function stopSampling() {
 }
 
 function startSampling() {
-  if (!active || !visible || sampleIntervalId !== null) {
-    return;
-  }
-
+  if (!active || !visible || sampleIntervalId !== null) return;
   void sampleOnce();
-  sampleIntervalId = intervalTool.start(
-    () => void sampleOnce(),
-    APP_CONFIG.picker.sampleIntervalMs,
-  );
+  sampleIntervalId = intervalTool.start(() => void sampleOnce(), APP_CONFIG.picker.sampleIntervalMs);
 }
 
 function setCopyFormat(format) {
@@ -122,34 +122,16 @@ function setCopyFormat(format) {
 }
 
 async function copyCurrentSelection() {
-  if (!currentSample) {
-    return null;
-  }
-
+  if (!currentSample) return null;
   const normalizedFormat = normalizeCopyFormat(copyFormat);
-  const text =
-    normalizedFormat === APP_CONFIG.picker.copyFormats.rgb
-      ? formatRgb(currentSample.colorInfo)
-      : currentSample.colorInfo.hex;
-
+  const text = normalizedFormat === APP_CONFIG.picker.copyFormats.rgb ? formatRgb(currentSample.colorInfo) : currentSample.colorInfo.hex;
   stopSampling();
   await clipboardTool.writeText(text);
-
-  const selection = {
-    capture: currentSample.capture,
-    colorInfo: currentSample.colorInfo,
-    format: normalizedFormat,
-    text,
-  };
-
-  await eventTool.emitToWindow(
-    APP_CONFIG.picker.mainWindowLabel,
-    APP_CONFIG.picker.selectionEvent,
-    selection,
-  );
+  const selection = { capture: currentSample.capture, colorInfo: currentSample.colorInfo, format: normalizedFormat, text };
+  await eventTool.emitToWindow(APP_CONFIG.picker.mainWindowLabel, APP_CONFIG.picker.selectionEvent, selection);
   active = false;
   await pickerWindowTool.hide();
-
+  await restoreMainWindow();
   return selection;
 }
 
@@ -158,115 +140,57 @@ async function cancelSession() {
   currentSample = null;
   stopSampling();
   await pickerWindowTool.hide();
+  await restoreMainWindow();
 }
 
 export const pickerService = Object.freeze({
   async configure(settings, options = {}) {
-    const nextShortcut =
-      String(settings.picker_shortcut || "").trim() ||
-      APP_CONFIG.defaults.settings.pickerShortcut;
-    const nextDefaultCopyFormat = normalizeCopyFormat(
-      settings.default_copy_format,
-    );
+    const nextShortcut = String(settings.picker_shortcut || "").trim() || APP_CONFIG.defaults.settings.pickerShortcut;
+    const nextDefaultCopyFormat = normalizeCopyFormat(settings.default_copy_format);
     const allowShortcutFailure = Boolean(options.allowShortcutFailure);
     let shortcutError = null;
-
     configuredShortcut = nextShortcut;
     configuredDefaultCopyFormat = nextDefaultCopyFormat;
-
     if (registeredShortcut !== nextShortcut) {
       try {
-        await shortcutTool.register(nextShortcut, () => {
-          void openPicker().catch(notifyError);
-        });
-
-        if (registeredShortcut) {
-          await shortcutTool.unregister(registeredShortcut);
-        }
-
+        await shortcutTool.register(nextShortcut, () => { void openPicker().catch(notifyError); });
+        if (registeredShortcut) await shortcutTool.unregister(registeredShortcut);
         registeredShortcut = nextShortcut;
       } catch (error) {
         shortcutError = error;
-
-        if (!allowShortcutFailure) {
-          throw error;
-        }
+        if (!allowShortcutFailure) throw error;
       }
     }
-
     return {
       shortcut: configuredShortcut,
       defaultCopyFormat: configuredDefaultCopyFormat,
       shortcutRegistered: registeredShortcut === nextShortcut,
-      shortcutError:
-        typeof shortcutError === "string"
-          ? shortcutError
-          : shortcutError?.message || null,
+      shortcutError: typeof shortcutError === "string" ? shortcutError : shortcutError?.message || null,
     };
   },
-
-  async openPicker() {
-    await openPicker();
-  },
-
+  async openPicker() { await openPicker(); },
   startSession(options, onSample, onError) {
     active = true;
     visible = true;
     currentSample = null;
-    copyFormat = normalizeCopyFormat(
-      options?.defaultCopyFormat || configuredDefaultCopyFormat,
-    );
+    copyFormat = normalizeCopyFormat(options?.defaultCopyFormat || configuredDefaultCopyFormat);
     sampleHandler = onSample;
     errorHandler = onError;
     startSampling();
   },
-
   setVisibility(isVisible) {
     visible = Boolean(isVisible);
-
-    if (visible) {
-      startSampling();
-    } else {
-      stopSampling();
-    }
+    if (visible) startSampling(); else stopSampling();
   },
-
   handlePointerButton(button) {
-    if (
-      button !== APP_CONFIG.picker.primaryPointerButton ||
-      !active ||
-      !currentSample
-    ) {
-      return;
-    }
-
-    void copyCurrentSelection().catch((error) => {
-      notifyError(error);
-      startSampling();
-    });
+    if (button !== APP_CONFIG.picker.primaryPointerButton || !active || !currentSample) return;
+    void copyCurrentSelection().catch((error) => { notifyError(error); startSampling(); });
   },
-
   handleKey(code) {
-    if (code === APP_CONFIG.picker.keys.cancel) {
-      void cancelSession().catch(notifyError);
-      return;
-    }
-
-    if (code === APP_CONFIG.picker.keys.hex) {
-      setCopyFormat(APP_CONFIG.picker.copyFormats.hex);
-      return;
-    }
-
-    if (code === APP_CONFIG.picker.keys.rgb) {
-      setCopyFormat(APP_CONFIG.picker.copyFormats.rgb);
-    }
+    if (code === APP_CONFIG.picker.keys.cancel) { void cancelSession().catch(notifyError); return; }
+    if (code === APP_CONFIG.picker.keys.hex) { setCopyFormat(APP_CONFIG.picker.copyFormats.hex); return; }
+    if (code === APP_CONFIG.picker.keys.rgb) setCopyFormat(APP_CONFIG.picker.copyFormats.rgb);
   },
-
-  async onActivation(handler) {
-    return eventTool.listenCurrentWindow(APP_CONFIG.picker.activationEvent, handler);
-  },
-
-  async onSelection(handler) {
-    return eventTool.listenCurrentWindow(APP_CONFIG.picker.selectionEvent, handler);
-  },
+  async onActivation(handler) { return eventTool.listenCurrentWindow(APP_CONFIG.picker.activationEvent, handler); },
+  async onSelection(handler) { return eventTool.listenCurrentWindow(APP_CONFIG.picker.selectionEvent, handler); },
 });
