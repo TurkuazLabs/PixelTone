@@ -22,6 +22,6 @@ pub fn save_settings(
     settings: AppSettings,
 ) -> Result<AppSettings, String> {
     let saved = SettingsService::new(SettingsRepository::new()).save_settings(settings)?;
-    DesktopService::refresh_tray(&app, &saved.language).map_err(|error| error.to_string())?;
+    let _ = DesktopService::refresh_tray(&app, &saved.language);
     Ok(saved)
 }
