@@ -1,13 +1,13 @@
 // # 📄 Dosya Yolu: pixeltone/frontend/views/picker_view.js
 // # 📌 Amac: Canli picker overlay DOM ciktilarini ve input eventlerini yonetmek
 // # 📌 View - JavaScript
-// # Version: 0.4.0
+// # Version: 1.2.0
 // # Aciklama: 9x9 buyutec, HEX/RGB bilgisi, kopyalama modu ve cursor takipli bilgi kartini cizer
 //
 // Bagimli Oldugu Katman: View
 
 import { APP_CONFIG } from "../config/app_config.js";
-import { TR_LABELS } from "../language/tr.js";
+import { languageService } from "../services/language_service.js";
 
 const dom = Object.freeze({
   overlay: document.getElementById("picker-overlay"),
@@ -26,8 +26,8 @@ function formatRgb(colorInfo) {
 
 export const pickerView = Object.freeze({
   initializeLabels(shortcut) {
-    dom.instruction.textContent = TR_LABELS.picker.instruction;
-    dom.status.textContent = `${TR_LABELS.picker.shortcutPrefix}: ${shortcut}`;
+    dom.instruction.textContent = languageService.getLabels().picker.instruction;
+    dom.status.textContent = `${languageService.getLabels().picker.shortcutPrefix}: ${shortcut}`;
   },
 
   bindPointerMove(handler) {
@@ -90,9 +90,9 @@ export const pickerView = Object.freeze({
     dom.rgb.textContent = formatRgb(colorInfo);
     dom.mode.textContent =
       format === APP_CONFIG.picker.copyFormats.rgb
-        ? TR_LABELS.picker.copyModeRgb
-        : TR_LABELS.picker.copyModeHex;
-    dom.status.textContent = `${TR_LABELS.capture.positionPrefix}: ${captureResult.cursor.x}, ${captureResult.cursor.y}`;
+        ? languageService.getLabels().picker.copyModeRgb
+        : languageService.getLabels().picker.copyModeHex;
+    dom.status.textContent = `${languageService.getLabels().capture.positionPrefix}: ${captureResult.cursor.x}, ${captureResult.cursor.y}`;
   },
 
   renderError(error, fallback) {
