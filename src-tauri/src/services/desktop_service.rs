@@ -8,7 +8,7 @@
 
 use tauri::menu::MenuEvent;
 use tauri::tray::{MouseButton, MouseButtonState, TrayIconEvent};
-use tauri::{Emitter, WindowEvent};
+use tauri::{Emitter, Manager, WindowEvent};
 
 use crate::config::app_config::{
     LANGUAGE_EN, LANGUAGE_SYSTEM, LANGUAGE_TR, MAIN_WINDOW_LABEL, TRAY_MENU_PICKER_ID,
