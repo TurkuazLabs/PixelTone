@@ -39,7 +39,7 @@ Bagimli Oldugu Katman: View
   --pt-surface: #111a2b;
   --pt-surface-soft: #182338;
   --pt-text: #edf4ff;
-  --pt-muted: #9aacC4;
+  --pt-muted: #9aacc4;
   --pt-border: #2a3850;
   --pt-primary: #5b9cff;
   --pt-primary-dark: #82b4ff;
@@ -54,6 +54,31 @@ Bagimli Oldugu Katman: View
   --pt-sidebar-border: #25334a;
   --pt-nav-hover: #182338;
   --pt-shadow: 0 18px 45px rgba(0, 0, 0, 0.26);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    color-scheme: dark;
+    --pt-bg: #0b1220;
+    --pt-surface: #111a2b;
+    --pt-surface-soft: #182338;
+    --pt-text: #edf4ff;
+    --pt-muted: #9aacc4;
+    --pt-border: #2a3850;
+    --pt-primary: #5b9cff;
+    --pt-primary-dark: #82b4ff;
+    --pt-danger: #ff7b86;
+    --pt-danger-soft: #321b23;
+    --pt-body-bg: radial-gradient(circle at top left, #172236 0, #0b1220 38%, #08101c 100%);
+    --pt-hero-bg: linear-gradient(135deg, #141f32, #10192a);
+    --pt-card-bg: rgba(17, 26, 43, 0.94);
+    --pt-input-bg: #0d1727;
+    --pt-footer-bg: rgba(17, 26, 43, 0.82);
+    --pt-sidebar-bg: rgba(11, 18, 32, 0.96);
+    --pt-sidebar-border: #25334a;
+    --pt-nav-hover: #182338;
+    --pt-shadow: 0 18px 45px rgba(0, 0, 0, 0.26);
+  }
 }
 
 * {
