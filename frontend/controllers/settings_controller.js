@@ -1,8 +1,8 @@
 // # 📄 Dosya Yolu: pixeltone/frontend/controllers/settings_controller.js
 // # 📌 Amac: Ayarlar sekmesindeki kullanici olaylarini SettingsService katmanina aktarmak
 // # 📌 Controller - JavaScript
-// # Version: 1.2.1
-// # Aciklama: Tema/dil secimini aninda kalici uygular; diger masaustu ayarlarini Save aksiyonuyla yonetir
+// # Version: 1.2.2
+// # Aciklama: Tema/dil secimini aninda kalici uygular; kaydedilmemis masaustu alanlarini preference render sirasinda korur
 //
 // Bagimli Oldugu Katman: Controller
 
@@ -39,15 +39,34 @@ function renderSettingsState(state, successMessage) {
   renderRuntimeStatus(state.runtime, successMessage);
 }
 
+function renderPreferenceState(state, pendingSettings, successMessage) {
+  const currentLabels = labels();
+  const renderedSettings = {
+    ...pendingSettings,
+    theme: state.settings.theme,
+    language: state.settings.language,
+  };
+
+  settingsView.initialize(currentLabels);
+  settingsView.renderSettings(renderedSettings, currentLabels);
+  renderRuntimeStatus(state.runtime, successMessage);
+}
+
 async function savePreferences() {
+  const pendingSettings = settingsView.getSettings();
+
   try {
     const state = await settingsService.savePreferences(
       settingsView.getPreferences(),
     );
-    renderSettingsState(state, labels().status.settingsSaved);
+    renderPreferenceState(
+      state,
+      pendingSettings,
+      labels().status.settingsSaved,
+    );
   } catch (error) {
     const currentLabels = labels();
-    settingsView.renderSettings(settingsService.getCurrent(), currentLabels);
+    settingsView.renderSettings(pendingSettings, currentLabels);
     settingsView.setStatus(
       errorMessage(error, currentLabels.status.settingsSaveFailed),
     );
