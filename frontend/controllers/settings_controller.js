@@ -1,7 +1,7 @@
 // # 📄 Dosya Yolu: pixeltone/frontend/controllers/settings_controller.js
 // # 📌 Amac: Ayarlar sekmesindeki kullanici olaylarini SettingsService katmanina aktarmak
 // # 📌 Controller - JavaScript
-// # Version: 1.2.0
+// # Version: 1.2.1
 // # Aciklama: Tema/dil dahil ayarlari yukler, kaydeder ve runtime durumunu View katmanina iletir
 //
 // Bagimli Oldugu Katman: Controller
@@ -35,12 +35,6 @@ function renderRuntimeStatus(runtime, successMessage) {
 async function saveSettings() {
   try {
     const state = await settingsService.save(settingsView.getSettings());
-
-    if (state.languageChanged) {
-      settingsView.reloadApp();
-      return;
-    }
-
     const currentLabels = labels();
     settingsView.initialize(currentLabels);
     settingsView.renderSettings(state.settings, currentLabels);
