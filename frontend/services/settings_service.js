@@ -110,6 +110,16 @@ export const settingsService = Object.freeze({
     return loadSettings();
   },
 
+  async savePreferences(preferences) {
+    const merged = {
+      ...(currentSettings || fallbackSettings()),
+      theme: themeService.normalize(preferences?.theme),
+      language: languageService.normalize(preferences?.language),
+    };
+
+    return this.save(merged);
+  },
+
   async save(settings) {
     const normalized = normalizeSettings(settings);
     const previousSettings = currentSettings || fallbackSettings();
