@@ -1,7 +1,7 @@
 // # 📄 Dosya Yolu: pixeltone/frontend/services/settings_service.js
 // # 📌 Amac: Masaustu ayarlarini backend ile senkronlamak ve runtime servislere uygulamak
 // # 📌 Service - JavaScript
-// # Version: 1.2.0
+// # Version: 1.2.1
 // # Aciklama: Picker, tema ve dil ayarlarini normalize eder; backend kaydi ile runtime uygulamasini transactional yonetir
 //
 // Bagimli Oldugu Katman: Service
@@ -113,8 +113,6 @@ export const settingsService = Object.freeze({
   async save(settings) {
     const normalized = normalizeSettings(settings);
     const previousSettings = currentSettings || fallbackSettings();
-    const languageChanged = previousSettings.language !== normalized.language;
-
     try {
       const runtime = await pickerService.configure(normalized);
       const saved = await tauriBridge.invokeCommand(
@@ -129,7 +127,6 @@ export const settingsService = Object.freeze({
       return {
         settings: currentSettings,
         runtime: currentRuntime,
-        languageChanged,
       };
     } catch (error) {
       await restoreRuntime(previousSettings);
