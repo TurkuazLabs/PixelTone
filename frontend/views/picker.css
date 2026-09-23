@@ -27,6 +27,17 @@ Bagimli Oldugu Katman: View
   --pt-picker-accent: #60a5fa;
 }
 
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    color-scheme: dark;
+    --pt-picker-card-bg: rgba(17, 24, 39, 0.94);
+    --pt-picker-card-text: #f8fafc;
+    --pt-picker-muted: #cbd5e1;
+    --pt-picker-border: rgba(255, 255, 255, 0.22);
+    --pt-picker-accent: #60a5fa;
+  }
+}
+
 * {
   box-sizing: border-box;
 }
