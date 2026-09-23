@@ -10,6 +10,7 @@ import { APP_CONFIG } from "../config/app_config.js";
 
 const dom = Object.freeze({
   title: document.getElementById("settings-title"),
+  desktopEyebrow: document.getElementById("settings-desktop-eyebrow"),
   appearanceSection: document.getElementById("settings-appearance-section"),
   desktopSection: document.getElementById("settings-desktop-section"),
   themeLabel: document.getElementById("settings-theme-label"),
@@ -41,6 +42,7 @@ function appendOption(select, value, label) {
 export const settingsView = Object.freeze({
   initialize(labels) {
     dom.title.textContent = labels.settings.title;
+    dom.desktopEyebrow.textContent = labels.app.stableDesktop;
     dom.appearanceSection.textContent = labels.settings.appearanceSection;
     dom.desktopSection.textContent = labels.settings.desktopSection;
     dom.themeLabel.textContent = labels.settings.theme;
