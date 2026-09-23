@@ -106,16 +106,22 @@ mod tests {
 
     #[test]
     fn validate_rejects_unknown_copy_format() {
-        assert!(SettingsService::validate(settings("Ctrl+Shift+P", "lab", "system", "system")).is_err());
+        assert!(
+            SettingsService::validate(settings("Ctrl+Shift+P", "lab", "system", "system")).is_err()
+        );
     }
 
     #[test]
     fn validate_rejects_unknown_theme() {
-        assert!(SettingsService::validate(settings("Ctrl+Shift+P", "hex", "blue", "system")).is_err());
+        assert!(
+            SettingsService::validate(settings("Ctrl+Shift+P", "hex", "blue", "system")).is_err()
+        );
     }
 
     #[test]
     fn validate_rejects_unknown_language() {
-        assert!(SettingsService::validate(settings("Ctrl+Shift+P", "hex", "system", "de")).is_err());
+        assert!(
+            SettingsService::validate(settings("Ctrl+Shift+P", "hex", "system", "de")).is_err()
+        );
     }
 }
