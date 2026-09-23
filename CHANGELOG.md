@@ -1,12 +1,21 @@
 # 📄 Dosya Yolu: pixeltone/CHANGELOG.md
 # 📌 Amac: PixelTone surum degisikliklerini kaydetmek
 # 📌 Docs - Markdown
-# Version: 1.2.1
+# Version: 1.2.2
 # Aciklama: Proje degisiklik gecmisi, tema, dil ve sol navigasyon modullerini kaydeder
 
 Bagimli Oldugu Katman: View
 
 # Changelog
+
+## 1.2.2
+
+- Tauri resmi single-instance plugin'i eklendi.
+- PixelTone ayni anda yalniz tek uygulama instance'i calistiriyor.
+- Ikinci acilis girisimi yeni pencere/proses yerine mevcut PixelTone instance'ini one getiriyor.
+- Mevcut instance tray'de gizliyse ana pencere yeniden gosterilip odaklaniyor.
+- Ikinci acilis splash sirasinda gelirse splash penceresi one getiriliyor ve normal acilis lifecycle'i korunuyor.
+- Single-instance plugin diger Tauri pluginlerinden once kaydediliyor.
 
 ## 1.2.1
 
