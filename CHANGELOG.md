@@ -1,12 +1,25 @@
 # 📄 Dosya Yolu: pixeltone/CHANGELOG.md
 # 📌 Amac: PixelTone surum degisikliklerini kaydetmek
 # 📌 Docs - Markdown
-# Version: 1.1.1
-# Aciklama: Proje degisiklik gecmisi, splash suresi ve Windows kurulum kapsami duzeltmelerini kaydeder
+# Version: 1.2.0
+# Aciklama: Proje degisiklik gecmisi, tema, dil ve sol navigasyon modullerini kaydeder
 
 Bagimli Oldugu Katman: View
 
 # Changelog
+
+## 1.2.0
+
+- Sol sidebar navigasyonu eklendi; Ana Sayfa ve Ayarlar ayri sayfalara tasindi.
+- Ayarlar ekranina Sistem varsayilani / Acik / Koyu tema secimi eklendi.
+- Ayarlar ekranina Sistem varsayilani / Turkce / English dil secimi eklendi.
+- Tema ve dil tercihleri settings.json icinde geriye uyumlu olarak kalici saklaniyor.
+- Sistem tema modunda prefers-color-scheme ile ilk boyamadan itibaren OS temasi uygulanir.
+- Ana arayuz, splash ve Live Picker ayni tema tercihine baglandi.
+- Ana arayuz, splash, Live Picker, settings ve TurkuazLabs marka metinleri Turkce/English paketlerine baglandi.
+- Native system tray menusu kayitli/system diline gore lokalize ediliyor ve dil kaydinda runtime yenileniyor.
+- English Language katmani ve runtime LanguageService / ThemeService / PreferenceService eklendi.
+- package.json, Cargo.toml ve Tauri config surumleri 1.2.0 olarak senkronlandi.
 
 ## 1.1.1
 
