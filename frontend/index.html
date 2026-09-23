@@ -1,9 +1,9 @@
 <!--
 # 📄 Dosya Yolu: pixeltone/frontend/index.html
-# 📌 Amac: PixelTone ana arayuz sayfasi
+# 📌 Amac: PixelTone ana uygulama kabugu, sol navigasyon, ana sayfa ve ayarlar sayfasini tanimlamak
 # 📌 View - HTML
-# Version: 1.1.1
-# Aciklama: Stable Desktop ayarlari, Live Picker, capture, signed updater, Tailwind, Palette Studio ve TurkuazLabs marka footerini gosterir
+# Version: 1.2.0
+# Aciklama: Sol sidebar ile Ana Sayfa/Ayarlar gecisi; tema, dil, Stable Desktop, picker, Tailwind ve Palette Studio ekranlarini barindirir
 
 Bagimli Oldugu Katman: View
 -->
@@ -16,141 +16,187 @@ Bagimli Oldugu Katman: View
     <link rel="stylesheet" href="/views/app.css" />
   </head>
   <body>
-    <main class="pt-shell">
-      <section class="pt-hero">
-        <div>
-          <p class="pt-eyebrow">PixelTone v1.1.1</p>
-          <h1>Platform bagimsiz renk secici</h1>
-          <p class="pt-lead">Windows, Linux ve macOS icin canli picker, ekran rengi yakalama, proje ve palet yonetim araci.</p>
+    <div class="pt-app-layout">
+      <aside class="pt-sidebar">
+        <div class="pt-sidebar-brand">
+          <img class="pt-sidebar-logo" src="/assets/turkuazlabs-logo.png" alt="TurkuazLabs" />
+          <div>
+            <strong>PixelTone</strong>
+            <span>v1.2.0</span>
+          </div>
         </div>
-        <div class="pt-hero-actions">
-          <button id="picker-launch-button" class="pt-button" type="button"></button>
-          <span id="picker-shortcut-hint" class="pt-shortcut-hint"></span>
-          <button id="capture-button" class="pt-button pt-button-secondary" type="button">Ekrandan Renk Al</button>
+
+        <nav class="pt-sidebar-nav" aria-label="PixelTone">
+          <button id="nav-home" class="pt-nav-button pt-nav-button-active" type="button"></button>
+          <button id="nav-settings" class="pt-nav-button" type="button"></button>
+        </nav>
+
+        <div class="pt-sidebar-spacer"></div>
+        <div class="pt-sidebar-company">
+          <span>TurkuazLabs</span>
+          <strong>turkuazlabs.com</strong>
         </div>
-      </section>
+      </aside>
 
-      <section class="pt-grid">
-        <article class="pt-card pt-picker-card">
-          <h2>Renk Donustur</h2>
-          <label class="pt-label" for="hex-input">HEX renk</label>
-          <div class="pt-input-row">
-            <input id="hex-input" class="pt-input" type="text" value="#4f8cff" maxlength="9" />
-            <input id="native-color-input" class="pt-color-input" type="color" value="#4f8cff" />
-          </div>
-          <button id="convert-button" class="pt-button" type="button">Donustur</button>
-          <p id="status-text" class="pt-status">Hazir.</p>
-        </article>
-
-        <article class="pt-card pt-preview-card">
-          <h2>Onizleme</h2>
-          <div id="color-preview" class="pt-color-preview"></div>
-          <div id="color-output" class="pt-output-list"></div>
-        </article>
-
-        <article class="pt-card pt-tailwind-card">
-          <div class="pt-card-heading">
+      <main class="pt-content-shell">
+        <section id="page-home" class="pt-page">
+          <section class="pt-hero">
             <div>
-              <p class="pt-eyebrow">Tailwind CSS</p>
-              <h2>Yakin Renkler</h2>
-              <p class="pt-status">Secili renge OKLab uzayinda en yakin resmi Tailwind renkleri.</p>
+              <p class="pt-eyebrow">PixelTone v1.2.0</p>
+              <h1 id="hero-title"></h1>
+              <p id="hero-lead" class="pt-lead"></p>
             </div>
-          </div>
-          <div id="tailwind-color-list" class="pt-tailwind-list"></div>
-        </article>
-
-        <article class="pt-card pt-magnifier-card">
-          <div class="pt-card-heading">
-            <div>
-              <h2>Buyutec</h2>
-              <p class="pt-status">Yakalanan pikselin 9x9 yakin cevresi.</p>
+            <div class="pt-hero-actions">
+              <button id="picker-launch-button" class="pt-button" type="button"></button>
+              <span id="picker-shortcut-hint" class="pt-shortcut-hint"></span>
+              <button id="capture-button" class="pt-button pt-button-secondary" type="button"></button>
             </div>
-            <div class="pt-capture-meta">
-              <span id="capture-platform">Platform: -</span>
-              <span id="capture-position">Cursor: -</span>
+          </section>
+
+          <section class="pt-grid">
+            <article class="pt-card pt-picker-card">
+              <h2 id="convert-title"></h2>
+              <label id="hex-input-label" class="pt-label" for="hex-input"></label>
+              <div class="pt-input-row">
+                <input id="hex-input" class="pt-input" type="text" value="#4f8cff" maxlength="9" />
+                <input id="native-color-input" class="pt-color-input" type="color" value="#4f8cff" />
+              </div>
+              <button id="convert-button" class="pt-button" type="button"></button>
+              <p id="status-text" class="pt-status"></p>
+            </article>
+
+            <article class="pt-card pt-preview-card">
+              <h2 id="preview-title"></h2>
+              <div id="color-preview" class="pt-color-preview"></div>
+              <div id="color-output" class="pt-output-list"></div>
+            </article>
+
+            <article class="pt-card pt-tailwind-card">
+              <div class="pt-card-heading">
+                <div>
+                  <p id="tailwind-eyebrow" class="pt-eyebrow"></p>
+                  <h2 id="tailwind-title"></h2>
+                  <p id="tailwind-lead" class="pt-status"></p>
+                </div>
+              </div>
+              <div id="tailwind-color-list" class="pt-tailwind-list"></div>
+            </article>
+
+            <article class="pt-card pt-magnifier-card">
+              <div class="pt-card-heading">
+                <div>
+                  <h2 id="magnifier-title"></h2>
+                  <p id="magnifier-lead" class="pt-status"></p>
+                </div>
+                <div class="pt-capture-meta">
+                  <span id="capture-platform"></span>
+                  <span id="capture-position"></span>
+                </div>
+              </div>
+              <div id="magnifier-grid" class="pt-magnifier-grid"></div>
+            </article>
+
+            <article class="pt-card pt-history-card">
+              <h2 id="history-title"></h2>
+              <div id="history-list" class="pt-history-list"></div>
+            </article>
+
+            <article class="pt-card pt-palette-card">
+              <div class="pt-card-heading">
+                <div>
+                  <p id="palette-eyebrow" class="pt-eyebrow"></p>
+                  <h2 id="palette-title"></h2>
+                </div>
+              </div>
+
+              <label id="project-name-label" class="pt-label" for="project-name-input"></label>
+              <input id="project-name-input" class="pt-input" type="text" value="Genel" />
+
+              <label id="palette-name-label" class="pt-label pt-label-spaced" for="palette-name-input"></label>
+              <input id="palette-name-input" class="pt-input" type="text" value="Ilk Palet" />
+
+              <div class="pt-action-grid">
+                <button id="save-palette-button" class="pt-button" type="button"></button>
+                <button id="export-yaml-button" class="pt-button pt-button-secondary" type="button"></button>
+                <button id="export-css-button" class="pt-button pt-button-secondary" type="button"></button>
+                <button id="import-yaml-button" class="pt-button pt-button-secondary" type="button"></button>
+              </div>
+
+              <input id="import-yaml-input" type="file" hidden />
+              <div id="palette-list" class="pt-palette-list"></div>
+            </article>
+          </section>
+        </section>
+
+        <section id="page-settings" class="pt-page" hidden>
+          <article class="pt-card pt-settings-card">
+            <div class="pt-card-heading">
+              <div>
+                <p id="settings-desktop-eyebrow" class="pt-eyebrow"></p>
+                <h1 id="settings-title" class="pt-settings-title"></h1>
+              </div>
             </div>
-          </div>
-          <div id="magnifier-grid" class="pt-magnifier-grid"></div>
-        </article>
 
-        <article class="pt-card pt-history-card">
-          <h2>Gecmis</h2>
-          <div id="history-list" class="pt-history-list"></div>
-        </article>
+            <section class="pt-settings-section">
+              <h2 id="settings-appearance-section"></h2>
+              <div class="pt-settings-grid">
+                <div class="pt-settings-field">
+                  <label id="settings-theme-label" class="pt-label" for="settings-theme"></label>
+                  <select id="settings-theme" class="pt-input"></select>
+                </div>
 
-        <article class="pt-card pt-palette-card">
-          <div class="pt-card-heading">
-            <div>
-              <p class="pt-eyebrow">Palette Studio</p>
-              <h2>Proje Paletleri</h2>
+                <div class="pt-settings-field">
+                  <label id="settings-language-label" class="pt-label" for="settings-language"></label>
+                  <select id="settings-language" class="pt-input"></select>
+                </div>
+              </div>
+            </section>
+
+            <section class="pt-settings-section">
+              <h2 id="settings-desktop-section"></h2>
+              <div class="pt-settings-grid">
+                <label class="pt-settings-toggle">
+                  <input id="settings-close-to-tray" type="checkbox" />
+                  <span id="settings-close-to-tray-label"></span>
+                </label>
+
+                <label class="pt-settings-toggle">
+                  <input id="settings-check-updates" type="checkbox" />
+                  <span id="settings-check-updates-label"></span>
+                </label>
+
+                <div class="pt-settings-field">
+                  <label id="settings-shortcut-label" class="pt-label" for="settings-shortcut"></label>
+                  <input id="settings-shortcut" class="pt-input" type="text" autocomplete="off" />
+                </div>
+
+                <div class="pt-settings-field">
+                  <label id="settings-copy-format-label" class="pt-label" for="settings-copy-format"></label>
+                  <select id="settings-copy-format" class="pt-input"></select>
+                </div>
+              </div>
+            </section>
+
+            <div class="pt-settings-actions">
+              <button id="settings-save-button" class="pt-button" type="button"></button>
+              <button id="settings-update-button" class="pt-button pt-button-secondary" type="button"></button>
             </div>
+            <p id="settings-version-status" class="pt-version-status"></p>
+            <p id="settings-status" class="pt-status"></p>
+          </article>
+        </section>
+
+        <footer class="pt-brand-footer">
+          <img id="brand-footer-logo" class="pt-brand-footer-logo" alt="" />
+          <div>
+            <strong id="brand-footer-lead"></strong>
+            <span id="brand-footer-website"></span>
           </div>
+        </footer>
+      </main>
+    </div>
 
-          <label class="pt-label" for="project-name-input">Proje adi</label>
-          <input id="project-name-input" class="pt-input" type="text" value="Genel" />
-
-          <label class="pt-label pt-label-spaced" for="palette-name-input">Palet adi</label>
-          <input id="palette-name-input" class="pt-input" type="text" value="Ilk Palet" />
-
-          <div class="pt-action-grid">
-            <button id="save-palette-button" class="pt-button" type="button">Paleti Kaydet</button>
-            <button id="export-yaml-button" class="pt-button pt-button-secondary" type="button">YAML Export</button>
-            <button id="export-css-button" class="pt-button pt-button-secondary" type="button">CSS Export</button>
-            <button id="import-yaml-button" class="pt-button pt-button-secondary" type="button">YAML Import</button>
-          </div>
-
-          <input id="import-yaml-input" type="file" hidden />
-          <div id="palette-list" class="pt-palette-list"></div>
-        </article>
-
-        <article class="pt-card pt-settings-card">
-          <div class="pt-card-heading">
-            <div>
-              <p class="pt-eyebrow">Stable Desktop</p>
-              <h2 id="settings-title"></h2>
-            </div>
-          </div>
-
-          <div class="pt-settings-grid">
-            <label class="pt-settings-toggle">
-              <input id="settings-close-to-tray" type="checkbox" />
-              <span id="settings-close-to-tray-label"></span>
-            </label>
-
-            <label class="pt-settings-toggle">
-              <input id="settings-check-updates" type="checkbox" />
-              <span id="settings-check-updates-label"></span>
-            </label>
-
-            <div class="pt-settings-field">
-              <label id="settings-shortcut-label" class="pt-label" for="settings-shortcut"></label>
-              <input id="settings-shortcut" class="pt-input" type="text" autocomplete="off" />
-            </div>
-
-            <div class="pt-settings-field">
-              <label id="settings-copy-format-label" class="pt-label" for="settings-copy-format"></label>
-              <select id="settings-copy-format" class="pt-input"></select>
-            </div>
-          </div>
-
-          <div class="pt-settings-actions">
-            <button id="settings-save-button" class="pt-button" type="button"></button>
-            <button id="settings-update-button" class="pt-button pt-button-secondary" type="button"></button>
-          </div>
-          <p id="settings-version-status" class="pt-version-status"></p>
-          <p id="settings-status" class="pt-status"></p>
-        </article>
-      </section>
-
-      <footer class="pt-brand-footer">
-        <img id="brand-footer-logo" class="pt-brand-footer-logo" alt="" />
-        <div>
-          <strong id="brand-footer-lead"></strong>
-          <span id="brand-footer-website"></span>
-        </div>
-      </footer>
-    </main>
-
+    <script type="module" src="/controllers/navigation_controller.js"></script>
     <script type="module" src="/controllers/ui_controller.js"></script>
     <script type="module" src="/controllers/settings_controller.js"></script>
     <script type="module" src="/controllers/desktop_controller.js"></script>

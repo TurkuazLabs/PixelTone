@@ -1,19 +1,26 @@
 // # 📄 Dosya Yolu: pixeltone/frontend/controllers/ui_controller.js
 // # 📌 Amac: PixelTone arayuz olaylarini almak ve servisleri cagirmak
 // # 📌 Controller - JavaScript
-// # Version: 1.0.0
-// # Aciklama: Live Picker secimi, capture, Tailwind ve Palette Studio olaylarini Service katmanina aktarir
+// # Version: 1.2.1
+// # Aciklama: Live Picker, capture, Tailwind, Palette Studio ve runtime dil yenileme olaylarini Service katmanina aktarir
 //
 // Bagimli Oldugu Katman: Controller
 
 import { APP_CONFIG } from "../config/app_config.js";
-import { TR_LABELS } from "../language/tr.js";
+import { languageService } from "../services/language_service.js";
+import { preferenceService } from "../services/preference_service.js";
 import { paletteService } from "../services/palette_service.js";
 import { pickerService } from "../services/picker_service.js";
+import { settingsService } from "../services/settings_service.js";
 import { tailwindColorService } from "../services/tailwind_color_service.js";
 import { uiView } from "../views/ui_view.js";
 
 let currentColor = null;
+let currentCapture = null;
+
+function labels() {
+  return languageService.getLabels();
+}
 
 function errorMessage(error, fallback) {
   if (typeof error === "string" && error.trim()) {
@@ -56,39 +63,41 @@ async function convertCurrentHex() {
   try {
     const colorInfo = await paletteService.convertHex(uiView.getHexValue());
     renderSelectedColor(colorInfo, true);
-    uiView.setStatus(TR_LABELS.status.converted);
+    uiView.setStatus(labels().status.converted);
   } catch (error) {
-    uiView.setStatus(errorMessage(error, TR_LABELS.status.convertFailed));
+    uiView.setStatus(errorMessage(error, labels().status.convertFailed));
   }
 }
 
 async function captureColor() {
-  uiView.setStatus(TR_LABELS.status.capturePreparing);
+  uiView.setStatus(labels().status.capturePreparing);
 
   try {
     const captureResult = await paletteService.captureScreenColor();
+    currentCapture = captureResult;
     uiView.renderMagnifier(captureResult);
     uiView.setHexValue(captureResult.hex);
     await convertCurrentHex();
-    uiView.setStatus(TR_LABELS.status.captureCompleted);
+    uiView.setStatus(labels().status.captureCompleted);
   } catch (error) {
-    uiView.setStatus(errorMessage(error, TR_LABELS.status.captureFailed));
+    uiView.setStatus(errorMessage(error, labels().status.captureFailed));
   }
 }
 
 async function openLivePicker() {
   try {
     await pickerService.openPicker();
-    uiView.setStatus(TR_LABELS.status.pickerStarted);
+    uiView.setStatus(labels().status.pickerStarted);
   } catch (error) {
-    uiView.setStatus(errorMessage(error, TR_LABELS.status.pickerStartFailed));
+    uiView.setStatus(errorMessage(error, labels().status.pickerStartFailed));
   }
 }
 
 function acceptPickerSelection(selection) {
+  currentCapture = selection.capture;
   uiView.renderMagnifier(selection.capture);
   renderSelectedColor(selection.colorInfo, true);
-  uiView.setStatus(`${TR_LABELS.status.pickerSelected} ${selection.text}`);
+  uiView.setStatus(`${labels().status.pickerSelected} ${selection.text}`);
 }
 
 async function refreshPalettes(projectName) {
@@ -105,15 +114,15 @@ async function changeProject() {
 
   try {
     await refreshPalettes(projectName);
-    uiView.setStatus(TR_LABELS.status.projectChanged);
+    uiView.setStatus(labels().status.projectChanged);
   } catch (error) {
-    uiView.setStatus(errorMessage(error, TR_LABELS.status.paletteSaveFailed));
+    uiView.setStatus(errorMessage(error, labels().status.paletteSaveFailed));
   }
 }
 
 async function savePalette() {
   if (!currentColor) {
-    uiView.setStatus(TR_LABELS.status.paletteNeedsColor);
+    uiView.setStatus(labels().status.paletteNeedsColor);
     return;
   }
 
@@ -127,9 +136,9 @@ async function savePalette() {
       paletteService.getHistory(),
     );
     await refreshPalettes(projectName);
-    uiView.setStatus(TR_LABELS.status.paletteSaved);
+    uiView.setStatus(labels().status.paletteSaved);
   } catch (error) {
-    uiView.setStatus(errorMessage(error, TR_LABELS.status.paletteSaveFailed));
+    uiView.setStatus(errorMessage(error, labels().status.paletteSaveFailed));
   }
 }
 
@@ -145,9 +154,9 @@ async function editPalette(palette) {
       renderSelectedColor(editState.selectedColor, false);
     }
 
-    uiView.setStatus(TR_LABELS.status.paletteEditing);
+    uiView.setStatus(labels().status.paletteEditing);
   } catch (error) {
-    uiView.setStatus(errorMessage(error, TR_LABELS.status.paletteEditFailed));
+    uiView.setStatus(errorMessage(error, labels().status.paletteEditFailed));
   }
 }
 
@@ -155,9 +164,9 @@ async function deletePalette(palette) {
   try {
     await paletteService.deletePalette(palette.project, palette.name);
     await refreshPalettes(paletteService.getProjectName());
-    uiView.setStatus(TR_LABELS.status.paletteDeleted);
+    uiView.setStatus(labels().status.paletteDeleted);
   } catch (error) {
-    uiView.setStatus(errorMessage(error, TR_LABELS.status.paletteDeleteFailed));
+    uiView.setStatus(errorMessage(error, labels().status.paletteDeleteFailed));
   }
 }
 
@@ -165,9 +174,9 @@ async function selectHistoryColor(hex) {
   try {
     const colorInfo = await paletteService.convertHex(hex);
     renderSelectedColor(colorInfo, false);
-    uiView.setStatus(TR_LABELS.status.converted);
+    uiView.setStatus(labels().status.converted);
   } catch (error) {
-    uiView.setStatus(errorMessage(error, TR_LABELS.status.convertFailed));
+    uiView.setStatus(errorMessage(error, labels().status.convertFailed));
   }
 }
 
@@ -183,7 +192,7 @@ async function exportPalette(format) {
   const colors = paletteService.getHistory();
 
   if (colors.length === 0) {
-    uiView.setStatus(TR_LABELS.status.paletteNeedsColor);
+    uiView.setStatus(labels().status.paletteNeedsColor);
     return;
   }
 
@@ -192,9 +201,9 @@ async function exportPalette(format) {
 
   try {
     await paletteService.exportPalette(projectName, uiView.getPaletteName(), colors, format);
-    uiView.setStatus(TR_LABELS.status.exportCompleted);
+    uiView.setStatus(labels().status.exportCompleted);
   } catch (error) {
-    uiView.setStatus(errorMessage(error, TR_LABELS.status.exportFailed));
+    uiView.setStatus(errorMessage(error, labels().status.exportFailed));
   }
 }
 
@@ -209,9 +218,9 @@ async function importPalette(event) {
     const response = await paletteService.importPalette(file);
     uiView.setProjectName(response.project);
     await refreshPalettes(response.project);
-    uiView.setStatus(TR_LABELS.status.importCompleted);
+    uiView.setStatus(labels().status.importCompleted);
   } catch (error) {
-    uiView.setStatus(errorMessage(error, TR_LABELS.status.importFailed));
+    uiView.setStatus(errorMessage(error, labels().status.importFailed));
   }
 }
 
@@ -231,15 +240,42 @@ function exportCss() {
   void exportPalette(APP_CONFIG.exportFormats.css);
 }
 
-async function initializePicker() {
+async function initializePicker(shortcut) {
   uiView.initializePickerControls(
-    APP_CONFIG.defaults.settings.pickerShortcut,
+    shortcut || APP_CONFIG.defaults.settings.pickerShortcut,
   );
   uiView.bindLivePicker(() => void openLivePicker());
   await pickerService.onSelection(acceptPickerSelection);
 }
 
+async function refreshLocalizedUi() {
+  const projectName = paletteService.getProjectName();
+
+  uiView.initializeLabels(labels());
+  uiView.initializePickerControls(settingsService.getCurrent().picker_shortcut);
+  renderHistory();
+  uiView.renderMagnifier(currentCapture);
+
+  if (currentColor) {
+    uiView.renderColorOutput(currentColor);
+    renderTailwindMatches(currentColor.hex);
+  } else {
+    uiView.renderTailwindMatches([]);
+  }
+
+  try {
+    await refreshPalettes(projectName);
+  } catch (_error) {
+    uiView.renderPalettes([], editPalette, deletePalette);
+  }
+
+  uiView.setStatus(labels().status.ready);
+}
+
 async function boot() {
+  await preferenceService.initialize();
+  const settingsState = await settingsService.initialize();
+  uiView.initializeLabels(labels());
   const projectName = paletteService.getProjectName();
 
   uiView.setProjectName(projectName);
@@ -256,7 +292,14 @@ async function boot() {
   renderHistory();
   uiView.renderTailwindMatches([]);
   uiView.renderMagnifier(null);
-  await initializePicker();
+  await initializePicker(settingsState.settings.picker_shortcut);
+
+  preferenceService.subscribe((change) => {
+    if (change.languageChanged) {
+      void refreshLocalizedUi();
+    }
+  });
+
   await convertCurrentHex();
 
   try {

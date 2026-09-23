@@ -1,8 +1,8 @@
 // # 📄 Dosya Yolu: pixeltone/src-tauri/src/config/app_config.rs
 // # 📌 Amac: Rust tarafinda magic string kullanilmasini azaltmak
 // # 📌 Config - Rust
-// # Version: 1.1.0
-// # Aciklama: Splash, storage, capture, palette, settings, tray ve Stable Desktop sabitlerini merkezi tutar
+// # Version: 1.2.0
+// # Aciklama: Tema, dil, splash, storage, capture, palette, settings, tray ve Stable Desktop sabitlerini merkezi tutar
 //
 // Bagimli Oldugu Katman: Config
 
@@ -29,6 +29,16 @@ pub const DEFAULT_CHECK_UPDATES_ON_START: bool = true;
 pub const DEFAULT_PICKER_SHORTCUT: &str = "CommandOrControl+Shift+P";
 pub const COPY_FORMAT_HEX: &str = "hex";
 pub const COPY_FORMAT_RGB: &str = "rgb";
+
+pub const THEME_SYSTEM: &str = "system";
+pub const THEME_LIGHT: &str = "light";
+pub const THEME_DARK: &str = "dark";
+pub const DEFAULT_THEME: &str = THEME_SYSTEM;
+
+pub const LANGUAGE_SYSTEM: &str = "system";
+pub const LANGUAGE_TR: &str = "tr";
+pub const LANGUAGE_EN: &str = "en";
+pub const DEFAULT_LANGUAGE: &str = LANGUAGE_SYSTEM;
 pub const UPDATER_ENDPOINT: &str =
     "https://github.com/TurkuazLabs/PixelTone/releases/latest/download/latest.json";
 pub const UPDATER_PUBLIC_KEY_PLACEHOLDER: &str = "PIXELTONE_UPDATER_NOT_CONFIGURED";
@@ -63,3 +73,5 @@ pub const ERROR_IMPORT_EMPTY: &str = "YAML import icerigi bos olamaz.";
 pub const ERROR_TRANSFER_VERSION: &str = "Desteklenmeyen PixelTone palet surumu.";
 pub const ERROR_PICKER_SHORTCUT_EMPTY: &str = "Picker kisayolu bos olamaz.";
 pub const ERROR_COPY_FORMAT_INVALID: &str = "Varsayilan kopyalama formati hex veya rgb olmalidir.";
+pub const ERROR_THEME_INVALID: &str = "Tema system, light veya dark olmalidir.";
+pub const ERROR_LANGUAGE_INVALID: &str = "Dil system, tr veya en olmalidir.";

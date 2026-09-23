@@ -1,7 +1,7 @@
 # 📄 Dosya Yolu: pixeltone/ROADMAP.md
 # 📌 Amac: PixelTone gelistirme yol haritasini tanimlamak
 # 📌 Docs - Markdown
-# Version: 1.1.0
+# Version: 1.2.0
 # Aciklama: Tamamlanan masaustu surumleri ve sonraki gelisim alanlarini tanimlar
 
 Bagimli Oldugu Katman: View
@@ -66,6 +66,17 @@ Bagimli Oldugu Katman: View
 - GitHub Releases latest.json kanali
 - Windows NSIS updater paketi tercihi
 - Signing key ve release secret konfigurasyonu son release kapisi
+
+## v1.2.0 - Theme, Language & Settings Navigation - GELISTIRILIYOR
+
+- Sol sidebar ile Ana Sayfa / Ayarlar navigasyonu
+- Ayri Ayarlar sayfasi
+- Sistem varsayilani / Acik / Koyu tema
+- Sistem varsayilani / Turkce / English dil tercihi
+- Tema ve dil tercihlerinin settings.json ile kalici saklanmasi
+- Splash, ana arayuz ve Live Picker tema senkronizasyonu
+- Frontend UI ve native tray dil senkronizasyonu
+- Sistem tema ve sistem dil cozumlemesi
 
 ## Sonraki Gelisim Alanlari
 

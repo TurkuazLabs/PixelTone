@@ -1,17 +1,56 @@
 /*
 # 📄 Dosya Yolu: pixeltone/frontend/views/splash.css
-# 📌 Amac: PixelTone ve TurkuazLabs markali splash ekraninin gorsel stilini tanimlamak
+# 📌 Amac: PixelTone ve TurkuazLabs markali splash ekranini acik/koyu temada gostermek
 # 📌 View - CSS
-# Version: 1.1.1
-# Aciklama: TurkuazLabs logosu, PixelTone urun alani, site tanitimi ve koyu cam splash yuzeyini olusturur
+# Version: 1.2.0
+# Aciklama: Kayitli system/light/dark tercihine gore logo, urun, site tanitimi ve cam splash yuzeyini temalar
 
 Bagimli Oldugu Katman: View
 */
 
 :root {
+  color-scheme: light;
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  color: #f7fbff;
-  background: #0a0f18;
+  --sp-text: #172033;
+  --sp-muted: rgba(38, 55, 79, 0.66);
+  --sp-accent: #0e7490;
+  --sp-border: rgba(40, 70, 100, 0.13);
+  --sp-card: rgba(255, 255, 255, 0.86);
+  --sp-body:
+    radial-gradient(circle at 16% 18%, rgba(34, 211, 238, 0.18), transparent 34%),
+    radial-gradient(circle at 84% 82%, rgba(96, 165, 250, 0.15), transparent 36%),
+    linear-gradient(145deg, #f7fbff 0%, #edf5ff 52%, #f7fbff 100%);
+  --sp-shadow: 0 26px 70px rgba(39, 75, 120, 0.18);
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --sp-text: #f7fbff;
+  --sp-muted: rgba(224, 237, 255, 0.58);
+  --sp-accent: #67e8f9;
+  --sp-border: rgba(255, 255, 255, 0.09);
+  --sp-card: rgba(10, 18, 31, 0.82);
+  --sp-body:
+    radial-gradient(circle at 16% 18%, rgba(34, 211, 238, 0.2), transparent 34%),
+    radial-gradient(circle at 84% 82%, rgba(96, 165, 250, 0.15), transparent 36%),
+    linear-gradient(145deg, #07101d 0%, #101827 52%, #080e18 100%);
+  --sp-shadow: 0 26px 70px rgba(0, 0, 0, 0.4);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    color-scheme: dark;
+    --sp-text: #f7fbff;
+    --sp-muted: rgba(224, 237, 255, 0.58);
+    --sp-accent: #67e8f9;
+    --sp-border: rgba(255, 255, 255, 0.09);
+    --sp-card: rgba(10, 18, 31, 0.82);
+    --sp-body:
+      radial-gradient(circle at 16% 18%, rgba(34, 211, 238, 0.2), transparent 34%),
+      radial-gradient(circle at 84% 82%, rgba(96, 165, 250, 0.15), transparent 36%),
+      linear-gradient(145deg, #07101d 0%, #101827 52%, #080e18 100%);
+    --sp-shadow: 0 26px 70px rgba(0, 0, 0, 0.4);
+  }
 }
 
 * {
@@ -27,10 +66,8 @@ body {
 }
 
 body {
-  background:
-    radial-gradient(circle at 16% 18%, rgba(34, 211, 238, 0.2), transparent 34%),
-    radial-gradient(circle at 84% 82%, rgba(96, 165, 250, 0.15), transparent 36%),
-    linear-gradient(145deg, #07101d 0%, #101827 52%, #080e18 100%);
+  color: var(--sp-text);
+  background: var(--sp-body);
 }
 
 .pt-splash-shell {
@@ -47,10 +84,10 @@ body {
   z-index: 2;
   width: calc(100% - 44px);
   padding: 24px 28px 20px;
-  border: 1px solid rgba(255, 255, 255, 0.09);
+  border: 1px solid var(--sp-border);
   border-radius: 24px;
-  background: rgba(10, 18, 31, 0.8);
-  box-shadow: 0 26px 70px rgba(0, 0, 0, 0.4);
+  background: var(--sp-card);
+  box-shadow: var(--sp-shadow);
   backdrop-filter: blur(20px);
 }
 
@@ -64,7 +101,7 @@ body {
 .pt-splash-brand-logo {
   width: 112px;
   height: 112px;
-  border: 1px solid rgba(74, 222, 255, 0.18);
+  border: 1px solid var(--sp-border);
   border-radius: 22px;
   object-fit: cover;
   box-shadow: 0 16px 42px rgba(0, 199, 230, 0.16);
@@ -76,7 +113,7 @@ body {
 
 .pt-splash-product-label {
   margin: 0 0 8px;
-  color: #67e8f9;
+  color: var(--sp-accent);
   font-size: 10px;
   font-weight: 800;
   letter-spacing: 0.18em;
@@ -92,7 +129,7 @@ h1 {
 
 .pt-splash-subtitle {
   margin: 8px 0 16px;
-  color: rgba(230, 240, 255, 0.72);
+  color: var(--sp-muted);
   font-size: 13px;
 }
 
@@ -100,13 +137,13 @@ h1 {
   display: flex;
   flex-wrap: wrap;
   gap: 5px;
-  color: rgba(224, 237, 255, 0.54);
+  color: var(--sp-muted);
   font-size: 11px;
   line-height: 1.45;
 }
 
 .pt-splash-promo strong {
-  color: #67e8f9;
+  color: var(--sp-accent);
   font-weight: 700;
 }
 
@@ -117,8 +154,8 @@ h1 {
   min-height: 20px;
   margin-top: 22px;
   padding-top: 14px;
-  border-top: 1px solid rgba(255, 255, 255, 0.07);
-  color: rgba(224, 237, 255, 0.54);
+  border-top: 1px solid var(--sp-border);
+  color: var(--sp-muted);
   font-size: 11px;
 }
 

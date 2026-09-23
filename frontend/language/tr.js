@@ -1,7 +1,7 @@
 // # 📄 Dosya Yolu: pixeltone/frontend/language/tr.js
 // # 📌 Amac: PixelTone frontend Turkce runtime etiketlerini merkezi tutmak
 // # 📌 Language - JavaScript
-// # Version: 1.1.1
+// # Version: 1.2.0
 // # Aciklama: TurkuazLabs marka, splash, Stable Desktop, settings, capture, Palette Studio, live picker ve Tailwind mesajlarini merkezi tutar
 //
 // Bagimli Oldugu Katman: Language
@@ -11,6 +11,34 @@ export const TR_LABELS = Object.freeze({
     productLabel: "A TurkuazLabs Product",
     websiteLead: "Daha fazla proje ve yazilim:",
     footerLead: "TurkuazLabs tarafindan gelistirildi",
+  }),
+  navigation: Object.freeze({
+    home: "Ana Sayfa",
+    settings: "Ayarlar",
+  }),
+  app: Object.freeze({
+    heroTitle: "Platform bagimsiz renk secici",
+    heroLead: "Windows, Linux ve macOS icin canli picker, ekran rengi yakalama, proje ve palet yonetim araci.",
+    convertTitle: "Renk Donustur",
+    hexColor: "HEX renk",
+    convertAction: "Donustur",
+    previewTitle: "Onizleme",
+    tailwindEyebrow: "Tailwind CSS",
+    nearestColors: "Yakin Renkler",
+    nearestColorsLead: "Secili renge OKLab uzayinda en yakin resmi Tailwind renkleri.",
+    magnifierTitle: "Buyutec",
+    magnifierLead: "Yakalanan pikselin 9x9 yakin cevresi.",
+    historyTitle: "Gecmis",
+    paletteEyebrow: "Palette Studio",
+    projectPalettes: "Proje Paletleri",
+    projectName: "Proje adi",
+    paletteName: "Palet adi",
+    savePalette: "Paleti Kaydet",
+    exportYaml: "YAML Export",
+    exportCss: "CSS Export",
+    importYaml: "YAML Import",
+    stableDesktop: "Stable Desktop",
+    captureAction: "Ekrandan Renk Al",
   }),
   splash: Object.freeze({
     subtitle: "Color Picker & Palette Studio",
@@ -88,6 +116,16 @@ export const TR_LABELS = Object.freeze({
   }),
   settings: Object.freeze({
     title: "Ayarlar",
+    appearanceSection: "Gorunum ve Dil",
+    desktopSection: "Masaustu",
+    theme: "Tema",
+    themeSystem: "Sistem varsayilani",
+    themeLight: "Acik",
+    themeDark: "Koyu",
+    language: "Dil",
+    languageSystem: "Sistem varsayilani",
+    languageTr: "Turkce",
+    languageEn: "English",
     closeToTray: "Kapatma dugmesinde sistem tepsisine gizle",
     checkUpdatesOnStart: "Baslangicta guncellemeleri otomatik kontrol et ve kur",
     pickerShortcut: "Global picker kisayolu",

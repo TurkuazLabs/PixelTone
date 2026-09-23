@@ -1,7 +1,7 @@
 // # 📄 Dosya Yolu: pixeltone/src-tauri/src/language/tr.rs
 // # 📌 Amac: Native PixelTone masaustu Turkce etiketlerini merkezi tutmak
 // # 📌 Language - Rust
-// # Version: 1.0.0
+// # Version: 1.2.0
 // # Aciklama: Sistem tepsisi menu ve tooltip metinlerini tanimlar
 //
 // Bagimli Oldugu Katman: Language

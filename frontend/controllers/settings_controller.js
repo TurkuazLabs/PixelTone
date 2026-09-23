@@ -1,14 +1,19 @@
 // # 📄 Dosya Yolu: pixeltone/frontend/controllers/settings_controller.js
-// # 📌 Amac: Ayarlar ekranindaki kullanici olaylarini SettingsService katmanina aktarmak
+// # 📌 Amac: Ayarlar sekmesindeki kullanici olaylarini SettingsService katmanina aktarmak
 // # 📌 Controller - JavaScript
-// # Version: 1.0.1
-// # Aciklama: Ayarlari update network kontrolunu beklemeden render eder ve Service sonucunu View katmanina iletir
+// # Version: 1.2.1
+// # Aciklama: Tema/dil dahil ayarlari yukler, kaydeder ve runtime durumunu View katmanina iletir
 //
 // Bagimli Oldugu Katman: Controller
 
-import { TR_LABELS } from "../language/tr.js";
+import { languageService } from "../services/language_service.js";
+import { preferenceService } from "../services/preference_service.js";
 import { settingsService } from "../services/settings_service.js";
 import { settingsView } from "../views/settings_view.js";
+
+function labels() {
+  return languageService.getLabels();
+}
 
 function errorMessage(error, fallback) {
   if (typeof error === "string" && error.trim()) {
@@ -20,7 +25,7 @@ function errorMessage(error, fallback) {
 
 function renderRuntimeStatus(runtime, successMessage) {
   if (runtime?.shortcutRegistered === false) {
-    settingsView.setStatus(TR_LABELS.status.pickerShortcutUnavailable);
+    settingsView.setStatus(labels().status.pickerShortcutUnavailable);
     return;
   }
 
@@ -30,38 +35,47 @@ function renderRuntimeStatus(runtime, successMessage) {
 async function saveSettings() {
   try {
     const state = await settingsService.save(settingsView.getSettings());
-    settingsView.renderSettings(state.settings);
-    renderRuntimeStatus(state.runtime, TR_LABELS.status.settingsSaved);
+    const currentLabels = labels();
+    settingsView.initialize(currentLabels);
+    settingsView.renderSettings(state.settings, currentLabels);
+    renderRuntimeStatus(state.runtime, currentLabels.status.settingsSaved);
   } catch (error) {
-    settingsView.renderSettings(settingsService.getCurrent());
+    const currentLabels = labels();
+    settingsView.renderSettings(settingsService.getCurrent(), currentLabels);
     settingsView.setStatus(
-      errorMessage(error, TR_LABELS.status.settingsSaveFailed),
+      errorMessage(error, currentLabels.status.settingsSaveFailed),
     );
   }
 }
 
 async function checkUpdates() {
-  settingsView.setStatus(TR_LABELS.status.updateCheckRunning);
+  settingsView.setStatus(labels().status.updateCheckRunning);
   const result = await settingsService.checkForUpdates();
-  settingsView.renderVersionStatus(result);
-  settingsView.setStatus(TR_LABELS.status.updateCheckCompleted);
+  const currentLabels = labels();
+  settingsView.renderVersionStatus(result, currentLabels);
+  settingsView.setStatus(currentLabels.status.updateCheckCompleted);
 }
 
 async function boot() {
-  settingsView.initialize();
+  await preferenceService.initialize();
+  const currentLabels = labels();
+
+  settingsView.initialize(currentLabels);
   settingsView.bindSave(() => void saveSettings());
   settingsView.bindCheckUpdates(() => void checkUpdates());
 
   try {
     const state = await settingsService.initialize();
-    settingsView.renderSettings(state.settings);
-    renderRuntimeStatus(state.runtime, TR_LABELS.status.settingsLoaded);
+    const loadedLabels = labels();
+    settingsView.initialize(loadedLabels);
+    settingsView.renderSettings(state.settings, loadedLabels);
+    renderRuntimeStatus(state.runtime, loadedLabels.status.settingsLoaded);
 
     const versionCheck = await state.versionCheckPromise;
-    settingsView.renderVersionStatus(versionCheck);
+    settingsView.renderVersionStatus(versionCheck, labels());
   } catch (error) {
     settingsView.setStatus(
-      errorMessage(error, TR_LABELS.status.settingsLoadFailed),
+      errorMessage(error, labels().status.settingsLoadFailed),
     );
   }
 }

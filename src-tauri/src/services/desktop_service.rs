@@ -1,8 +1,8 @@
 // # 📄 Dosya Yolu: pixeltone/src-tauri/src/services/desktop_service.rs
-// # 📌 Amac: Tray ve pencere kapatma davranisi icin masaustu is kurallarini yonetmek
+// # 📌 Amac: Tray, dil ve pencere kapatma davranisi icin masaustu is kurallarini yonetmek
 // # 📌 Service - Rust
-// # Version: 1.0.0
-// # Aciklama: Tray kurulumunu koordine eder, tray aksiyonlarini uygular ve close-to-tray davranisini yonetir
+// # Version: 1.2.0
+// # Aciklama: Kayitli/system diline gore tray kurar ve yeniler; tray aksiyonlari ile close-to-tray davranisini yonetir
 //
 // Bagimli Oldugu Katman: Service
 
@@ -11,9 +11,10 @@ use tauri::tray::{MouseButton, MouseButtonState, TrayIconEvent};
 use tauri::{Emitter, Manager, WindowEvent};
 
 use crate::config::app_config::{
-    MAIN_WINDOW_LABEL, TRAY_MENU_PICKER_ID, TRAY_MENU_QUIT_ID, TRAY_MENU_SHOW_ID, TRAY_PICKER_EVENT,
+    LANGUAGE_EN, LANGUAGE_SYSTEM, LANGUAGE_TR, MAIN_WINDOW_LABEL, TRAY_MENU_PICKER_ID,
+    TRAY_MENU_QUIT_ID, TRAY_MENU_SHOW_ID, TRAY_PICKER_EVENT,
 };
-use crate::language::tr;
+use crate::language::{en, tr};
 use crate::repositories::settings_repository::SettingsRepository;
 use crate::tools::tray_tool::{TrayLabels, TrayTool};
 use crate::tools::window_tool::WindowTool;
@@ -22,20 +23,17 @@ pub struct DesktopService;
 
 impl DesktopService {
     pub fn setup(app: &mut tauri::App) -> tauri::Result<()> {
-        TrayTool::setup(
-            app,
-            TrayLabels {
-                tooltip: tr::TRAY_TOOLTIP,
-                show: tr::TRAY_SHOW,
-                picker: tr::TRAY_PICKER,
-                quit: tr::TRAY_QUIT,
-            },
-        )?;
+        let settings = SettingsRepository::new().load().unwrap_or_default();
+        TrayTool::setup(app, Self::tray_labels(&settings.language))?;
 
         app.on_menu_event(Self::handle_menu_event);
         app.on_tray_icon_event(Self::handle_tray_icon_event);
 
         Ok(())
+    }
+
+    pub fn refresh_tray(app: &tauri::AppHandle, language: &str) -> tauri::Result<()> {
+        TrayTool::update(app, Self::tray_labels(language))
     }
 
     pub fn handle_window_event(window: &tauri::Window, event: &WindowEvent) {
@@ -51,6 +49,43 @@ impl DesktopService {
                 let _ = WindowTool::hide_native(window);
             } else {
                 window.app_handle().exit(0);
+            }
+        }
+    }
+
+    fn resolve_language(language: &str) -> &'static str {
+        match language {
+            LANGUAGE_TR => LANGUAGE_TR,
+            LANGUAGE_EN => LANGUAGE_EN,
+            LANGUAGE_SYSTEM => {
+                let locale = sys_locale::get_locale()
+                    .unwrap_or_else(|| LANGUAGE_EN.to_string())
+                    .to_ascii_lowercase();
+
+                if locale.starts_with("tr") {
+                    LANGUAGE_TR
+                } else {
+                    LANGUAGE_EN
+                }
+            }
+            _ => LANGUAGE_EN,
+        }
+    }
+
+    fn tray_labels(language: &str) -> TrayLabels<'static> {
+        if Self::resolve_language(language) == LANGUAGE_TR {
+            TrayLabels {
+                tooltip: tr::TRAY_TOOLTIP,
+                show: tr::TRAY_SHOW,
+                picker: tr::TRAY_PICKER,
+                quit: tr::TRAY_QUIT,
+            }
+        } else {
+            TrayLabels {
+                tooltip: en::TRAY_TOOLTIP,
+                show: en::TRAY_SHOW,
+                picker: en::TRAY_PICKER,
+                quit: en::TRAY_QUIT,
             }
         }
     }
