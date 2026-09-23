@@ -37,6 +37,22 @@ Bagimli Oldugu Katman: View
   --sp-shadow: 0 26px 70px rgba(0, 0, 0, 0.4);
 }
 
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    color-scheme: dark;
+    --sp-text: #f7fbff;
+    --sp-muted: rgba(224, 237, 255, 0.58);
+    --sp-accent: #67e8f9;
+    --sp-border: rgba(255, 255, 255, 0.09);
+    --sp-card: rgba(10, 18, 31, 0.82);
+    --sp-body:
+      radial-gradient(circle at 16% 18%, rgba(34, 211, 238, 0.2), transparent 34%),
+      radial-gradient(circle at 84% 82%, rgba(96, 165, 250, 0.15), transparent 36%),
+      linear-gradient(145deg, #07101d 0%, #101827 52%, #080e18 100%);
+    --sp-shadow: 0 26px 70px rgba(0, 0, 0, 0.4);
+  }
+}
+
 * {
   box-sizing: border-box;
 }
