@@ -1,7 +1,7 @@
 // # 📄 Dosya Yolu: pixeltone/frontend/views/settings_view.js
 // # 📌 Amac: PixelTone ayarlar sekmesinin DOM ciktilarini ve event baglantilarini yonetmek
 // # 📌 View - JavaScript
-// # Version: 1.2.0
+// # Version: 1.2.1
 // # Aciklama: Tema, dil, tray, updater, picker kisayolu ve kopyalama formati alanlarini yonetir
 //
 // Bagimli Oldugu Katman: View
@@ -73,8 +73,20 @@ export const settingsView = Object.freeze({
     dom.saveButton.addEventListener("click", handler);
   },
 
+  bindPreferenceChange(handler) {
+    dom.theme.addEventListener("change", handler);
+    dom.language.addEventListener("change", handler);
+  },
+
   bindCheckUpdates(handler) {
     dom.updateButton.addEventListener("click", handler);
+  },
+
+  getPreferences() {
+    return {
+      theme: dom.theme.value,
+      language: dom.language.value,
+    };
   },
 
   getSettings() {
@@ -124,7 +136,4 @@ export const settingsView = Object.freeze({
     dom.status.textContent = message;
   },
 
-  reloadApp() {
-    window.location.reload();
-  },
 });
