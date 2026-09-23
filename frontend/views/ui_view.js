@@ -1,13 +1,13 @@
 // # 📄 Dosya Yolu: pixeltone/frontend/views/ui_view.js
 // # 📌 Amac: PixelTone DOM ciktilarini ve event baglantilarini yonetmek
 // # 📌 View - JavaScript
-// # Version: 0.4.0
+// # Version: 1.2.0
 // # Aciklama: Live Picker, Tailwind, Palette Studio CRUD, renk adlandirma ve siralama ciktilarini cizer
 //
 // Bagimli Oldugu Katman: View
 
 import { APP_CONFIG } from "../config/app_config.js";
-import { TR_LABELS } from "../language/tr.js";
+import { languageService } from "../services/language_service.js";
 
 const dom = Object.freeze({
   hexInput: document.getElementById("hex-input"),
@@ -32,6 +32,21 @@ const dom = Object.freeze({
   magnifierGrid: document.getElementById("magnifier-grid"),
   capturePlatform: document.getElementById("capture-platform"),
   capturePosition: document.getElementById("capture-position"),
+  heroTitle: document.getElementById("hero-title"),
+  heroLead: document.getElementById("hero-lead"),
+  convertTitle: document.getElementById("convert-title"),
+  hexInputLabel: document.getElementById("hex-input-label"),
+  previewTitle: document.getElementById("preview-title"),
+  tailwindEyebrow: document.getElementById("tailwind-eyebrow"),
+  tailwindTitle: document.getElementById("tailwind-title"),
+  tailwindLead: document.getElementById("tailwind-lead"),
+  magnifierTitle: document.getElementById("magnifier-title"),
+  magnifierLead: document.getElementById("magnifier-lead"),
+  historyTitle: document.getElementById("history-title"),
+  paletteEyebrow: document.getElementById("palette-eyebrow"),
+  paletteTitle: document.getElementById("palette-title"),
+  projectNameLabel: document.getElementById("project-name-label"),
+  paletteNameLabel: document.getElementById("palette-name-label"),
 });
 
 function formatPercent(value) {
@@ -62,10 +77,35 @@ function createMiniButton(label, handler, isDisabled = false, extraClass = "") {
 }
 
 export const uiView = Object.freeze({
+  initializeLabels(labels) {
+    dom.heroTitle.textContent = labels.app.heroTitle;
+    dom.heroLead.textContent = labels.app.heroLead;
+    dom.convertTitle.textContent = labels.app.convertTitle;
+    dom.hexInputLabel.textContent = labels.app.hexColor;
+    dom.convertButton.textContent = labels.app.convertAction;
+    dom.captureButton.textContent = labels.app.captureAction;
+    dom.previewTitle.textContent = labels.app.previewTitle;
+    dom.tailwindEyebrow.textContent = labels.app.tailwindEyebrow;
+    dom.tailwindTitle.textContent = labels.app.nearestColors;
+    dom.tailwindLead.textContent = labels.app.nearestColorsLead;
+    dom.magnifierTitle.textContent = labels.app.magnifierTitle;
+    dom.magnifierLead.textContent = labels.app.magnifierLead;
+    dom.historyTitle.textContent = labels.app.historyTitle;
+    dom.paletteEyebrow.textContent = labels.app.paletteEyebrow;
+    dom.paletteTitle.textContent = labels.app.projectPalettes;
+    dom.projectNameLabel.textContent = labels.app.projectName;
+    dom.paletteNameLabel.textContent = labels.app.paletteName;
+    dom.savePaletteButton.textContent = labels.app.savePalette;
+    dom.exportYamlButton.textContent = labels.app.exportYaml;
+    dom.exportCssButton.textContent = labels.app.exportCss;
+    dom.importYamlButton.textContent = labels.app.importYaml;
+    dom.statusText.textContent = labels.status.ready;
+  },
+
   initializePickerControls(shortcut) {
-    dom.pickerLaunchButton.textContent = TR_LABELS.picker.launchAction;
+    dom.pickerLaunchButton.textContent = languageService.getLabels().picker.launchAction;
     dom.pickerShortcutHint.textContent =
-      `${TR_LABELS.picker.shortcutPrefix}: ${shortcut}`;
+      `${languageService.getLabels().picker.shortcutPrefix}: ${shortcut}`;
   },
 
   bindLivePicker(handler) {
@@ -155,18 +195,18 @@ export const uiView = Object.freeze({
     dom.colorOutput.innerHTML = "";
 
     const rows = [
-      [TR_LABELS.output.hex, colorInfo.hex],
-      [TR_LABELS.output.rgb, `${colorInfo.rgb.red}, ${colorInfo.rgb.green}, ${colorInfo.rgb.blue}`],
+      [languageService.getLabels().output.hex, colorInfo.hex],
+      [languageService.getLabels().output.rgb, `${colorInfo.rgb.red}, ${colorInfo.rgb.green}, ${colorInfo.rgb.blue}`],
       [
-        TR_LABELS.output.hsl,
+        languageService.getLabels().output.hsl,
         `${Number(colorInfo.hsl.hue).toFixed(2)}, ${formatPercent(colorInfo.hsl.saturation)}, ${formatPercent(colorInfo.hsl.lightness)}`,
       ],
       [
-        TR_LABELS.output.hsv,
+        languageService.getLabels().output.hsv,
         `${Number(colorInfo.hsv.hue).toFixed(2)}, ${formatPercent(colorInfo.hsv.saturation)}, ${formatPercent(colorInfo.hsv.value)}`,
       ],
       [
-        TR_LABELS.output.cmyk,
+        languageService.getLabels().output.cmyk,
         `${formatPercent(colorInfo.cmyk.cyan)}, ${formatPercent(colorInfo.cmyk.magenta)}, ${formatPercent(colorInfo.cmyk.yellow)}, ${formatPercent(colorInfo.cmyk.black)}`,
       ],
     ];
@@ -180,7 +220,7 @@ export const uiView = Object.freeze({
     if (!Array.isArray(matches) || matches.length === 0) {
       const empty = document.createElement("p");
       empty.className = "pt-status";
-      empty.textContent = TR_LABELS.empty.tailwind;
+      empty.textContent = languageService.getLabels().empty.tailwind;
       dom.tailwindColorList.appendChild(empty);
       return;
     }
@@ -200,7 +240,7 @@ export const uiView = Object.freeze({
       name.textContent = match.name;
       value.textContent = match.value;
       distance.className = "pt-tailwind-distance";
-      distance.textContent = `${TR_LABELS.tailwind.distancePrefix}: ${Number(match.distance).toFixed(4)}`;
+      distance.textContent = `${languageService.getLabels().tailwind.distancePrefix}: ${Number(match.distance).toFixed(4)}`;
       details.append(name, value);
       row.append(swatch, details, distance);
       dom.tailwindColorList.appendChild(row);
@@ -213,7 +253,7 @@ export const uiView = Object.freeze({
     if (historyItems.length === 0) {
       const empty = document.createElement("p");
       empty.className = "pt-status";
-      empty.textContent = TR_LABELS.empty.history;
+      empty.textContent = languageService.getLabels().empty.history;
       dom.historyList.appendChild(empty);
       return;
     }
@@ -240,18 +280,18 @@ export const uiView = Object.freeze({
       nameInput.className = "pt-history-name";
       nameInput.type = "text";
       nameInput.value = item.name || item.hex;
-      nameInput.placeholder = TR_LABELS.history.namePlaceholder;
+      nameInput.placeholder = languageService.getLabels().history.namePlaceholder;
       nameInput.addEventListener("change", () => onRename(index, nameInput.value));
 
       actions.className = "pt-history-actions";
       actions.append(
         createMiniButton(
-          TR_LABELS.history.moveUp,
+          languageService.getLabels().history.moveUp,
           () => onMove(index, APP_CONFIG.historyMove.up),
           index === 0,
         ),
         createMiniButton(
-          TR_LABELS.history.moveDown,
+          languageService.getLabels().history.moveDown,
           () => onMove(index, APP_CONFIG.historyMove.down),
           index === historyItems.length - 1,
         ),
@@ -269,7 +309,7 @@ export const uiView = Object.freeze({
     if (!Array.isArray(palettes) || palettes.length === 0) {
       const empty = document.createElement("p");
       empty.className = "pt-status";
-      empty.textContent = TR_LABELS.empty.palettes;
+      empty.textContent = languageService.getLabels().empty.palettes;
       dom.paletteList.appendChild(empty);
       return;
     }
@@ -285,15 +325,15 @@ export const uiView = Object.freeze({
       row.className = "pt-palette-item";
       details.className = "pt-palette-details";
       name.textContent = palette.name;
-      project.textContent = `${TR_LABELS.palette.projectPrefix}: ${palette.project}`;
-      count.textContent = `${palette.color_count} ${TR_LABELS.palette.colorCountSuffix}`;
+      project.textContent = `${languageService.getLabels().palette.projectPrefix}: ${palette.project}`;
+      count.textContent = `${palette.color_count} ${languageService.getLabels().palette.colorCountSuffix}`;
       actions.className = "pt-palette-actions";
       actions.append(
-        createMiniButton(TR_LABELS.palette.editAction, () => onEdit(palette)),
+        createMiniButton(languageService.getLabels().palette.editAction, () => onEdit(palette)),
         createMiniButton(
-          TR_LABELS.palette.deleteAction,
+          languageService.getLabels().palette.deleteAction,
           () => {
-            if (window.confirm(TR_LABELS.palette.deleteConfirm)) {
+            if (window.confirm(languageService.getLabels().palette.deleteConfirm)) {
               onDelete(palette);
             }
           },
@@ -314,7 +354,7 @@ export const uiView = Object.freeze({
     if (!captureResult || !Array.isArray(captureResult.magnifier_pixels)) {
       const empty = document.createElement("p");
       empty.className = "pt-status";
-      empty.textContent = TR_LABELS.empty.magnifier;
+      empty.textContent = languageService.getLabels().empty.magnifier;
       dom.magnifierGrid.appendChild(empty);
       return;
     }
@@ -334,7 +374,7 @@ export const uiView = Object.freeze({
       dom.magnifierGrid.appendChild(pixelElement);
     });
 
-    dom.capturePlatform.textContent = `${TR_LABELS.capture.platformPrefix}: ${captureResult.platform}`;
-    dom.capturePosition.textContent = `${TR_LABELS.capture.positionPrefix}: ${captureResult.cursor.x}, ${captureResult.cursor.y}`;
+    dom.capturePlatform.textContent = `${languageService.getLabels().capture.platformPrefix}: ${captureResult.platform}`;
+    dom.capturePosition.textContent = `${languageService.getLabels().capture.positionPrefix}: ${captureResult.cursor.x}, ${captureResult.cursor.y}`;
   },
 });
