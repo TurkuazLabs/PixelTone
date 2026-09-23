@@ -11,6 +11,7 @@ import { languageService } from "../services/language_service.js";
 import { preferenceService } from "../services/preference_service.js";
 import { paletteService } from "../services/palette_service.js";
 import { pickerService } from "../services/picker_service.js";
+import { settingsService } from "../services/settings_service.js";
 import { tailwindColorService } from "../services/tailwind_color_service.js";
 import { uiView } from "../views/ui_view.js";
 
@@ -239,9 +240,9 @@ function exportCss() {
   void exportPalette(APP_CONFIG.exportFormats.css);
 }
 
-async function initializePicker() {
+async function initializePicker(shortcut) {
   uiView.initializePickerControls(
-    APP_CONFIG.defaults.settings.pickerShortcut,
+    shortcut || APP_CONFIG.defaults.settings.pickerShortcut,
   );
   uiView.bindLivePicker(() => void openLivePicker());
   await pickerService.onSelection(acceptPickerSelection);
@@ -251,6 +252,7 @@ async function refreshLocalizedUi() {
   const projectName = paletteService.getProjectName();
 
   uiView.initializeLabels(labels());
+  uiView.initializePickerControls(settingsService.getCurrent().picker_shortcut);
   renderHistory();
   uiView.renderMagnifier(currentCapture);
 
@@ -272,6 +274,7 @@ async function refreshLocalizedUi() {
 
 async function boot() {
   await preferenceService.initialize();
+  const settingsState = await settingsService.initialize();
   uiView.initializeLabels(labels());
   const projectName = paletteService.getProjectName();
 
@@ -289,7 +292,7 @@ async function boot() {
   renderHistory();
   uiView.renderTailwindMatches([]);
   uiView.renderMagnifier(null);
-  await initializePicker();
+  await initializePicker(settingsState.settings.picker_shortcut);
 
   preferenceService.subscribe((change) => {
     if (change.languageChanged) {
