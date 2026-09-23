@@ -1,12 +1,22 @@
 # 📄 Dosya Yolu: pixeltone/CHANGELOG.md
 # 📌 Amac: PixelTone surum degisikliklerini kaydetmek
 # 📌 Docs - Markdown
-# Version: 1.2.0
+# Version: 1.2.1
 # Aciklama: Proje degisiklik gecmisi, tema, dil ve sol navigasyon modullerini kaydeder
 
 Bagimli Oldugu Katman: View
 
 # Changelog
+
+## 1.2.1
+
+- Tema ve dil dropdown degisimleri aninda uygulanip kalici settings kaydina yaziliyor.
+- Tema/dil degisiminde diger kaydedilmemis masaustu ayarlari istemeden kaydedilmiyor.
+- Canli Picker acilirken ana pencere native olarak gizlenip system tray'e birakiliyor.
+- Renk secimi tamamlaninca ana pencere otomatik geri gosterilip odaklaniyor.
+- Picker Esc ile iptal edilirse ana pencere yine geri aciliyor.
+- Picker acilisi hata verirse ana pencere guvenli sekilde geri getiriliyor.
+- Picker butonu, global kisayol ve tray picker aksiyonu ayni hide/show lifecycle'ini kullaniyor.
 
 ## 1.2.0
 
