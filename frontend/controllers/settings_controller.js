@@ -2,7 +2,7 @@
 // # 📌 Amac: Ayarlar sekmesindeki kullanici olaylarini SettingsService katmanina aktarmak
 // # 📌 Controller - JavaScript
 // # Version: 1.2.1
-// # Aciklama: Tema/dil dahil ayarlari yukler, kaydeder ve runtime durumunu View katmanina iletir
+// # Aciklama: Tema/dil secimini aninda kalici uygular; diger masaustu ayarlarini Save aksiyonuyla yonetir
 //
 // Bagimli Oldugu Katman: Controller
 
@@ -32,13 +32,32 @@ function renderRuntimeStatus(runtime, successMessage) {
   settingsView.setStatus(successMessage);
 }
 
+function renderSettingsState(state, successMessage) {
+  const currentLabels = labels();
+  settingsView.initialize(currentLabels);
+  settingsView.renderSettings(state.settings, currentLabels);
+  renderRuntimeStatus(state.runtime, successMessage);
+}
+
+async function savePreferences() {
+  try {
+    const state = await settingsService.savePreferences(
+      settingsView.getPreferences(),
+    );
+    renderSettingsState(state, labels().status.settingsSaved);
+  } catch (error) {
+    const currentLabels = labels();
+    settingsView.renderSettings(settingsService.getCurrent(), currentLabels);
+    settingsView.setStatus(
+      errorMessage(error, currentLabels.status.settingsSaveFailed),
+    );
+  }
+}
+
 async function saveSettings() {
   try {
     const state = await settingsService.save(settingsView.getSettings());
-    const currentLabels = labels();
-    settingsView.initialize(currentLabels);
-    settingsView.renderSettings(state.settings, currentLabels);
-    renderRuntimeStatus(state.runtime, currentLabels.status.settingsSaved);
+    renderSettingsState(state, labels().status.settingsSaved);
   } catch (error) {
     const currentLabels = labels();
     settingsView.renderSettings(settingsService.getCurrent(), currentLabels);
@@ -61,15 +80,13 @@ async function boot() {
   const currentLabels = labels();
 
   settingsView.initialize(currentLabels);
+  settingsView.bindPreferenceChange(() => void savePreferences());
   settingsView.bindSave(() => void saveSettings());
   settingsView.bindCheckUpdates(() => void checkUpdates());
 
   try {
     const state = await settingsService.initialize();
-    const loadedLabels = labels();
-    settingsView.initialize(loadedLabels);
-    settingsView.renderSettings(state.settings, loadedLabels);
-    renderRuntimeStatus(state.runtime, loadedLabels.status.settingsLoaded);
+    renderSettingsState(state, labels().status.settingsLoaded);
 
     const versionCheck = await state.versionCheckPromise;
     settingsView.renderVersionStatus(versionCheck, labels());
