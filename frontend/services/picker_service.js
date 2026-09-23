@@ -1,8 +1,8 @@
 // # 📄 Dosya Yolu: pixeltone/frontend/services/picker_service.js
 // # 📌 Amac: Global shortcut, live capture, kopyalama ve overlay is kurallarini yonetmek
 // # 📌 Service - JavaScript
-// # Version: 1.0.0
-// # Aciklama: Picker oturumu, runtime shortcut, varsayilan format, sample dongusu ve secim kurallarini koordine eder
+// # Version: 1.2.1
+// # Aciklama: Picker oturumu, runtime shortcut, varsayilan format, tercih senkronizasyonu, sample dongusu ve secim kurallarini koordine eder
 //
 // Bagimli Oldugu Katman: Service
 
@@ -51,6 +51,7 @@ async function openPicker() {
     APP_CONFIG.picker.activationEvent,
     {
       defaultCopyFormat: configuredDefaultCopyFormat,
+      shortcut: configuredShortcut,
     },
   );
 }
