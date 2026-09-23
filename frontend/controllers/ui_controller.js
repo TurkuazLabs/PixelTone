@@ -1,8 +1,8 @@
 // # 📄 Dosya Yolu: pixeltone/frontend/controllers/ui_controller.js
 // # 📌 Amac: PixelTone arayuz olaylarini almak ve servisleri cagirmak
 // # 📌 Controller - JavaScript
-// # Version: 1.2.0
-// # Aciklama: Live Picker secimi, capture, Tailwind ve Palette Studio olaylarini Service katmanina aktarir
+// # Version: 1.2.1
+// # Aciklama: Live Picker, capture, Tailwind, Palette Studio ve runtime dil yenileme olaylarini Service katmanina aktarir
 //
 // Bagimli Oldugu Katman: Controller
 
@@ -15,6 +15,7 @@ import { tailwindColorService } from "../services/tailwind_color_service.js";
 import { uiView } from "../views/ui_view.js";
 
 let currentColor = null;
+let currentCapture = null;
 
 function labels() {
   return languageService.getLabels();
@@ -72,6 +73,7 @@ async function captureColor() {
 
   try {
     const captureResult = await paletteService.captureScreenColor();
+    currentCapture = captureResult;
     uiView.renderMagnifier(captureResult);
     uiView.setHexValue(captureResult.hex);
     await convertCurrentHex();
@@ -91,6 +93,7 @@ async function openLivePicker() {
 }
 
 function acceptPickerSelection(selection) {
+  currentCapture = selection.capture;
   uiView.renderMagnifier(selection.capture);
   renderSelectedColor(selection.colorInfo, true);
   uiView.setStatus(`${labels().status.pickerSelected} ${selection.text}`);
@@ -244,6 +247,29 @@ async function initializePicker() {
   await pickerService.onSelection(acceptPickerSelection);
 }
 
+async function refreshLocalizedUi() {
+  const projectName = paletteService.getProjectName();
+
+  uiView.initializeLabels(labels());
+  renderHistory();
+  uiView.renderMagnifier(currentCapture);
+
+  if (currentColor) {
+    uiView.renderColorOutput(currentColor);
+    renderTailwindMatches(currentColor.hex);
+  } else {
+    uiView.renderTailwindMatches([]);
+  }
+
+  try {
+    await refreshPalettes(projectName);
+  } catch (_error) {
+    uiView.renderPalettes([], editPalette, deletePalette);
+  }
+
+  uiView.setStatus(labels().status.ready);
+}
+
 async function boot() {
   await preferenceService.initialize();
   uiView.initializeLabels(labels());
@@ -264,6 +290,13 @@ async function boot() {
   uiView.renderTailwindMatches([]);
   uiView.renderMagnifier(null);
   await initializePicker();
+
+  preferenceService.subscribe((change) => {
+    if (change.languageChanged) {
+      void refreshLocalizedUi();
+    }
+  });
+
   await convertCurrentHex();
 
   try {
