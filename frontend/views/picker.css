@@ -2,19 +2,29 @@
 # 📄 Dosya Yolu: pixeltone/frontend/views/picker.css
 # 📌 Amac: Canli picker overlay arayuz stilini tanimlamak
 # 📌 View - CSS
-# Version: 0.4.0
+# Version: 1.2.0
 # Aciklama: Seffaf tam ekran secim alani, cursor takipli bilgi karti ve 9x9 buyutec stillerini tanimlar
 
 Bagimli Oldugu Katman: View
 */
 
 :root {
+  color-scheme: light;
+  --pt-picker-card-bg: rgba(255, 255, 255, 0.96);
+  --pt-picker-card-text: #172033;
+  --pt-picker-muted: #64708a;
+  --pt-picker-border: rgba(23, 32, 51, 0.18);
+  --pt-picker-accent: #2f6fe5;
+  --pt-picker-columns: 9;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
   --pt-picker-card-bg: rgba(17, 24, 39, 0.94);
   --pt-picker-card-text: #f8fafc;
   --pt-picker-muted: #cbd5e1;
   --pt-picker-border: rgba(255, 255, 255, 0.22);
   --pt-picker-accent: #60a5fa;
-  --pt-picker-columns: 9;
 }
 
 * {
