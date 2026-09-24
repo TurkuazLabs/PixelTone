@@ -1,7 +1,7 @@
 # 📄 Dosya Yolu: pixeltone/ROADMAP.md
 # 📌 Amac: PixelTone gelistirme yol haritasini tanimlamak
 # 📌 Docs - Markdown
-# Version: 1.2.0
+# Version: 1.2.2
 # Aciklama: Tamamlanan masaustu surumleri ve sonraki gelisim alanlarini tanimlar
 
 Bagimli Oldugu Katman: View
@@ -57,7 +57,7 @@ Bagimli Oldugu Katman: View
 - Baslangicta veya manuel surum kontrolu
 - GitHub Release tabanli dagitim akisi
 
-## v1.1.0 - Splash & Auto Update - GELISTIRILIYOR
+## v1.1.0 - Splash & Auto Update - KOD TAMAM / RELEASE KAPISI ACIK
 
 - Native splash-first acilis
 - Ana pencerenin splash arkasinda gizli yuklenmesi
@@ -67,7 +67,7 @@ Bagimli Oldugu Katman: View
 - Windows NSIS updater paketi tercihi
 - Signing key ve release secret konfigurasyonu son release kapisi
 
-## v1.2.0 - Theme, Language & Settings Navigation - GELISTIRILIYOR
+## v1.2.0 - Theme, Language & Settings Navigation - TAMAMLANDI
 
 - Sol sidebar ile Ana Sayfa / Ayarlar navigasyonu
 - Ayri Ayarlar sayfasi
@@ -77,6 +77,19 @@ Bagimli Oldugu Katman: View
 - Splash, ana arayuz ve Live Picker tema senkronizasyonu
 - Frontend UI ve native tray dil senkronizasyonu
 - Sistem tema ve sistem dil cozumlemesi
+
+## v1.2.1 - Preference & Picker Flow Fixes - TAMAMLANDI
+
+- Tema ve dil degisikliklerinin aninda uygulanmasi
+- Preference persistence sirasinda bekleyen desktop alanlarinin korunmasi
+- Live Picker acilisinda ana pencerenin gizlenmesi ve cikista geri getirilmesi
+
+## v1.2.2 - Single Instance & Installer Scope - KOD TAMAM / DOGRULAMA BEKLIYOR
+
+- Ikinci PixelTone acilisinda yeni instance olusturmak yerine mevcut splash veya ana pencereye odaklanma
+- Windows NSIS `installMode: both` ile current-user ve per-machine kurulum secenegi
+- Setup build'ini updater signing artifactlerinden ayiran setup config'i
+- Gercek Windows setup runtime dogrulamasi merge/release kabul kapisidir
 
 ## Sonraki Gelisim Alanlari
 
