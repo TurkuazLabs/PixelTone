@@ -1,0 +1,95 @@
+# Dosya Yolu: REPO_ROOT/.github/workflows/turkuaz-installer-pilot.yml
+# Amac: PixelTone 1.2.2 icin sabit TurkuazInstaller Community pilot artifact'i uretmek
+# Modul - GitHub Actions YAML
+# Version: 0.1.0
+# Aciklama: Mevcut NSIS release'ini degistirmeden imzasiz Setup EXE ve kurulum/kaldirma smoke kaniti uretir
+# Bagimli Oldugu Katman: Tool | Config
+
+name: PixelTone TurkuazInstaller Pilot
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "src-tauri/**"
+      - "frontend/**"
+      - "package.json"
+      - "package-lock.json"
+      - "scripts/build_turkuaz_installer_pilot.ps1"
+      - ".github/workflows/turkuaz-installer-pilot.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pixeltone-turkuaz-installer-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-pilot:
+    name: Build and smoke PixelTone pilot setup
+    runs-on: windows-latest
+    timeout-minutes: 75
+
+    steps:
+      - name: Checkout PixelTone
+        uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: lts/*
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Prepare frontend lockfile
+        run: npm install --package-lock-only
+
+      - name: Install resolved frontend dependencies
+        run: npm ci
+
+      - name: Validate PixelTone source
+        run: |
+          npm run preflight
+          npm run test:tools
+          npm run build
+
+      - name: Generate Windows icons
+        run: npm run tauri icon src-tauri/icons/app-icon.svg
+
+      - name: Build PixelTone release executable
+        run: cargo build --manifest-path src-tauri/Cargo.toml --release
+
+      - name: Stage PixelTone payload
+        shell: pwsh
+        run: |
+          $payload = Join-Path $env:RUNNER_TEMP 'pixeltone-payload'
+          New-Item -ItemType Directory -Path $payload | Out-Null
+          Copy-Item -LiteralPath 'src-tauri/target/release/pixeltone.exe' -Destination (Join-Path $payload 'PixelTone.exe')
+
+      - name: Checkout pinned TurkuazInstaller Community
+        uses: actions/checkout@v7
+        with:
+          repository: TurkuazLabs/TurkuazInstaller
+          ref: 88dc833d906b83ede601c04df2affbe1ac8c1839
+          path: _turkuaz-installer
+          persist-credentials: false
+
+      - name: Build and smoke TurkuazInstaller pilot
+        shell: pwsh
+        run: |
+          & ./scripts/build_turkuaz_installer_pilot.ps1 `
+            -InstallerCheckout '_turkuaz-installer' `
+            -PayloadDirectory (Join-Path $env:RUNNER_TEMP 'pixeltone-payload') `
+            -OutputDirectory 'dist-turkuaz-installer'
+
+      - name: Upload unsigned pilot artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: PixelTone-1.2.2-TurkuazInstaller-0.2.20-PILOT
+          path: dist-turkuaz-installer/*
+          if-no-files-found: error
+          retention-days: 14

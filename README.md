@@ -1,7 +1,7 @@
 # 📄 Dosya Yolu: pixeltone/README.md
 # 📌 Amac: PixelTone projesinin genel aciklamasini ve calisma durumunu tanimlamak
 # 📌 Docs - Markdown
-# Version: 1.0.0
+# Version: 1.0.1
 # Aciklama: Tauri + Rust + HTML UI tabanli Stable Desktop renk secici, picker, palet ve dagitim uygulama girisi
 
 Bagimli Oldugu Katman: View
@@ -114,6 +114,15 @@ GitHub Actions `.github/workflows/release.yml` dosyasi su paketleri uretir:
 - macOS: APP + DMG
 
 Release akisi version tag push ile veya manuel workflow dispatch ile calistirilabilir. Detaylar `docs/RELEASE.md` dosyasindadir.
+
+## TurkuazInstaller Community Pilotu
+
+PixelTone `1.2.2`, mevcut NSIS/MSI yoluna dokunmadan TurkuazInstaller
+Community `0.2.20` ile ayri bir Windows pilot artifact'i olarak da
+paketlenir. Pilot sabit kaynak revizyonu, gercek kurulum/kaldirma smoke
+testi ve SHA-256 metadata uretir; imzasizdir ve production release degildir.
+
+Kapsam ve kullanim sinirlari: `docs/TURKUAZ_INSTALLER_PILOT.md`.
 
 ## Kurulum
 
