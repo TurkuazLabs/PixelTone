@@ -1,7 +1,7 @@
 # Dosya Yolu: REPO_ROOT/docs/TURKUAZ_INSTALLER_PILOT.md
 # Amac: PixelTone icin TurkuazInstaller Community pilot sinirlarini ve dogrulamasini tanimlamak
 # Modul - Documentation Markdown
-# Version: 0.1.3
+# Version: 0.1.4
 # Aciklama: Sabit surumler, gomulu Tauri arayuzu, smoke kapsami ve production olmayan dagitim durumu
 # Bagimli Oldugu Katman: Documentation | Tool | Config
 
@@ -9,7 +9,7 @@
 
 Bu pilot PixelTone `1.2.2` Windows executable dosyasini
 TurkuazInstaller Community `0.2.22`, kaynak revizyonu
-`5454874e64ed2d78622755032b12c0d32b17b244` ile paketler.
+`536354021fa74cb36a139445c8007af785af5096` ile paketler.
 
 `.github/workflows/turkuaz-installer-pilot.yml` yalniz manuel veya PR
 dogrulamasinda calisir. Mevcut Tauri NSIS/MSI release akisini degistirmez,
