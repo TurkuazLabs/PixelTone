@@ -1,7 +1,7 @@
 # 📄 Dosya Yolu: pixeltone/README.md
 # 📌 Amac: PixelTone projesinin genel aciklamasini ve calisma durumunu tanimlamak
 # 📌 Docs - Markdown
-# Version: 1.0.4
+# Version: 1.0.5
 # Aciklama: Tauri + Rust + HTML UI tabanli Stable Desktop renk secici, picker, palet ve dagitim uygulama girisi
 
 Bagimli Oldugu Katman: View
@@ -118,7 +118,7 @@ Release akisi version tag push ile veya manuel workflow dispatch ile calistirila
 ## TurkuazInstaller Community Pilotu
 
 PixelTone `1.2.2`, mevcut NSIS/MSI yoluna dokunmadan TurkuazInstaller
-Community `0.2.22` ile ayri bir Windows pilot artifact'i olarak da
+Community `0.2.23` ile ayri bir Windows pilot artifact'i olarak da
 paketlenir. Pilot sabit kaynak revizyonu, gercek kurulum/kaldirma smoke
 testi ve SHA-256 metadata uretir; imzasizdir ve production release degildir.
 

@@ -1,7 +1,7 @@
 # Dosya Yolu: REPO_ROOT/.github/workflows/turkuaz-installer-pilot.yml
 # Amac: PixelTone 1.2.2 icin sabit TurkuazInstaller Community pilot artifact'i uretmek
 # Modul - GitHub Actions YAML
-# Version: 0.1.4
+# Version: 0.1.5
 # Aciklama: Gomulu Tauri arayuzlu EXE, imzasiz Setup ve kurulum/kaldirma smoke kaniti uretir
 # Bagimli Oldugu Katman: Tool | Config
 
@@ -74,7 +74,7 @@ jobs:
         uses: actions/checkout@v7
         with:
           repository: TurkuazLabs/TurkuazInstaller
-          ref: 536354021fa74cb36a139445c8007af785af5096
+          ref: 987603a6784d16e5b2f7d1b64b248c03582d199c
           path: _turkuaz-installer
           persist-credentials: false
 
@@ -89,7 +89,7 @@ jobs:
       - name: Upload unsigned pilot artifact
         uses: actions/upload-artifact@v4
         with:
-          name: PixelTone-1.2.2-TurkuazInstaller-0.2.22-PILOT
+          name: PixelTone-1.2.2-TurkuazInstaller-0.2.23-PILOT
           path: dist-turkuaz-installer/*
           if-no-files-found: error
           retention-days: 14
