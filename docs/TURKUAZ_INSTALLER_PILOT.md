@@ -1,15 +1,15 @@
 # Dosya Yolu: REPO_ROOT/docs/TURKUAZ_INSTALLER_PILOT.md
 # Amac: PixelTone icin TurkuazInstaller Community pilot sinirlarini ve dogrulamasini tanimlamak
 # Modul - Documentation Markdown
-# Version: 0.1.2
+# Version: 0.1.3
 # Aciklama: Sabit surumler, gomulu Tauri arayuzu, smoke kapsami ve production olmayan dagitim durumu
 # Bagimli Oldugu Katman: Documentation | Tool | Config
 
 # PixelTone TurkuazInstaller pilotu
 
 Bu pilot PixelTone `1.2.2` Windows executable dosyasini
-TurkuazInstaller Community `0.2.21`, kaynak revizyonu
-`35c6ed70740e9a850a839950a300788651b7be8a` ile paketler.
+TurkuazInstaller Community `0.2.22`, kaynak revizyonu
+`5454874e64ed2d78622755032b12c0d32b17b244` ile paketler.
 
 `.github/workflows/turkuaz-installer-pilot.yml` yalniz manuel veya PR
 dogrulamasinda calisir. Mevcut Tauri NSIS/MSI release akisini degistirmez,
@@ -26,10 +26,10 @@ tag olusturmaz ve GitHub Release yayinlamaz.
 - `uninstall-local` ile yalniz yonetilen payload'in kaldirilmasi.
 - Setup, paket ve metadata SHA-256 artifact'leri.
 
-TurkuazInstaller `0.2.21` sihirbazi uygulama adini `PixelTone.exe` giris
-noktasindan `PixelTone` olarak turetir; masaustu/Baslat menusu/kaldirma
-kaydinda uygulama ikonunu kullanir ve kısayol degisikliklerini Windows
-Shell'e bildirir.
+TurkuazInstaller `0.2.22` sihirbazi uygulama adini `PixelTone.exe` giris
+noktasindan `PixelTone` olarak turetir. Baslat menusunde `PixelTone` ve
+`Kaldir` kisayollarini zorunlu olusturur, masaustu kisayolunu kullaniciya
+birakir ve kaldirmada kendi kisayollarini guvenli bicimde temizler.
 
 ## Sinirlar
 
