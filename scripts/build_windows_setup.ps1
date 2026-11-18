@@ -1,8 +1,8 @@
 # 📄 Dosya Yolu: pixeltone/scripts/build_windows_setup.ps1
-# 📌 Amac: PixelTone Windows NSIS Setup.exe paketini tek komutla uretmek
+# 📌 Amac: PixelTone TurkuazInstaller ile PixelTone Windows Setup EXE uretmek
 # 📌 Tool - PowerShell
-# Version: 1.1.1
-# Aciklama: Ikonlari kaynak SVG'den yeniler, CI kontrollerini calistirir ve unsigned test NSIS setup artifactleri uretir
+# Version: 1.1.3
+# Aciklama: Ikonlari kaynak SVG'den yeniler, CI kontrollerini calistirir ve Rust TurkuazInstaller .tzpkg ve yerel setup artifactleri uretir
 #
 # Bagimli Oldugu Katman: Tool
 
@@ -32,7 +32,9 @@ $ProductName = "PixelTone"
 $OutputDirName = "dist-installer"
 $SetupConfigRelativePath = "src-tauri/tauri.setup.conf.json5"
 $IconSourceRelativePath = "src-tauri/icons/app-icon.svg"
-$BundleRelativePath = "src-tauri/target/release/bundle/nsis"
+$RustExeRelativePath = "src-tauri/target/release/pixeltone.exe"
+$InstallerCommit = "10101dee8b6efe4775f5cf72aa05f3a3da934bfa"
+$InstallerCheckout = Join-Path $Root "dist-installer-engine"
 $PackagePath = Join-Path $Root "package.json"
 $OutputDir = Join-Path $Root $OutputDirName
 $SetupConfigPath = Join-Path $Root $SetupConfigRelativePath
@@ -110,56 +112,63 @@ try {
         }
     }
 
-    Invoke-Step -Name "Build unsigned NSIS Setup.exe" -Action {
-        npm run tauri build -- --config $SetupConfigRelativePath --bundles nsis
-
-        if ($LASTEXITCODE -ne 0) {
-            throw "NSIS Setup.exe build basarisiz."
-        }
+    # @dev-id PT-TI-SETUP-001
+    # Build the app without NSIS, and use the pinned Community Rust engine.
+    Invoke-Step -Name "Build Windows application without bundling" -Action {
+        npm run tauri build -- --config $SetupConfigRelativePath --no-bundle
+        if ($LASTEXITCODE -ne 0) { throw "PixelTone Windows EXE build basarisiz." }
     }
 
-    Invoke-Step -Name "Collect setup artifacts" -Action {
-        $BundleDir = Join-Path $Root $BundleRelativePath
-        $Setup = Get-ChildItem -Path $BundleDir -Filter "*-setup.exe" -File |
-            Sort-Object LastWriteTimeUtc -Descending |
-            Select-Object -First 1
-
-        if ($null -eq $Setup) {
-            throw "NSIS Setup.exe bulunamadi: $BundleDir"
+    Invoke-Step -Name "Build pinned TurkuazInstaller engine" -Action {
+        if (-not (Test-Path -LiteralPath $InstallerCheckout -PathType Container)) {
+            & git clone --no-checkout 'https://github.com/TurkuazLabs/TurkuazInstaller.git' $InstallerCheckout
+            if ($LASTEXITCODE -ne 0) { throw "TurkuazInstaller clone basarisiz." }
         }
+        & git -C $InstallerCheckout checkout --detach $InstallerCommit
+        if ($LASTEXITCODE -ne 0) { throw "TurkuazInstaller pinned checkout basarisiz." }
+        $checkedCommit = (& git -C $InstallerCheckout rev-parse HEAD).Trim()
+        if ($LASTEXITCODE -ne 0 -or $checkedCommit -cne $InstallerCommit) {
+            throw "TurkuazInstaller source commit identity mismatch."
+        }
+        & cargo build --locked --manifest-path (Join-Path $InstallerCheckout 'rust/Cargo.toml') -p turkuaz-installer-cli --release --bin turkuaz-installer --features setup-authoring-gui
+        if ($LASTEXITCODE -ne 0) { throw "TurkuazInstaller Rust build basarisiz." }
+    }
 
-        New-Item -ItemType Directory -Path $OutputDir -Force | Out-Null
-
+    Invoke-Step -Name "Build TurkuazInstaller package and Windows Setup" -Action {
+        $Executable = Join-Path $Root $RustExeRelativePath
+        if (-not (Test-Path -LiteralPath $Executable -PathType Leaf)) {
+            throw "PixelTone Windows executable bulunamadi: $Executable"
+        }
+        $Cli = Join-Path $InstallerCheckout 'rust/target/release/turkuaz-installer.exe'
+        if (-not (Test-Path -LiteralPath $Cli -PathType Leaf)) { throw "TurkuazInstaller CLI bulunamadi." }
+        $Payload = Join-Path $OutputDir 'payload'
+        New-Item -ItemType Directory -Path $Payload -Force | Out-Null
+        Copy-Item -LiteralPath $Executable -Destination (Join-Path $Payload 'pixeltone.exe') -Force
+        $Package = Join-Path $OutputDir "$ProductName-v$Version.tzpkg"
         $FinalName = "$ProductName-Setup-v$Version.exe"
         $FinalPath = Join-Path $OutputDir $FinalName
-        Copy-Item $Setup.FullName $FinalPath -Force
-
-        $Hash = Get-FileHash -Path $FinalPath -Algorithm SHA256
+        & $Cli build-package --package-id com.turkuazlabs.pixeltone --version $Version --source $Payload --output $Package --executable pixeltone.exe
+        if ($LASTEXITCODE -ne 0) { throw "TurkuazInstaller package build basarisiz." }
+        & $Cli build-native-setup --stub $Cli --package $Package --output $FinalPath
+        if ($LASTEXITCODE -ne 0) { throw "TurkuazInstaller Setup build basarisiz." }
+        $Hash = Get-FileHash -LiteralPath $FinalPath -Algorithm SHA256
         $HashValue = $Hash.Hash.ToLowerInvariant()
         $HashLine = "$HashValue  $FinalName"
-        $HashPath = "$FinalPath.sha256"
-        Set-Content -Path $HashPath -Value $HashLine -Encoding ascii
-
+        Set-Content -LiteralPath "$FinalPath.sha256" -Value $HashLine -Encoding ascii
         $MetadataPath = Join-Path $OutputDir "$ProductName-Setup-v$Version.json"
         $Metadata = [ordered]@{
             product = $ProductName
             version = $Version
             file = $FinalName
             sha256 = $HashValue
-            package_type = "nsis"
+            package_type = "turkuaz-installer-native"
+            installer_version = "0.2.24"
+            installer_source_commit = $InstallerCommit
             updater_artifact = $false
             code_signed = $false
         }
-
-        $Metadata | ConvertTo-Json | Set-Content -Path $MetadataPath -Encoding utf8
-
-        Write-Host ""
-        Write-Host "Setup hazir:"
-        Write-Host $FinalPath
-        Write-Host "SHA256:"
-        Write-Host $Hash.Hash
-        Write-Host "Metadata:"
-        Write-Host $MetadataPath
+        $Metadata | ConvertTo-Json | Set-Content -LiteralPath $MetadataPath -Encoding utf8
+        Write-Host "TurkuazInstaller Setup: $FinalPath"
     }
 }
 finally {
