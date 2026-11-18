@@ -130,8 +130,14 @@ try {
         if ($LASTEXITCODE -ne 0 -or $checkedCommit -cne $InstallerCommit) {
             throw "TurkuazInstaller source commit identity mismatch."
         }
-        & cargo build --locked --manifest-path (Join-Path $InstallerCheckout 'rust/Cargo.toml') -p turkuaz-installer-cli --release --bin turkuaz-installer --features setup-authoring-gui
-        if ($LASTEXITCODE -ne 0) { throw "TurkuazInstaller Rust build basarisiz." }
+        $Manifest = Join-Path $InstallerCheckout 'rust/Cargo.toml'
+        & cargo build --locked --manifest-path $Manifest -p turkuaz-installer-cli --release --bin turkuaz-installer --features setup-authoring-gui
+        if ($LASTEXITCODE -ne 0) { throw "TurkuazInstaller GUI build basarisiz." }
+        $Cli = Join-Path $InstallerCheckout 'rust/target/release/turkuaz-installer.exe'
+        $GuiStub = Join-Path $InstallerCheckout 'rust/target/release/turkuaz-installer-studio.exe'
+        Copy-Item -LiteralPath $Cli -Destination $GuiStub -Force
+        & cargo build --locked --manifest-path $Manifest -p turkuaz-installer-cli --release --bin turkuaz-installer --no-default-features
+        if ($LASTEXITCODE -ne 0) { throw "TurkuazInstaller CLI build basarisiz." }
     }
 
     Invoke-Step -Name "Build TurkuazInstaller package and Windows Setup" -Action {
@@ -149,7 +155,7 @@ try {
         $FinalPath = Join-Path $OutputDir $FinalName
         & $Cli build-package --package-id com.turkuazlabs.pixeltone --version $Version --source $Payload --output $Package --executable pixeltone.exe
         if ($LASTEXITCODE -ne 0) { throw "TurkuazInstaller package build basarisiz." }
-        & $Cli build-native-setup --stub $Cli --package $Package --output $FinalPath
+        & $Cli build-native-setup --stub (Join-Path $InstallerCheckout "rust/target/release/turkuaz-installer-studio.exe") --package $Package --output $FinalPath
         if ($LASTEXITCODE -ne 0) { throw "TurkuazInstaller Setup build basarisiz." }
         $Hash = Get-FileHash -LiteralPath $FinalPath -Algorithm SHA256
         $HashValue = $Hash.Hash.ToLowerInvariant()
