@@ -1,7 +1,7 @@
 # 📄 Dosya Yolu: pixeltone/.github/workflows/windows-setup.yml
-# 📌 Amac: PixelTone Windows NSIS Setup.exe paketini GitHub-hosted Windows runner uzerinde uretmek
+# 📌 Amac: PixelTone Windows TurkuazInstaller Setup.exe paketini GitHub-hosted Windows runner uzerinde uretmek
 # 📌 Config - YAML
-# Version: 1.1.2
+# Version: 1.1.3
 # Aciklama: PR veya manuel tetiklemede branch-bazli concurrency ile unsigned Setup.exe, SHA256 ve metadata artifacti uretir
 #
 # Bagimli Oldugu Katman: Config
@@ -10,6 +10,15 @@ name: PixelTone Windows Setup
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "src-tauri/**"
+      - "scripts/build_windows_setup.ps1"
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/windows-setup.yml"
   pull_request:
     branches:
       - main
@@ -59,5 +68,6 @@ jobs:
             dist-installer/PixelTone-Setup-v*.exe
             dist-installer/PixelTone-Setup-v*.exe.sha256
             dist-installer/PixelTone-Setup-v*.json
+            dist-installer/PixelTone-v*.tzpkg
           if-no-files-found: error
           retention-days: 14
