@@ -1,10 +1,11 @@
-# 📄 Dosya Yolu: pixeltone/CHANGELOG.md
-# 📌 Amac: PixelTone surum degisikliklerini kaydetmek
-# 📌 Docs - Markdown
-# Version: 1.2.2
-# Aciklama: Proje degisiklik gecmisi, tema, dil ve sol navigasyon modullerini kaydeder
-
+<!--
+Dosya Yolu: REPO_ROOT/CHANGELOG.md
+Amac: PixelTone surum degisikliklerini kaydetmek
+Modul - Markdown
+Version: 1.2.2
+Aciklama: Proje degisiklik gecmisi, tema, dil ve sol navigasyon modullerini kaydeder
 Bagimli Oldugu Katman: View
+-->
 
 # Changelog
 
