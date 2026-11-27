@@ -1,10 +1,11 @@
-# 📄 Dosya Yolu: pixeltone/README.md
-# 📌 Amac: PixelTone projesinin genel aciklamasini ve calisma durumunu tanimlamak
-# 📌 Docs - Markdown
-# Version: 1.0.0
-# Aciklama: Tauri + Rust + HTML UI tabanli Stable Desktop renk secici, picker, palet ve dagitim uygulama girisi
-
+<!--
+Dosya Yolu: REPO_ROOT/README.md
+Amac: PixelTone projesinin genel aciklamasini ve calisma durumunu tanimlamak
+Modul - Markdown
+Version: 1.0.0
+Aciklama: Tauri + Rust + HTML UI tabanli Stable Desktop renk secici, picker, palet ve dagitim uygulama girisi
 Bagimli Oldugu Katman: View
+-->
 
 # PixelTone v1.0.0
 
